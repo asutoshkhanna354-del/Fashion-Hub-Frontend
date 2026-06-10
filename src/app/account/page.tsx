@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, User, Phone, MapPin, Eye, EyeOff, ArrowRight, ArrowLeft, CheckCircle } from "lucide-react";
 import { useAuth } from "@/lib/contexts/auth-context";
-import { authApi } from "@/lib/api";
+import { authApi, adminApi } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -47,6 +47,22 @@ export default function AccountPage() {
     e.preventDefault();
     setError(""); setLoading(true);
     try {
+      // Check if it looks like an admin username (no @ symbol, not just a 10 digit phone number)
+      if (!email.includes("@") && !/^\d{10}$/.test(email)) {
+        try {
+          const data = await adminApi.login(email, password);
+          if (data.token) {
+            localStorage.setItem("admin_token", data.token);
+            setSuccess("Admin login successful! Redirecting to dashboard...");
+            setTimeout(() => router.push("/admin/"), 1000);
+            return;
+          }
+        } catch (adminErr: any) {
+          throw new Error(adminErr.message || "Admin login failed");
+        }
+      }
+
+      // Default user login
       const result = await login(email, password);
       if (result.requiresVerification) {
         setStep("otp"); setSuccess("OTP sent to your email for verification.");
@@ -188,10 +204,10 @@ export default function AccountPage() {
                 {isLogin ? (
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div>
-                      <label className={labelClass}>Email Address</label>
+                      <label className={labelClass}>Email / Phone / Username</label>
                       <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-plum/30" />
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className={inputClass} required />
+                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-plum/30" />
+                        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email, Phone or Admin Username" className={inputClass} required />
                       </div>
                     </div>
                     <div>
