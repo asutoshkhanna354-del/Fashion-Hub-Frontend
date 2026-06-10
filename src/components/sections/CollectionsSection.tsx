@@ -2,7 +2,10 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { collections } from "@/data";
+import { useState, useEffect } from "react";
+import { sectionApi } from "@/lib/api";
+
+const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -25,9 +28,48 @@ const itemVariants = {
 };
 
 export default function CollectionsSection() {
+  const [sections, setSections] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    sectionApi.list()
+      .then((d) => setSections((d.sections || []).slice(0, 8))) // Limit to 8 for the homepage grid
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const getImgUrl = (url: string) => {
+    if (!url) return "/images/collections/new.png"; // Fallback image
+    return url.startsWith("http") ? url : `${API_URL}${url}`;
+  };
+
+  if (loading && sections.length === 0) {
+    return (
+      <section className="py-16 sm:py-20 lg:py-24 bg-[#F8F6F3]" aria-label="Shop by Collection">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 animate-pulse">
+            <div className="h-10 bg-[#1E1533]/5 rounded w-64 mx-auto mb-4" />
+            <div className="h-4 bg-[#1E1533]/5 rounded w-48 mx-auto" />
+          </div>
+          <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6 lg:gap-8">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="flex flex-col items-center animate-pulse">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full bg-[#1E1533]/5 mb-3" />
+                <div className="h-3 bg-[#1E1533]/5 rounded w-16 mb-1" />
+                <div className="h-2 bg-[#1E1533]/5 rounded w-10" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (sections.length === 0) return null;
+
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-ivory" aria-label="Shop by Collection">
-      <div className="container-premium">
+    <section className="py-16 sm:py-20 lg:py-24 bg-[#F8F6F3]" aria-label="Shop by Collection">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -36,25 +78,15 @@ export default function CollectionsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-plum mb-3">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1E1533] mb-3">
             Shop By Collection
           </h2>
-          <div className="section-divider">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              className="text-rose-gold"
-            >
-              <path
-                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                fill="currentColor"
-                opacity="0.5"
-              />
-            </svg>
+          <div className="flex items-center justify-center gap-2 text-[#C58F7A] mb-3">
+            <div className="w-12 h-px bg-gradient-to-r from-transparent to-[#C58F7A]/50" />
+            <div className="w-2 h-2 rotate-45 border border-[#C58F7A]" />
+            <div className="w-12 h-px bg-gradient-to-l from-transparent to-[#C58F7A]/50" />
           </div>
-          <p className="text-plum/50 text-sm sm:text-base max-w-lg mx-auto mt-3">
+          <p className="text-[#1E1533]/50 text-sm sm:text-base max-w-lg mx-auto font-medium tracking-wide">
             Explore our handpicked categories of premium sarees
           </p>
         </motion.div>
@@ -67,36 +99,36 @@ export default function CollectionsSection() {
           viewport={{ once: true, margin: "-50px" }}
           className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6 lg:gap-8"
         >
-          {collections.map((collection) => (
+          {sections.map((section) => (
             <motion.a
-              key={collection.id}
+              key={section.id}
               variants={itemVariants}
-              href={`/collections/${collection.slug}`}
+              href={`/collections/${section.id}`}
               className="group flex flex-col items-center text-center"
             >
               {/* Circular Image */}
               <div className="relative mb-3">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden border-2 border-rose-gold/15 group-hover:border-rose-gold/40 transition-all duration-500 shadow-sm group-hover:shadow-premium">
-                  <div className="w-full h-full rounded-full overflow-hidden transform transition-transform duration-500 group-hover:scale-110">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden border border-[#C58F7A]/15 group-hover:border-[#C58F7A]/40 transition-all duration-500 shadow-sm group-hover:shadow-lg bg-white p-1">
+                  <div className="w-full h-full rounded-full overflow-hidden transform transition-transform duration-700 ease-out group-hover:scale-110 relative bg-[#F8F6F3]">
                     <Image
-                      src={collection.image}
-                      alt={collection.name}
-                      width={120}
-                      height={120}
-                      className="w-full h-full object-cover"
+                      src={getImgUrl(section.image)}
+                      alt={section.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100px, 120px"
                     />
                   </div>
                 </div>
                 {/* Hover ring */}
-                <div className="absolute -inset-1 rounded-full border border-rose-gold/0 group-hover:border-rose-gold/20 transition-all duration-500 group-hover:scale-110" />
+                <div className="absolute -inset-1 rounded-full border border-[#C58F7A]/0 group-hover:border-[#C58F7A]/30 transition-all duration-500 group-hover:scale-[1.08]" />
               </div>
 
               {/* Collection Name */}
-              <h3 className="font-display text-xs sm:text-sm font-semibold text-plum group-hover:text-rose-gold transition-colors duration-300 leading-tight">
-                {collection.name}
+              <h3 className="font-display text-xs sm:text-sm font-bold text-[#1E1533] group-hover:text-[#C58F7A] transition-colors duration-300 leading-tight">
+                {section.name}
               </h3>
-              <p className="text-[10px] sm:text-xs text-plum/40 mt-0.5">
-                {collection.itemCount} items
+              <p className="text-[10px] sm:text-xs text-[#1E1533]/40 mt-0.5 font-medium">
+                {section._count?.products || 0} items
               </p>
             </motion.a>
           ))}

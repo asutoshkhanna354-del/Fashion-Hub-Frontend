@@ -1,23 +1,34 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Package, ChevronDown, FileText } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Package, Search, X, Printer, Phone, Mail, MapPin, ChevronDown, FileText, Clock, CheckCircle, Truck, XCircle } from "lucide-react";
 import { adminApi } from "@/lib/api";
+import AdminLayout from "@/components/admin/AdminLayout";
 
 const statusColors: Record<string, string> = {
-  PLACED: "bg-amber-50 text-amber-600", CONFIRMED: "bg-blue-50 text-blue-600", SHIPPED: "bg-indigo-50 text-indigo-600", DELIVERED: "bg-green-50 text-green-600", CANCELLED: "bg-red-50 text-red-600",
+  PLACED: "bg-amber-50 text-amber-600", CONFIRMED: "bg-blue-50 text-blue-600",
+  SHIPPED: "bg-indigo-50 text-indigo-600", DELIVERED: "bg-emerald-50 text-emerald-600",
+  CANCELLED: "bg-red-50 text-red-500",
 };
-const payColors: Record<string, string> = { SUCCESS: "bg-green-50 text-green-600", PENDING: "bg-amber-50 text-amber-600", FAILED: "bg-red-50 text-red-600" };
+const payColors: Record<string, string> = {
+  SUCCESS: "bg-emerald-50 text-emerald-600", PENDING: "bg-amber-50 text-amber-600", FAILED: "bg-red-50 text-red-500",
+};
+
+const statusTimeline = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED"];
 
 export default function AdminOrdersPage() {
-  const router = useRouter();
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const printRef = useRef<HTMLDivElement>(null);
 
-  const fetchOrders = (p = 1) => {
-    adminApi.orders({ page: String(p), limit: "20" }).then((d) => { setOrders(d.orders); setTotalPages(d.totalPages); setPage(p); }).catch(() => router.push("/admin/login/")).finally(() => setLoading(false));
+  const fetchOrders = (p = 1, status = statusFilter) => {
+    const params: Record<string, string> = { page: String(p), limit: "20" };
+    if (status !== "ALL") params.status = status;
+    adminApi.orders(params).then((d) => { setOrders(d.orders); setTotalPages(d.totalPages); setPage(p); }).catch(() => {}).finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchOrders(); }, []);
@@ -25,47 +36,243 @@ export default function AdminOrdersPage() {
   const updateStatus = async (id: string, field: string, value: string) => {
     await adminApi.updateOrderStatus(id, { [field]: value });
     fetchOrders(page);
+    if (selectedOrder?.id === id) {
+      setSelectedOrder({ ...selectedOrder, [field]: value });
+    }
+  };
+
+  const handlePrint = () => {
+    const content = printRef.current;
+    if (!content) return;
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+    printWindow.document.write(`
+      <html><head><title>Invoice - ${selectedOrder?.orderNumber}</title>
+      <style>body{font-family:system-ui,-apple-system,sans-serif;padding:40px;color:#1E1533;font-size:13px}
+      table{width:100%;border-collapse:collapse}th,td{padding:10px;text-align:left;border-bottom:1px solid #eee}
+      th{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px}
+      .header{text-align:center;margin-bottom:30px;border-bottom:2px solid #1E1533;padding-bottom:20px}
+      .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:24px 0}
+      .label{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+      .total{font-size:20px;font-weight:700;margin-top:12px}
+      </style></head><body>${content.innerHTML}</body></html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const tabs = ["ALL", "PLACED", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"];
+
+  const getShippingAddress = (order: any) => {
+    const addr = order.shippingAddress;
+    if (!addr) return null;
+    return typeof addr === "string" ? JSON.parse(addr) : addr;
   };
 
   return (
-    <div className="min-h-screen bg-ivory p-4 sm:p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => router.push("/admin/")} className="text-plum/40 hover:text-plum"><ArrowLeft className="w-5 h-5" /></button>
-        <h1 className="font-display text-2xl font-bold text-plum flex-1">Orders</h1>
+    <AdminLayout title="Orders" subtitle={`${orders.length} orders found`}>
+      {/* Filter Tabs */}
+      <div className="flex gap-1.5 mb-6 overflow-x-auto pb-1">
+        {tabs.map((tab) => (
+          <button key={tab} onClick={() => { setStatusFilter(tab); fetchOrders(1, tab); }}
+            className={`px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+              statusFilter === tab ? "bg-[#1E1533] text-white shadow-lg" : "bg-white text-[#1E1533]/40 hover:bg-[#F8F6F3] border border-[#1E1533]/[0.04]"
+            }`}>{tab}</button>
+        ))}
       </div>
-      <div className="bg-white rounded-2xl shadow-sm border border-plum/5 overflow-hidden">
+
+      {/* Orders Table */}
+      <div className="bg-white rounded-2xl border border-[#1E1533]/[0.03] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead><tr className="bg-ivory/50 text-xs text-plum/40 border-b border-plum/5">
-              <th className="text-left p-3 font-medium">Order</th><th className="text-left p-3 font-medium">Customer</th><th className="text-left p-3 font-medium">Amount</th><th className="text-left p-3 font-medium">Payment</th><th className="text-left p-3 font-medium">Status</th><th className="text-left p-3 font-medium">Date</th><th className="text-left p-3 font-medium">Invoice</th>
-            </tr></thead>
+            <thead>
+              <tr className="text-[10px] text-[#1E1533]/30 uppercase tracking-wider border-b border-[#1E1533]/[0.03]">
+                <th className="text-left px-6 py-3 font-semibold">Order</th>
+                <th className="text-left px-6 py-3 font-semibold">Customer</th>
+                <th className="text-left px-6 py-3 font-semibold">Items</th>
+                <th className="text-left px-6 py-3 font-semibold">Amount</th>
+                <th className="text-left px-6 py-3 font-semibold">Payment</th>
+                <th className="text-left px-6 py-3 font-semibold">Status</th>
+                <th className="text-left px-6 py-3 font-semibold">Date</th>
+              </tr>
+            </thead>
             <tbody>
               {orders.map((o) => (
-                <tr key={o.id} className="border-b border-plum/5 last:border-0 hover:bg-ivory/30">
-                  <td className="p-3 font-medium text-plum">{o.orderNumber}</td>
-                  <td className="p-3 text-plum/60">{o.user?.firstName} {o.user?.lastName}</td>
-                  <td className="p-3 font-medium text-plum">₹{Number(o.totalAmount).toLocaleString("en-IN")}</td>
-                  <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full font-medium ${payColors[o.paymentStatus] || ""}`}>{o.paymentStatus}</span></td>
-                  <td className="p-3">
-                    <select value={o.orderStatus} onChange={(e) => updateStatus(o.id, "orderStatus", e.target.value)} className="text-xs px-2 py-1 rounded-lg bg-ivory border border-plum/10 text-plum cursor-pointer">
+                <tr key={o.id} onClick={() => setSelectedOrder(o)} className="border-b border-[#1E1533]/[0.02] hover:bg-[#F8F6F3]/50 transition-colors cursor-pointer">
+                  <td className="px-6 py-3.5 font-semibold text-[#1E1533] text-xs">{o.orderNumber}</td>
+                  <td className="px-6 py-3.5">
+                    <p className="text-xs text-[#1E1533]/70">{o.user?.firstName} {o.user?.lastName}</p>
+                    <p className="text-[10px] text-[#1E1533]/25">{o.user?.phone}</p>
+                  </td>
+                  <td className="px-6 py-3.5 text-xs text-[#1E1533]/40">{o.orderItems?.length} item{o.orderItems?.length !== 1 ? "s" : ""}</td>
+                  <td className="px-6 py-3.5 font-semibold text-[#1E1533] text-xs">₹{Number(o.totalAmount).toLocaleString("en-IN")}</td>
+                  <td className="px-6 py-3.5"><span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${payColors[o.paymentStatus] || ""}`}>{o.paymentStatus}</span></td>
+                  <td className="px-6 py-3.5">
+                    <select
+                      value={o.orderStatus}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={(e) => { e.stopPropagation(); updateStatus(o.id, "orderStatus", e.target.value); }}
+                      className="text-[10px] px-2.5 py-1.5 rounded-lg bg-[#F8F6F3] border border-[#1E1533]/[0.06] text-[#1E1533] cursor-pointer focus:outline-none"
+                    >
                       {["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"].map((s) => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </td>
-                  <td className="p-3 text-xs text-plum/40">{new Date(o.createdAt).toLocaleDateString("en-IN")}</td>
-                  <td className="p-3"><button onClick={() => window.open(`/admin/orders/?invoice=${o.id}`, "_blank")} className="p-1.5 hover:bg-plum/5 rounded-lg"><FileText className="w-4 h-4 text-plum/40" /></button></td>
+                  <td className="px-6 py-3.5 text-[10px] text-[#1E1533]/25">{new Date(o.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        {orders.length === 0 && (
+          <div className="text-center py-16">
+            <Package className="w-10 h-10 text-[#1E1533]/5 mx-auto mb-2" />
+            <p className="text-xs text-[#1E1533]/25">No orders found</p>
+          </div>
+        )}
       </div>
+
+      {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-6">
+        <div className="flex justify-center gap-1.5 mt-6">
           {Array.from({ length: totalPages }, (_, i) => (
-            <button key={i} onClick={() => fetchOrders(i + 1)} className={`w-8 h-8 rounded-lg text-xs font-medium ${page === i + 1 ? "bg-plum text-white" : "bg-white text-plum/50"}`}>{i + 1}</button>
+            <button key={i} onClick={() => fetchOrders(i + 1)} className={`w-8 h-8 rounded-lg text-xs font-semibold transition-colors ${page === i + 1 ? "bg-[#1E1533] text-white" : "bg-white text-[#1E1533]/30 hover:bg-[#F8F6F3] border border-[#1E1533]/[0.04]"}`}>{i + 1}</button>
           ))}
         </div>
       )}
-    </div>
+
+      {/* Order Detail Drawer */}
+      <AnimatePresence>
+        {selectedOrder && (
+          <div className="fixed inset-0 z-50 flex justify-end">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedOrder(null)} />
+            <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25 }} className="relative w-full max-w-xl bg-white h-full overflow-auto shadow-2xl">
+              {/* Header */}
+              <div className="sticky top-0 bg-white border-b border-[#1E1533]/[0.04] px-6 py-4 flex items-center justify-between z-10">
+                <div>
+                  <h2 className="font-display text-base font-bold text-[#1E1533]">Order {selectedOrder.orderNumber}</h2>
+                  <p className="text-[10px] text-[#1E1533]/30">{new Date(selectedOrder.createdAt).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={handlePrint} className="p-2.5 bg-[#F8F6F3] rounded-lg hover:bg-[#1E1533]/5 transition-colors"><Printer className="w-4 h-4 text-[#1E1533]/50" /></button>
+                  <button onClick={() => setSelectedOrder(null)} className="p-2.5 bg-[#F8F6F3] rounded-lg hover:bg-red-50 transition-colors"><X className="w-4 h-4 text-[#1E1533]/50" /></button>
+                </div>
+              </div>
+
+              {/* Printable Content */}
+              <div ref={printRef} className="p-6 space-y-6">
+                {/* Store Header (for print) */}
+                <div className="header hidden print:block">
+                  <h1 style={{ fontSize: "24px", fontWeight: 700 }}>ADITI FASHION HUB</h1>
+                  <p>Invoice #{selectedOrder.orderNumber}</p>
+                </div>
+
+                {/* Status Timeline */}
+                <div className="bg-[#F8F6F3] rounded-2xl p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xs font-bold text-[#1E1533]">Order Status</h3>
+                    <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${payColors[selectedOrder.paymentStatus] || ""}`}>{selectedOrder.paymentStatus}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {statusTimeline.map((step, i) => {
+                      const currentIdx = statusTimeline.indexOf(selectedOrder.orderStatus);
+                      const isDone = i <= currentIdx;
+                      const isCancelled = selectedOrder.orderStatus === "CANCELLED";
+                      return (
+                        <div key={step} className="flex-1 flex flex-col items-center">
+                          <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                            isCancelled ? "bg-red-100 text-red-500" : isDone ? "bg-[#1E1533] text-white" : "bg-[#1E1533]/5 text-[#1E1533]/20"
+                          }`}>{i + 1}</div>
+                          <p className={`text-[9px] mt-1 font-medium ${isDone ? "text-[#1E1533]" : "text-[#1E1533]/20"}`}>{step}</p>
+                          {i < statusTimeline.length - 1 && <div className={`h-0.5 w-full ${isDone && i < currentIdx ? "bg-[#1E1533]" : "bg-[#1E1533]/5"}`} />}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Customer Info */}
+                <div>
+                  <h3 className="text-xs font-bold text-[#1E1533] mb-3">Customer Details</h3>
+                  <div className="bg-[#F8F6F3] rounded-2xl p-4 space-y-2.5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#C58F7A] to-[#B89CCF] flex items-center justify-center text-white text-xs font-bold">
+                        {selectedOrder.user?.firstName?.charAt(0)}{selectedOrder.user?.lastName?.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-[#1E1533]">{selectedOrder.user?.firstName} {selectedOrder.user?.lastName}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-[11px]">
+                      <div className="flex items-center gap-2 text-[#1E1533]/50"><Mail className="w-3 h-3" /> {selectedOrder.user?.email}</div>
+                      <div className="flex items-center gap-2 text-[#1E1533]/50"><Phone className="w-3 h-3" /> {selectedOrder.user?.phone}</div>
+                      {selectedOrder.user?.altPhone && <div className="flex items-center gap-2 text-[#1E1533]/50"><Phone className="w-3 h-3" /> {selectedOrder.user.altPhone} (alt)</div>}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Shipping Address */}
+                {(() => {
+                  const addr = getShippingAddress(selectedOrder);
+                  if (!addr) return null;
+                  return (
+                    <div>
+                      <h3 className="text-xs font-bold text-[#1E1533] mb-3">Shipping Address</h3>
+                      <div className="bg-[#F8F6F3] rounded-2xl p-4 text-[11px] text-[#1E1533]/60 flex gap-3">
+                        <MapPin className="w-4 h-4 text-[#C58F7A] flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-semibold text-[#1E1533]">{addr.name}</p>
+                          <p>{addr.line1}{addr.line2 ? `, ${addr.line2}` : ""}</p>
+                          <p>{addr.city}, {addr.state} - {addr.pincode}</p>
+                          <p>{addr.country} • {addr.phone}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Order Items */}
+                <div>
+                  <h3 className="text-xs font-bold text-[#1E1533] mb-3">Items Ordered</h3>
+                  <div className="space-y-2">
+                    {selectedOrder.orderItems?.map((item: any, i: number) => (
+                      <div key={i} className="bg-[#F8F6F3] rounded-xl p-3 flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-lg bg-white border border-[#1E1533]/[0.04] flex items-center justify-center flex-shrink-0">
+                          <Package className="w-5 h-5 text-[#1E1533]/10" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-[#1E1533] truncate">{item.product?.name || "Product"}</p>
+                          <p className="text-[10px] text-[#1E1533]/30">{item.product?.fabric || ""} • Qty: {item.quantity}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs font-bold text-[#1E1533]">₹{Number(item.total).toLocaleString("en-IN")}</p>
+                          <p className="text-[10px] text-[#1E1533]/25">₹{Number(item.price).toLocaleString("en-IN")} × {item.quantity}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Totals */}
+                <div className="bg-[#1E1533] rounded-2xl p-5 text-white">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between text-white/50"><span>Subtotal</span><span>₹{(Number(selectedOrder.totalAmount) + Number(selectedOrder.discountAmount)).toLocaleString("en-IN")}</span></div>
+                    {Number(selectedOrder.discountAmount) > 0 && (
+                      <div className="flex justify-between text-emerald-400"><span>Discount {selectedOrder.promoCode ? `(${selectedOrder.promoCode})` : ""}</span><span>-₹{Number(selectedOrder.discountAmount).toLocaleString("en-IN")}</span></div>
+                    )}
+                    <div className="flex justify-between text-white/50"><span>Shipping</span><span className="text-emerald-400">FREE</span></div>
+                    <div className="border-t border-white/10 pt-2 flex justify-between font-bold text-lg">
+                      <span>Total</span><span>₹{Number(selectedOrder.totalAmount).toLocaleString("en-IN")}</span>
+                    </div>
+                  </div>
+                  {selectedOrder.utr && (
+                    <p className="text-[10px] text-white/30 mt-3">UTR: {selectedOrder.utr}</p>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </AdminLayout>
   );
 }

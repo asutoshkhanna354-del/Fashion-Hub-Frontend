@@ -48,7 +48,7 @@ export default function OrdersPage() {
               const config = statusIcons[order.orderStatus] || statusIcons.PLACED;
               const Icon = config.icon;
               return (
-                <motion.div key={order.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} onClick={() => router.push(`/account/orders/?id=${order.id}`)} className="card-glass p-4 cursor-pointer hover:border-rose-gold/20 transition-colors">
+                <motion.div key={order.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} onClick={() => router.push(`/account/orders/${order.id}`)} className="card-glass p-4 cursor-pointer hover:border-rose-gold/20 transition-colors">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-xl ${config.bg} flex items-center justify-center`}><Icon className={`w-5 h-5 ${config.color}`} /></div>

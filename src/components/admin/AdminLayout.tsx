@@ -1,0 +1,152 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  LayoutDashboard, Package, ShoppingBag, Layers, Users, Tag, Bell,
+  Settings, Shield, LogOut, Menu, X, ChevronRight, Search,
+} from "lucide-react";
+
+const navItems = [
+  { href: "/admin/", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/admin/orders/", icon: Package, label: "Orders" },
+  { href: "/admin/products/", icon: ShoppingBag, label: "Products" },
+  { href: "/admin/sections/", icon: Layers, label: "Sections" },
+  { href: "/admin/users/", icon: Users, label: "Customers" },
+  { href: "/admin/promos/", icon: Tag, label: "Promo Codes" },
+  { href: "/admin/notifications/", icon: Bell, label: "Notifications" },
+  { href: "/admin/settings/", icon: Settings, label: "Store Settings" },
+  { href: "/admin/admins/", icon: Shield, label: "Admin Team" },
+];
+
+interface AdminLayoutProps {
+  children: React.ReactNode;
+  title: string;
+  subtitle?: string;
+  actions?: React.ReactNode;
+}
+
+export default function AdminLayout({ children, title, subtitle, actions }: AdminLayoutProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminInfo, setAdminInfo] = useState<any>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("admin_token");
+    if (!token) { router.push("/admin/login/"); return; }
+    const info = localStorage.getItem("admin_info");
+    if (info) setAdminInfo(JSON.parse(info));
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("admin_token");
+    localStorage.removeItem("admin_info");
+    router.push("/admin/login/");
+  };
+
+  const isActive = (href: string) => {
+    if (href === "/admin/") return pathname === "/admin" || pathname === "/admin/";
+    return pathname?.startsWith(href.replace(/\/$/, ""));
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F8F6F3] flex">
+      {/* Sidebar */}
+      <aside className={`fixed lg:sticky top-0 left-0 h-screen w-[260px] bg-[#1E1533] z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        {/* Brand */}
+        <div className="px-6 py-5 border-b border-white/[0.06]">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="font-display text-[17px] font-bold text-white tracking-wide">ADITI</h1>
+              <p className="text-[9px] text-[#C58F7A] tracking-[3px] font-medium -mt-0.5">FASHION HUB</p>
+            </div>
+            <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-white/40 hover:text-white">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 py-3 overflow-auto px-3">
+          <p className="text-[10px] font-semibold text-white/20 uppercase tracking-wider px-3 mb-2 mt-1">Menu</p>
+          {navItems.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 mb-0.5 ${
+                  active
+                    ? "bg-[#C58F7A]/15 text-[#C58F7A]"
+                    : "text-white/45 hover:text-white/80 hover:bg-white/[0.04]"
+                }`}
+              >
+                <item.icon className={`w-[18px] h-[18px] ${active ? "text-[#C58F7A]" : ""}`} />
+                {item.label}
+                {active && (
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C58F7A]" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Admin Profile & Logout */}
+        <div className="border-t border-white/[0.06] p-3">
+          <div className="flex items-center gap-3 px-3 py-2 mb-1">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C58F7A] to-[#B89CCF] flex items-center justify-center text-white text-xs font-bold">
+              {adminInfo?.username?.charAt(0)?.toUpperCase() || "A"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium text-white/80 truncate">{adminInfo?.username || "Admin"}</p>
+              <p className="text-[10px] text-white/30 capitalize">{adminInfo?.role?.replace("_", " ") || "Admin"}</p>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] text-white/30 hover:text-red-400 hover:bg-red-500/5 transition-colors w-full"
+          >
+            <LogOut className="w-[18px] h-[18px]" /> Sign Out
+          </button>
+        </div>
+      </aside>
+
+      {/* Overlay for mobile sidebar */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Main Content */}
+      <main className="flex-1 min-w-0 flex flex-col">
+        {/* Top Bar */}
+        <header className="sticky top-0 bg-[#F8F6F3]/80 backdrop-blur-xl border-b border-[#1E1533]/[0.04] px-4 sm:px-6 lg:px-8 z-30">
+          <div className="flex items-center gap-4 h-16">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-[#1E1533]/5">
+              <Menu className="w-5 h-5 text-[#1E1533]" />
+            </button>
+            <div className="flex-1 min-w-0">
+              <h2 className="font-display text-lg font-bold text-[#1E1533] truncate">{title}</h2>
+              {subtitle && <p className="text-xs text-[#1E1533]/40 -mt-0.5 truncate">{subtitle}</p>}
+            </div>
+            {actions && <div className="flex items-center gap-2">{actions}</div>}
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <div className="flex-1 p-4 sm:p-6 lg:p-8">
+          {children}
+        </div>
+      </main>
+    </div>
+  );
+}

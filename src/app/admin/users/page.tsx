@@ -1,11 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Search, Users } from "lucide-react";
+import { Search, Users } from "lucide-react";
 import { adminApi } from "@/lib/api";
+import AdminLayout from "@/components/admin/AdminLayout";
 
 export default function AdminUsersPage() {
-  const router = useRouter();
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -15,39 +14,50 @@ export default function AdminUsersPage() {
   const fetchUsers = (p = 1, s = "") => {
     const params: Record<string, string> = { page: String(p), limit: "20" };
     if (s) params.search = s;
-    adminApi.users(params).then((d) => { setUsers(d.users); setTotalPages(d.totalPages); setPage(p); }).catch(() => router.push("/admin/login/")).finally(() => setLoading(false));
+    adminApi.users(params).then((d) => { setUsers(d.users); setTotalPages(d.totalPages); setPage(p); }).catch(() => {}).finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchUsers(); }, []);
 
   return (
-    <div className="min-h-screen bg-ivory p-4 sm:p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => router.push("/admin/")} className="text-plum/40 hover:text-plum"><ArrowLeft className="w-5 h-5" /></button>
-        <h1 className="font-display text-2xl font-bold text-plum flex-1">Users</h1>
-        <div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-plum/30" /><input value={search} onChange={(e) => { setSearch(e.target.value); fetchUsers(1, e.target.value); }} placeholder="Search users..." className="pl-9 pr-4 py-2 bg-white border border-plum/10 rounded-xl text-sm w-48" /></div>
-      </div>
-      <div className="bg-white rounded-2xl shadow-sm border border-plum/5 overflow-hidden">
+    <AdminLayout title="Customers" subtitle={`${users.length} registered users`}
+      actions={
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1E1533]/20" />
+          <input value={search} onChange={(e) => { setSearch(e.target.value); fetchUsers(1, e.target.value); }} placeholder="Search..." className="pl-9 pr-4 py-2.5 bg-white border border-[#1E1533]/[0.04] rounded-xl text-xs w-48 focus:outline-none focus:border-[#C58F7A]/30" />
+        </div>
+      }
+    >
+      <div className="bg-white rounded-2xl border border-[#1E1533]/[0.03] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead><tr className="bg-ivory/50 text-xs text-plum/40 border-b border-plum/5">
-              <th className="text-left p-3 font-medium">Name</th><th className="text-left p-3 font-medium">Email</th><th className="text-left p-3 font-medium">Phone</th><th className="text-left p-3 font-medium">Verified</th><th className="text-left p-3 font-medium">Orders</th><th className="text-left p-3 font-medium">Joined</th>
-            </tr></thead>
+            <thead>
+              <tr className="text-[10px] text-[#1E1533]/30 uppercase tracking-wider border-b border-[#1E1533]/[0.03]">
+                <th className="text-left px-6 py-3 font-semibold">Name</th><th className="text-left px-6 py-3 font-semibold">Email</th><th className="text-left px-6 py-3 font-semibold">Phone</th><th className="text-left px-6 py-3 font-semibold">Verified</th><th className="text-left px-6 py-3 font-semibold">Orders</th><th className="text-left px-6 py-3 font-semibold">Joined</th>
+              </tr>
+            </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.id} className="border-b border-plum/5 last:border-0 hover:bg-ivory/30">
-                  <td className="p-3 font-medium text-plum">{u.firstName} {u.lastName}</td>
-                  <td className="p-3 text-plum/60">{u.email}</td>
-                  <td className="p-3 text-plum/60">{u.phone}</td>
-                  <td className="p-3"><span className={`text-xs px-2 py-0.5 rounded-full ${u.emailVerified ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"}`}>{u.emailVerified ? "Yes" : "No"}</span></td>
-                  <td className="p-3 text-plum/60">{u._count?.orders || 0}</td>
-                  <td className="p-3 text-xs text-plum/40">{new Date(u.createdAt).toLocaleDateString("en-IN")}</td>
+                <tr key={u.id} className="border-b border-[#1E1533]/[0.02] hover:bg-[#F8F6F3]/50 transition-colors">
+                  <td className="px-6 py-3.5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C58F7A]/20 to-[#B89CCF]/20 flex items-center justify-center text-[10px] font-bold text-[#1E1533]/40">{u.firstName?.charAt(0)}{u.lastName?.charAt(0)}</div>
+                      <span className="font-semibold text-[#1E1533] text-xs">{u.firstName} {u.lastName}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-3.5 text-xs text-[#1E1533]/40">{u.email}</td>
+                  <td className="px-6 py-3.5 text-xs text-[#1E1533]/40">{u.phone}</td>
+                  <td className="px-6 py-3.5"><span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${u.emailVerified ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-500"}`}>{u.emailVerified ? "Verified" : "Pending"}</span></td>
+                  <td className="px-6 py-3.5 text-xs text-[#1E1533]/40">{u._count?.orders || 0}</td>
+                  <td className="px-6 py-3.5 text-[10px] text-[#1E1533]/25">{new Date(u.createdAt).toLocaleDateString("en-IN")}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        {users.length === 0 && <div className="text-center py-16"><Users className="w-10 h-10 text-[#1E1533]/5 mx-auto mb-2" /><p className="text-xs text-[#1E1533]/25">No users found</p></div>}
       </div>
-    </div>
+      {totalPages > 1 && <div className="flex justify-center gap-1.5 mt-6">{Array.from({ length: totalPages }, (_, i) => (<button key={i} onClick={() => fetchUsers(i + 1, search)} className={`w-8 h-8 rounded-lg text-xs font-semibold ${page === i + 1 ? "bg-[#1E1533] text-white" : "bg-white text-[#1E1533]/30 border border-[#1E1533]/[0.04]"}`}>{i + 1}</button>))}</div>}
+    </AdminLayout>
   );
 }
