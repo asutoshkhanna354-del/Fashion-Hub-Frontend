@@ -49,7 +49,15 @@ export default function MediaUploader({ media, onChange, maxFiles = 10, label = 
     }
   }, [media, onChange, maxFiles, single]);
 
-  const handleRemove = (index: number) => {
+  const handleRemove = async (index: number) => {
+    const item = media[index];
+    if (item.url) {
+      try {
+        await adminApi.deleteFile(item.url);
+      } catch (e) {
+        console.error("Failed to delete file from R2", e);
+      }
+    }
     const updated = [...media];
     updated.splice(index, 1);
     onChange(updated);

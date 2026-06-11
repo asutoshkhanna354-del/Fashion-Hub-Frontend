@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { navLinks } from "@/data";
+import { productApi } from "@/lib/api";
 import { useCart } from "@/lib/contexts/cart-context";
 import { useWishlist } from "@/lib/contexts/wishlist-context";
 import { useAuth } from "@/lib/contexts/auth-context";
@@ -23,7 +24,24 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (searchQuery.trim().length > 1) {
+      setIsSearching(true);
+      const timer = setTimeout(() => {
+        productApi.list({ search: searchQuery, limit: "5" })
+          .then(data => setSearchResults(data.products || []))
+          .catch(() => {})
+          .finally(() => setIsSearching(false));
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchQuery]);
   const { count: cartCount } = useCart();
   const { count: wishlistCount } = useWishlist();
   const { isLoggedIn, user } = useAuth();
@@ -124,6 +142,32 @@ export default function Header() {
                 >
                   <Search className="w-4 h-4" />
                 </button>
+                {searchQuery.trim().length > 1 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-glass-lg border border-plum/5 overflow-hidden z-50">
+                    {isSearching ? (
+                      <div className="p-4 text-center text-xs text-plum/40">Searching...</div>
+                    ) : searchResults.length > 0 ? (
+                      <div className="py-2">
+                        {searchResults.map(p => (
+                          <Link key={p.id} href={`/sarees/${p.slug}`} onClick={() => { setSearchQuery(""); setIsSearchOpen(false); }} className="flex items-center gap-3 px-4 py-2 hover:bg-plum/5 transition-colors">
+                            <div className="w-10 h-10 rounded overflow-hidden bg-ivory">
+                              {p.media?.[0] && <img src={p.media[0].url} alt="" className="w-full h-full object-cover" />}
+                            </div>
+                            <div className="flex-1 min-w-0 text-left">
+                              <p className="text-sm font-medium text-plum truncate">{p.name}</p>
+                              <p className="text-xs text-plum/50">₹{p.price}</p>
+                            </div>
+                          </Link>
+                        ))}
+                        <button type="submit" onClick={() => { setIsSearchOpen(false); }} className="block w-full text-center px-4 py-3 text-xs font-semibold text-rose-gold border-t border-plum/5 hover:bg-rose-gold/5 transition-colors">
+                          View all results
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="p-4 text-center text-xs text-plum/40">No results found</div>
+                    )}
+                  </div>
+                )}
               </form>
             </div>
 

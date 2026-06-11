@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, Package, Printer, MapPin, CheckCircle, Clock, LifeBuoy } from "lucide-react";
+import { ArrowLeft, Package, Printer, MapPin, CheckCircle, Clock, LifeBuoy, Truck } from "lucide-react";
 import { orderApi } from "@/lib/api";
 
 const statusTimeline = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED"];
@@ -166,6 +166,44 @@ export default function OrderDetailPage() {
                   {addr.line2 && <p>{addr.line2}</p>}
                   <p>{addr.city}, {addr.state} - {addr.pincode}</p>
                   <p className="pt-2">{addr.phone}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Tracking Widget */}
+            {order.trackingId && (
+              <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-6 border border-indigo-100 shadow-sm">
+                <div className="flex items-center gap-2 mb-4">
+                  <Truck className="w-5 h-5 text-indigo-600" />
+                  <h3 className="text-sm font-bold text-indigo-900">Track Your Package</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="bg-white rounded-xl p-3 border border-indigo-100/50">
+                    <p className="text-[10px] uppercase font-bold text-indigo-400 mb-1">Courier Partner</p>
+                    <p className="text-sm font-semibold text-indigo-900">{order.courierName || "Standard Shipping"}</p>
+                  </div>
+                  <div className="bg-white rounded-xl p-3 border border-indigo-100/50">
+                    <p className="text-[10px] uppercase font-bold text-indigo-400 mb-1">Tracking ID (AWB)</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-bold text-indigo-900 font-mono tracking-wider">{order.trackingId}</p>
+                      <button 
+                        onClick={() => {
+                          navigator.clipboard.writeText(order.trackingId);
+                          alert("Tracking ID copied to clipboard!");
+                        }}
+                        className="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-md hover:bg-indigo-200 transition-colors"
+                      >
+                        COPY
+                      </button>
+                    </div>
+                  </div>
+                  <a 
+                    href={order.courierName?.toLowerCase().includes("delhivery") ? `https://www.delhivery.com/tracking?id=${order.trackingId}` : order.courierName?.toLowerCase().includes("bluedart") ? `https://www.bluedart.com/tracking` : `https://www.google.com/search?q=${order.courierName}+tracking`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="block w-full py-3 text-center bg-indigo-600 text-white text-xs font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200"
+                  >
+                    TRACK ON {order.courierName ? order.courierName.toUpperCase() : "COURIER WEBSITE"}
+                  </a>
                 </div>
               </div>
             )}

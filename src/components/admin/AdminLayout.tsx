@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { adminApi } from "@/lib/api";
 import {
   LayoutDashboard, Package, ShoppingBag, Layers, Users, Tag, Bell,
   Settings, Shield, LogOut, Menu, X, ChevronRight, Search,
@@ -33,13 +34,41 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [adminInfo, setAdminInfo] = useState<any>(null);
+  const [pushEnabled, setPushEnabled] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("admin_token");
     if (!token) { router.push("/admin/login/"); return; }
     const info = localStorage.getItem("admin_info");
     if (info) setAdminInfo(JSON.parse(info));
+    
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+      setPushEnabled(true);
+    }
   }, [router]);
+
+  const enablePush = async () => {
+    try {
+      if (!("Notification" in window)) return;
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") return;
+      
+      const registration = await navigator.serviceWorker.register("/sw.js");
+      const { publicKey } = await adminApi.getVapidKey();
+      
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: publicKey,
+      });
+      
+      await adminApi.subscribePush(subscription);
+      setPushEnabled(true);
+      alert("Push notifications enabled!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to enable push notifications");
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("admin_token");
@@ -138,7 +167,14 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
               <h2 className="font-display text-lg font-bold text-[#1E1533] truncate">{title}</h2>
               {subtitle && <p className="text-xs text-[#1E1533]/40 -mt-0.5 truncate">{subtitle}</p>}
             </div>
-            {actions && <div className="flex items-center gap-2">{actions}</div>}
+            <div className="flex items-center gap-2">
+              {actions}
+              {!pushEnabled && (
+                <button onClick={enablePush} className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 text-xs font-semibold transition-colors border border-amber-200/50">
+                  <Bell className="w-3.5 h-3.5" /> Enable Notifications
+                </button>
+              )}
+            </div>
           </div>
         </header>
 

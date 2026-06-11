@@ -22,12 +22,14 @@ export default function AdminOrdersPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const printRef = useRef<HTMLDivElement>(null);
 
-  const fetchOrders = (p = 1, status = statusFilter) => {
+  const fetchOrders = (p = 1, status = statusFilter, search = searchQuery) => {
     const params: Record<string, string> = { page: String(p), limit: "20" };
     if (status !== "ALL") params.status = status;
+    if (search) params.search = search;
     adminApi.orders(params).then((d) => { setOrders(d.orders); setTotalPages(d.totalPages); setPage(p); }).catch(() => {}).finally(() => setLoading(false));
   };
 
@@ -71,14 +73,29 @@ export default function AdminOrdersPage() {
 
   return (
     <AdminLayout title="Orders" subtitle={`${orders.length} orders found`}>
-      {/* Filter Tabs */}
-      <div className="flex gap-1.5 mb-6 overflow-x-auto pb-1">
-        {tabs.map((tab) => (
-          <button key={tab} onClick={() => { setStatusFilter(tab); fetchOrders(1, tab); }}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-              statusFilter === tab ? "bg-[#1E1533] text-white shadow-lg" : "bg-white text-[#1E1533]/40 hover:bg-[#F8F6F3] border border-[#1E1533]/[0.04]"
-            }`}>{tab}</button>
-        ))}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        {/* Search Bar */}
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1E1533]/30" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && fetchOrders(1, statusFilter, searchQuery)}
+            placeholder="Search by Order ID or Customer Name... (Press Enter to search)"
+            className="w-full pl-10 pr-4 py-2 bg-white border border-[#1E1533]/[0.06] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#C58F7A]/20"
+          />
+        </div>
+        
+        {/* Filter Tabs */}
+        <div className="flex gap-1.5 overflow-x-auto pb-1">
+          {tabs.map((tab) => (
+            <button key={tab} onClick={() => { setStatusFilter(tab); fetchOrders(1, tab, searchQuery); }}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                statusFilter === tab ? "bg-[#1E1533] text-white shadow-lg" : "bg-white text-[#1E1533]/40 hover:bg-[#F8F6F3] border border-[#1E1533]/[0.04]"
+              }`}>{tab}</button>
+          ))}
+        </div>
       </div>
 
       {/* Orders Table */}
@@ -187,6 +204,32 @@ export default function AdminOrdersPage() {
                         </div>
                       );
                     })}
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-[#1E1533]/[0.04]">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <div className="flex-1">
+                        <label className="text-[10px] font-bold text-[#1E1533] uppercase tracking-wider mb-1 block">Courier Name</label>
+                        <input
+                          type="text"
+                          value={selectedOrder.courierName || ""}
+                          onChange={(e) => setSelectedOrder({ ...selectedOrder, courierName: e.target.value })}
+                          onBlur={() => updateStatus(selectedOrder.id, "courierName", selectedOrder.courierName)}
+                          placeholder="e.g. Delhivery, BlueDart"
+                          className="w-full text-xs px-3 py-2 rounded-lg border border-[#1E1533]/[0.06] bg-white focus:outline-none focus:ring-1 focus:ring-[#C58F7A]/30"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-[10px] font-bold text-[#1E1533] uppercase tracking-wider mb-1 block">Tracking ID (AWB)</label>
+                        <input
+                          type="text"
+                          value={selectedOrder.trackingId || ""}
+                          onChange={(e) => setSelectedOrder({ ...selectedOrder, trackingId: e.target.value })}
+                          onBlur={() => updateStatus(selectedOrder.id, "trackingId", selectedOrder.trackingId)}
+                          placeholder="Tracking Number"
+                          className="w-full text-xs px-3 py-2 rounded-lg border border-[#1E1533]/[0.06] bg-white focus:outline-none focus:ring-1 focus:ring-[#C58F7A]/30"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 

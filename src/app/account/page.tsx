@@ -71,7 +71,12 @@ export default function AccountPage() {
         setTimeout(() => router.push("/"), 1000);
       }
     } catch (err: any) {
-      setError(err.message || "Login failed");
+      if (err.message && err.message.includes("not verified")) {
+        setStep("otp");
+        setSuccess(err.message);
+      } else {
+        setError(err.message || "Login failed");
+      }
     } finally { setLoading(false); }
   };
 

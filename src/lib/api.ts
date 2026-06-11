@@ -237,6 +237,12 @@ export const adminApi = {
   updateSettings: (data: Record<string, string>) =>
     adminRequest<any>("/api/settings", { method: "PUT", body: JSON.stringify(data) }),
 
+  // Push Notifications
+  getVapidKey: () => adminRequest<any>("/api/admin/push/vapidPublic"),
+  subscribePush: (subscription: any) =>
+    adminRequest<any>("/api/admin/push/subscribe", { method: "POST", body: JSON.stringify({ subscription }) }),
+
   // Upload
   uploadFiles,
+  deleteFile: (url: string) => adminRequest<any>("/api/upload", { method: "DELETE", body: JSON.stringify({ url }) }),
 };

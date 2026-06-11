@@ -1,18 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import { SlidersHorizontal, Search, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { productApi, sectionApi } from "@/lib/api";
 import ProductGrid from "@/components/ui/ProductGrid";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-export default function SareesPage() {
+function SareesContent() {
   const [products, setProducts] = useState<any[]>([]);
   const [sections, setSections] = useState<any[]>([]);
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchParams?.get("search") || "");
   const [selectedSection, setSelectedSection] = useState("");
   const [sort, setSort] = useState("newest");
   const [showFilters, setShowFilters] = useState(false);
@@ -97,5 +99,13 @@ export default function SareesPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function SareesPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-ivory pt-28 pb-20 text-center text-plum/50">Loading...</div>}>
+      <SareesContent />
+    </Suspense>
   );
 }
