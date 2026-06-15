@@ -23,7 +23,7 @@ export default function Footer() {
                 <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center border border-rose-gold/20">
                    <img 
                      src={settings.store_logo_url.startsWith("http") ? settings.store_logo_url : `https://Solanki-Vastra-backend.onrender.com${settings.store_logo_url}`} 
-                     alt={settings.store_name} 
+                     alt={"Solanki Vastra"} 
                      className="w-full h-full object-contain" 
                    />
                 </div>
@@ -54,10 +54,10 @@ export default function Footer() {
               )}
               <div className="flex flex-col">
                 <span className="font-display text-xl font-bold text-plum tracking-wide leading-none">
-                  {settings?.store_name?.split(" ")[0] || "NOOR"}
+                  {"SOLANKI"}
                 </span>
                 <span className="text-[9px] tracking-[0.3em] text-rose-gold font-medium uppercase">
-                  {settings?.store_name?.split(" ").slice(1).join(" ") || "SILK SAREES"}
+                  {"VASTRA"}
                 </span>
               </div>
             </a>
@@ -171,7 +171,7 @@ export default function Footer() {
       <div className="border-t border-rose-gold/10">
         <div className="container-premium py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-plum/40 text-center sm:text-left">
-            © {new Date().getFullYear()} {settings?.store_name || "Solanki Vastra"}. All rights reserved.
+            © {new Date().getFullYear()} {"Solanki Vastra"}. All rights reserved.
             Made with ♥ in India.
           </p>
 

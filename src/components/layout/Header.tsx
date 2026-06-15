@@ -97,7 +97,7 @@ export default function Header() {
                 <div className="relative w-11 h-11 transition-transform duration-500 group-hover:rotate-12">
                   <img 
                     src={settings.store_logo_url.startsWith("http") ? settings.store_logo_url : `https://Solanki-Vastra-backend.onrender.com${settings.store_logo_url}`} 
-                    alt={settings?.store_name || "Store Logo"} 
+                    alt={"Solanki Vastra"} 
                     className="w-full h-full object-contain" 
                   />
                 </div>
@@ -131,10 +131,10 @@ export default function Header() {
               )}
               <div className="flex flex-col">
                 <span className="font-display text-xl sm:text-2xl font-bold text-plum tracking-wide leading-none transition-colors group-hover:text-rose-gold">
-                  {settings?.store_name?.split(" ")[0] || "NOOR"}
+                  {"SOLANKI"}
                 </span>
                 <span className="text-[10px] sm:text-xs tracking-[0.3em] text-rose-gold font-bold uppercase -mt-1">
-                  {settings?.store_name?.split(" ").slice(1).join(" ") || "SILK SAREES"}
+                  {"VASTRA"}
                 </span>
               </div>
             </Link>
@@ -330,23 +330,23 @@ export default function Header() {
                       <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border border-rose-gold/20">
                          <img 
                            src={settings.store_logo_url.startsWith("http") ? settings.store_logo_url : `https://Solanki-Vastra-backend.onrender.com${settings.store_logo_url}`} 
-                           alt={settings.store_name} 
+                           alt={"Solanki Vastra"} 
                            className="w-full h-full object-contain" 
                          />
                       </div>
                     ) : (
                       <div className="w-8 h-8 bg-rose-gold/10 rounded-full flex items-center justify-center">
                         <span className="font-display text-sm font-bold text-rose-gold">
-                          {(settings?.store_name || "N").charAt(0)}
+                          {"S"}
                         </span>
                       </div>
                     )}
                     <div className="flex flex-col">
                       <span className="font-display text-lg font-bold text-plum leading-none">
-                        {settings?.store_name?.split(" ")[0] || "NOOR"}
+                        {"SOLANKI"}
                       </span>
                       <span className="text-[8px] tracking-[0.2em] text-rose-gold font-bold uppercase mt-0.5">
-                        {settings?.store_name?.split(" ").slice(1).join(" ") || "SILK SAREES"}
+                        {"VASTRA"}
                       </span>
                     </div>
                   </div>

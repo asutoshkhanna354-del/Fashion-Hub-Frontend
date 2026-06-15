@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
     if (res.ok) {
       const data = await res.json();
       const settings = data.settings || {};
-      const storeName = settings.store_name || "Solanki Vastra";
+      const storeName = "Solanki Vastra";
       const logoUrl = settings.store_logo_url || "/favicon.ico";
 
       return {

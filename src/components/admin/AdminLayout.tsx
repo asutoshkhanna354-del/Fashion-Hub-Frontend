@@ -101,8 +101,8 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
         <div className="px-6 py-5 border-b border-white/[0.06]">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="font-display text-[17px] font-bold text-white tracking-wide">NOOR</h1>
-              <p className="text-[9px] text-[#C58F7A] tracking-[3px] font-medium -mt-0.5">SILK SAREES</p>
+              <h1 className="font-display text-[17px] font-bold text-white tracking-wide">SOLANKI</h1>
+              <p className="text-[9px] text-[#C58F7A] tracking-[3px] font-medium -mt-0.5">VASTRA</p>
             </div>
             <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-white/40 hover:text-white">
               <X className="w-5 h-5" />
