@@ -11,7 +11,7 @@ import Footer from "@/components/layout/Footer";
 import { useState } from "react";
 import { promoApi } from "@/lib/api";
 
-const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export default function CartPage() {
   const { items, total, count, loading, updateQuantity, removeFromCart } = useCart();
@@ -163,3 +163,4 @@ export default function CartPage() {
     </>
   );
 }
+

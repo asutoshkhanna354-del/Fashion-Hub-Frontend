@@ -8,7 +8,7 @@ import { sectionApi } from "@/lib/api";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export default function CollectionsPage() {
   const [sections, setSections] = useState<any[]>([]);
@@ -69,3 +69,4 @@ export default function CollectionsPage() {
     </>
   );
 }
+

@@ -7,7 +7,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import MediaUploader from "@/components/admin/MediaUploader";
 import Image from "next/image";
 
-const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -19,7 +19,7 @@ export default function AdminProductsPage() {
   const [form, setForm] = useState({
     name: "", description: "", fabric: "", price: "", originalPrice: "",
     discountPercent: "0", features: "", sectionId: "", stock: "0",
-    isBestSeller: false, isNewArrival: false, media: [] as any[],
+    isBestSeller: false, isNewArrival: false, media: [] as any[], videoUrl: "",
   });
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function AdminProductsPage() {
   const resetForm = () => setForm({
     name: "", description: "", fabric: "", price: "", originalPrice: "",
     discountPercent: "0", features: "", sectionId: sections[0]?.id || "", stock: "0",
-    isBestSeller: false, isNewArrival: false, media: [],
+    isBestSeller: false, isNewArrival: false, media: [], videoUrl: "",
   });
 
   const handleSave = async () => {
@@ -52,7 +52,7 @@ export default function AdminProductsPage() {
       price: String(p.price), originalPrice: String(p.originalPrice),
       discountPercent: String(p.discountPercent), features: p.features || "",
       sectionId: p.sectionId, stock: String(p.stock),
-      isBestSeller: p.isBestSeller, isNewArrival: p.isNewArrival, media,
+      isBestSeller: p.isBestSeller, isNewArrival: p.isNewArrival, media, videoUrl: p.videoUrl || "",
     });
     setEditing(p); setShowForm(true);
   };
@@ -133,6 +133,10 @@ export default function AdminProductsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div><label className={labelClass}>Stock Quantity</label><input value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} type="number" className={fieldClass} /></div>
                   <div><label className={labelClass}>Features (comma-separated)</label><input value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} placeholder="Handwoven, Zari work" className={fieldClass} /></div>
+                </div>
+                <div>
+                  <label className={labelClass}>External Video URL (Optional)</label>
+                  <input value={form.videoUrl} onChange={(e) => setForm({ ...form, videoUrl: e.target.value })} placeholder="e.g. YouTube or direct MP4 link" className={fieldClass} />
                 </div>
                 <div className="flex gap-6">
                   <label className="flex items-center gap-2.5 text-sm text-[#1E1533]/60 cursor-pointer select-none">
@@ -233,3 +237,4 @@ export default function AdminProductsPage() {
     </AdminLayout>
   );
 }
+

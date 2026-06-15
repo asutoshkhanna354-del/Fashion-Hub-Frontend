@@ -179,7 +179,7 @@ export default function AdminOrdersPage() {
               <div ref={printRef} className="p-6 space-y-6">
                 {/* Store Header (for print) */}
                 <div className="header hidden print:block">
-                  <h1 style={{ fontSize: "24px", fontWeight: 700 }}>ADITI FASHION HUB</h1>
+                  <h1 style={{ fontSize: "24px", fontWeight: 700 }}>Solanki Vastra</h1>
                   <p>Invoice #{selectedOrder.orderNumber}</p>
                 </div>
 
@@ -319,3 +319,4 @@ export default function AdminOrdersPage() {
     </AdminLayout>
   );
 }
+

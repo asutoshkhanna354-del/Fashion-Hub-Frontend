@@ -1,12 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import ProductCard from "@/components/ui/ProductCard";
-import { products } from "@/data";
+import { useEffect, useState } from "react";
+import { productApi } from "@/lib/api";
 
 export default function BestSellersSection() {
-  const bestSellers = products.filter((p) => p.isBestSeller);
+  const [bestSellers, setBestSellers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    productApi.list({ bestSeller: "true", limit: "6" })
+      .then((data) => {
+        if (data.status) {
+          setBestSellers(data.products);
+        }
+      })
+      .catch((err) => console.error("Failed to fetch best sellers", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (!loading && bestSellers.length === 0) {
+    return null; // Don't show the section if no best sellers exist
+  }
 
   return (
     <section className="py-16 sm:py-20 lg:py-24 bg-white" aria-label="Best Sellers">
@@ -54,11 +71,17 @@ export default function BestSellersSection() {
         </motion.div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-5 lg:gap-6">
-          {bestSellers.map((product, index) => (
-            <ProductCard key={product.id} product={product} index={index} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center items-center h-48">
+            <Loader2 className="w-8 h-8 animate-spin text-plum/30" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-5 lg:gap-6">
+            {bestSellers.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -7,8 +7,10 @@ import {
   Mail,
 } from "lucide-react";
 import { footerLinks } from "@/data";
+import { useSettings } from "@/lib/contexts/settings-context";
 
 export default function Footer() {
+  const { settings } = useSettings();
   return (
     <footer className="bg-white border-t border-rose-gold/10">
       {/* Main Footer */}
@@ -17,35 +19,45 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <a href="/" className="flex items-center gap-2 mb-5">
-              <svg
-                width="36"
-                height="36"
-                viewBox="0 0 44 44"
-                fill="none"
-              >
-                <circle cx="22" cy="22" r="20" stroke="#C58F7A" strokeWidth="1.5" fill="none" />
-                <path
-                  d="M22 8c-2 4-6 8-6 14s4 10 6 14c2-4 6-8 6-14s-4-10-6-14z"
-                  fill="#C58F7A"
-                  opacity="0.15"
-                  stroke="#C58F7A"
-                  strokeWidth="1"
-                />
-                <path
-                  d="M10 22c4-2 8-6 14-6s10 4 14 6c-4 2-8 6-14 6s-10-4-14-6z"
-                  fill="#B89CCF"
-                  opacity="0.15"
-                  stroke="#B89CCF"
-                  strokeWidth="1"
-                />
-                <circle cx="22" cy="22" r="3" fill="#C58F7A" />
-              </svg>
+              {settings?.store_logo_url ? (
+                <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center border border-rose-gold/20">
+                   <img 
+                     src={settings.store_logo_url.startsWith("http") ? settings.store_logo_url : `https://Solanki-Vastra-backend.onrender.com${settings.store_logo_url}`} 
+                     alt={settings.store_name} 
+                     className="w-full h-full object-contain" 
+                   />
+                </div>
+              ) : (
+                <svg
+                  width="36"
+                  height="36"
+                  viewBox="0 0 44 44"
+                  fill="none"
+                >
+                  <circle cx="22" cy="22" r="20" stroke="#C58F7A" strokeWidth="1.5" fill="none" />
+                  <path
+                    d="M22 8c-2 4-6 8-6 14s4 10 6 14c2-4 6-8 6-14s-4-10-6-14z"
+                    fill="#C58F7A"
+                    opacity="0.15"
+                    stroke="#C58F7A"
+                    strokeWidth="1"
+                  />
+                  <path
+                    d="M10 22c4-2 8-6 14-6s10 4 14 6c-4 2-8 6-14 6s-10-4-14-6z"
+                    fill="#B89CCF"
+                    opacity="0.15"
+                    stroke="#B89CCF"
+                    strokeWidth="1"
+                  />
+                  <circle cx="22" cy="22" r="3" fill="#C58F7A" />
+                </svg>
+              )}
               <div className="flex flex-col">
                 <span className="font-display text-xl font-bold text-plum tracking-wide leading-none">
-                  ADITI
+                  {settings?.store_name?.split(" ")[0] || "NOOR"}
                 </span>
                 <span className="text-[9px] tracking-[0.3em] text-rose-gold font-medium uppercase">
-                  Fashion Hub
+                  {settings?.store_name?.split(" ").slice(1).join(" ") || "SILK SAREES"}
                 </span>
               </div>
             </a>
@@ -56,18 +68,24 @@ export default function Footer() {
 
             {/* Contact Info */}
             <div className="space-y-3 text-sm text-plum/60">
-              <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 mt-0.5 text-rose-gold flex-shrink-0" />
-                <span>Fashion District, Mumbai, Maharashtra 400001</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-rose-gold flex-shrink-0" />
-                <span>+91 98765 43210</span>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-rose-gold flex-shrink-0" />
-                <span>hello@aditifashionhub.com</span>
-              </div>
+              {settings?.store_address && (
+                <div className="flex items-start gap-2.5">
+                  <MapPin className="w-4 h-4 mt-0.5 text-rose-gold flex-shrink-0" />
+                  <span className="whitespace-pre-line">{settings.store_address}</span>
+                </div>
+              )}
+              {settings?.store_phone && (
+                <div className="flex items-center gap-2.5">
+                  <Phone className="w-4 h-4 text-rose-gold flex-shrink-0" />
+                  <span>{settings.store_phone}</span>
+                </div>
+              )}
+              {settings?.store_email && (
+                <div className="flex items-center gap-2.5">
+                  <Mail className="w-4 h-4 text-rose-gold flex-shrink-0" />
+                  <span>{settings.store_email}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -153,7 +171,7 @@ export default function Footer() {
       <div className="border-t border-rose-gold/10">
         <div className="container-premium py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-plum/40 text-center sm:text-left">
-            © {new Date().getFullYear()} Aditi Fashion Hub. All rights reserved.
+            © {new Date().getFullYear()} {settings?.store_name || "Solanki Vastra"}. All rights reserved.
             Made with ♥ in India.
           </p>
 
@@ -224,3 +242,4 @@ export default function Footer() {
     </footer>
   );
 }
+

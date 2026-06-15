@@ -7,18 +7,30 @@ import { motion, AnimatePresence } from "framer-motion";
 import { adminApi } from "@/lib/api";
 import {
   LayoutDashboard, Package, ShoppingBag, Layers, Users, Tag, Bell,
-  Settings, Shield, LogOut, Menu, X, ChevronRight, Search,
+  Settings, Shield, LogOut, Menu, X, ChevronRight, Search, MapPin,
+  Folders, ShoppingCart, MessageCircle
 } from "lucide-react";
 
 const navItems = [
-  { href: "/admin/", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/admin/orders/", icon: Package, label: "Orders" },
-  { href: "/admin/products/", icon: ShoppingBag, label: "Products" },
-  { href: "/admin/sections/", icon: Layers, label: "Sections" },
-  { href: "/admin/users/", icon: Users, label: "Customers" },
-  { href: "/admin/promos/", icon: Tag, label: "Promo Codes" },
-  { href: "/admin/notifications/", icon: Bell, label: "Notifications" },
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/products", label: "Products", icon: ShoppingBag },
+  { href: "/admin/sections", label: "Categories & Occasions", icon: Folders },
+  { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
+  { href: "/admin/users", label: "Customers", icon: Users },
+  { href: "/admin/promos", label: "Promo Codes", icon: Tag },
+  { href: "/admin/messages", label: "Messages", icon: MessageCircle },
+];
+
+const settingsItems = [
   { href: "/admin/settings/", icon: Settings, label: "Store Settings" },
+  { href: "/admin/settings/hero/", icon: Layers, label: "Hero Banner" },
+  { href: "/admin/settings/promo-banners/", icon: Layers, label: "Promo Banners" },
+  { href: "/admin/settings/policies/", icon: Shield, label: "Store Policies" },
+  { href: "/admin/settings/blog/", icon: Layers, label: "Blog & Journal" },
+  { href: "/admin/settings/stores/", icon: MapPin, label: "Boutiques" },
+  { href: "/admin/settings/bestsellers/", icon: ShoppingBag, label: "Best Sellers" },
+  { href: "/admin/settings/story/", icon: Layers, label: "Homepage Story" },
+  { href: "/admin/notifications/", icon: Bell, label: "Notifications" },
   { href: "/admin/admins/", icon: Shield, label: "Admin Team" },
 ];
 
@@ -84,13 +96,13 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
   return (
     <div className="min-h-screen bg-[#F8F6F3] flex">
       {/* Sidebar */}
-      <aside className={`fixed lg:sticky top-0 left-0 h-screen w-[260px] bg-[#1E1533] z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside className={`flex-shrink-0 fixed lg:sticky top-0 left-0 h-screen w-[260px] bg-[#1E1533] z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         {/* Brand */}
         <div className="px-6 py-5 border-b border-white/[0.06]">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="font-display text-[17px] font-bold text-white tracking-wide">ADITI</h1>
-              <p className="text-[9px] text-[#C58F7A] tracking-[3px] font-medium -mt-0.5">FASHION HUB</p>
+              <h1 className="font-display text-[17px] font-bold text-white tracking-wide">NOOR</h1>
+              <p className="text-[9px] text-[#C58F7A] tracking-[3px] font-medium -mt-0.5">SILK SAREES</p>
             </div>
             <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-white/40 hover:text-white">
               <X className="w-5 h-5" />
@@ -102,6 +114,29 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
         <nav className="flex-1 py-3 overflow-auto px-3">
           <p className="text-[10px] font-semibold text-white/20 uppercase tracking-wider px-3 mb-2 mt-1">Menu</p>
           {navItems.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 mb-0.5 ${
+                  active
+                    ? "bg-[#C58F7A]/15 text-[#C58F7A]"
+                    : "text-white/45 hover:text-white/80 hover:bg-white/[0.04]"
+                }`}
+              >
+                <item.icon className={`w-[18px] h-[18px] ${active ? "text-[#C58F7A]" : ""}`} />
+                {item.label}
+                {active && (
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C58F7A]" />
+                )}
+              </Link>
+            );
+          })}
+
+          <p className="text-[10px] font-semibold text-white/20 uppercase tracking-wider px-3 mb-2 mt-6">Settings</p>
+          {settingsItems.map((item) => {
             const active = isActive(item.href);
             return (
               <Link

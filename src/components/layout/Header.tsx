@@ -18,15 +18,19 @@ import { productApi } from "@/lib/api";
 import { useCart } from "@/lib/contexts/cart-context";
 import { useWishlist } from "@/lib/contexts/wishlist-context";
 import { useAuth } from "@/lib/contexts/auth-context";
+import { useSettings } from "@/lib/contexts/settings-context";
+import CartDrawer from "../ui/CartDrawer";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
+  const { settings } = useSettings();
 
   useEffect(() => {
     if (searchQuery.trim().length > 1) {
@@ -88,39 +92,49 @@ export default function Header() {
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="relative">
-                <svg
-                  width="44"
-                  height="44"
-                  viewBox="0 0 44 44"
-                  fill="none"
-                  className="transition-transform duration-500 group-hover:rotate-12"
-                >
-                  <circle cx="22" cy="22" r="20" stroke="#C58F7A" strokeWidth="1.5" fill="none" />
-                  <path
-                    d="M22 8c-2 4-6 8-6 14s4 10 6 14c2-4 6-8 6-14s-4-10-6-14z"
-                    fill="#C58F7A"
-                    opacity="0.15"
-                    stroke="#C58F7A"
-                    strokeWidth="1"
+            <Link href="/" className="flex items-center gap-2 mr-auto lg:mx-auto group">
+              {settings?.store_logo_url ? (
+                <div className="relative w-11 h-11 transition-transform duration-500 group-hover:rotate-12">
+                  <img 
+                    src={settings.store_logo_url.startsWith("http") ? settings.store_logo_url : `https://Solanki-Vastra-backend.onrender.com${settings.store_logo_url}`} 
+                    alt={settings?.store_name || "Store Logo"} 
+                    className="w-full h-full object-contain" 
                   />
-                  <path
-                    d="M10 22c4-2 8-6 14-6s10 4 14 6c-4 2-8 6-14 6s-10-4-14-6z"
-                    fill="#B89CCF"
-                    opacity="0.15"
-                    stroke="#B89CCF"
-                    strokeWidth="1"
-                  />
-                  <circle cx="22" cy="22" r="3" fill="#C58F7A" />
-                </svg>
-              </div>
+                </div>
+              ) : (
+                <div className="relative">
+                  <svg
+                    width="44"
+                    height="44"
+                    viewBox="0 0 44 44"
+                    fill="none"
+                    className="transition-transform duration-500 group-hover:rotate-12"
+                  >
+                    <circle cx="22" cy="22" r="20" stroke="#C58F7A" strokeWidth="1.5" fill="none" />
+                    <path
+                      d="M22 8c-2 4-6 8-6 14s4 10 6 14c2-4 6-8 6-14s-4-10-6-14z"
+                      fill="#C58F7A"
+                      opacity="0.15"
+                      stroke="#C58F7A"
+                      strokeWidth="1"
+                    />
+                    <path
+                      d="M10 22c4-2 8-6 14-6s10 4 14 6c-4 2-8 6-14 6s-10-4-14-6z"
+                      fill="#B89CCF"
+                      opacity="0.15"
+                      stroke="#B89CCF"
+                      strokeWidth="1"
+                    />
+                    <circle cx="22" cy="22" r="3" fill="#C58F7A" />
+                  </svg>
+                </div>
+              )}
               <div className="flex flex-col">
-                <span className="font-display text-xl sm:text-2xl font-bold text-plum tracking-wide leading-none">
-                  ADITI
+                <span className="font-display text-xl sm:text-2xl font-bold text-plum tracking-wide leading-none transition-colors group-hover:text-rose-gold">
+                  {settings?.store_name?.split(" ")[0] || "NOOR"}
                 </span>
-                <span className="text-[10px] sm:text-xs tracking-[0.3em] text-rose-gold font-medium uppercase">
-                  Fashion Hub
+                <span className="text-[10px] sm:text-xs tracking-[0.3em] text-rose-gold font-bold uppercase -mt-1">
+                  {settings?.store_name?.split(" ").slice(1).join(" ") || "SILK SAREES"}
                 </span>
               </div>
             </Link>
@@ -149,7 +163,7 @@ export default function Header() {
                     ) : searchResults.length > 0 ? (
                       <div className="py-2">
                         {searchResults.map(p => (
-                          <Link key={p.id} href={`/sarees/${p.slug}`} onClick={() => { setSearchQuery(""); setIsSearchOpen(false); }} className="flex items-center gap-3 px-4 py-2 hover:bg-plum/5 transition-colors">
+                          <Link key={p.id} href={`/sarees/${p.slug || p.id}`} onClick={() => { setSearchQuery(""); setIsSearchOpen(false); }} className="flex items-center gap-3 px-4 py-2 hover:bg-plum/5 transition-colors">
                             <div className="w-10 h-10 rounded overflow-hidden bg-ivory">
                               {p.media?.[0] && <img src={p.media[0].url} alt="" className="w-full h-full object-cover" />}
                             </div>
@@ -218,8 +232,8 @@ export default function Header() {
               </Link>
 
               {/* Cart */}
-              <Link
-                href="/cart/"
+              <button
+                onClick={(e) => { e.preventDefault(); setIsCartOpen(true); }}
                 className="relative p-2 text-plum hover:text-rose-gold transition-colors group"
                 aria-label="Cart"
               >
@@ -232,7 +246,7 @@ export default function Header() {
                 <span className="hidden sm:block text-[10px] text-plum/60 mt-0.5 text-center">
                   Cart
                 </span>
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -312,14 +326,29 @@ export default function Header() {
               <div className="p-6">
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-rose-gold/10 rounded-full flex items-center justify-center">
-                      <span className="font-display text-sm font-bold text-rose-gold">
-                        A
+                    {settings?.store_logo_url ? (
+                      <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border border-rose-gold/20">
+                         <img 
+                           src={settings.store_logo_url.startsWith("http") ? settings.store_logo_url : `https://Solanki-Vastra-backend.onrender.com${settings.store_logo_url}`} 
+                           alt={settings.store_name} 
+                           className="w-full h-full object-contain" 
+                         />
+                      </div>
+                    ) : (
+                      <div className="w-8 h-8 bg-rose-gold/10 rounded-full flex items-center justify-center">
+                        <span className="font-display text-sm font-bold text-rose-gold">
+                          {(settings?.store_name || "N").charAt(0)}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex flex-col">
+                      <span className="font-display text-lg font-bold text-plum leading-none">
+                        {settings?.store_name?.split(" ")[0] || "NOOR"}
+                      </span>
+                      <span className="text-[8px] tracking-[0.2em] text-rose-gold font-bold uppercase mt-0.5">
+                        {settings?.store_name?.split(" ").slice(1).join(" ") || "SILK SAREES"}
                       </span>
                     </div>
-                    <span className="font-display text-lg font-bold text-plum">
-                      ADITI
-                    </span>
                   </div>
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -382,6 +411,9 @@ export default function Header() {
           </>
         )}
       </AnimatePresence>
+
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
 }
+

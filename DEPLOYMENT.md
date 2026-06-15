@@ -1,6 +1,6 @@
-# Aditi Fashion Hub - Deployment Guide
+# Solanki Vastra - Deployment Guide
 
-This guide contains the instructions and environment variables required to deploy the Aditi Fashion Hub application. The application consists of a Next.js frontend (to be deployed on Netlify) and a Node.js/Express backend (to be deployed on Render).
+This guide contains the instructions and environment variables required to deploy the Solanki Vastra application. The application consists of a Next.js frontend (to be deployed on Netlify) and a Node.js/Express backend (to be deployed on Render).
 
 ## 1. Backend Deployment (Render)
 
@@ -12,7 +12,7 @@ This guide contains the instructions and environment variables required to deplo
 
 ### Deployment Steps
 1. Create a new **Web Service** on Render connected to your Git repository.
-2. Set the root directory to `aditi-fashion-hub-backend` (or wherever the backend code resides).
+2. Set the root directory to `Solanki-Vastra-sarees-backend` (or wherever the backend code resides).
 3. Set the Environment to `Node`.
 4. Build Command: `npm install && npx prisma generate && npx tsc`
 5. Start Command: `npm start`
@@ -41,7 +41,7 @@ After deploying, the database needs to be synced. You can run `npx prisma db pus
 
 ### Deployment Steps
 1. Create a new site on Netlify from your Git repository.
-2. Set the base directory to `aditi-fashion-hub` (or wherever the frontend code resides).
+2. Set the base directory to `Solanki-Vastra-sarees` (or wherever the frontend code resides).
 3. Build Command: `npm run build`
 4. Publish directory: `.next` (Netlify will automatically detect Next.js and use the Essential Next.js plugin).
 5. Add the following Environment Variables in the Netlify dashboard:
@@ -67,5 +67,6 @@ Once both frontend and backend are deployed:
 npx ts-node src/seed.ts
 ```
 Default credentials from seed:
-- Username: `Aditi_Admin`
-- Password: `Aditi@Fashion`
+- Username: `Noor_Admin`
+- Password: `Noor@Silks`
+

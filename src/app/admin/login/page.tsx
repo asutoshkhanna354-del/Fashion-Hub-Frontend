@@ -48,7 +48,7 @@ export default function AdminLoginPage() {
               <Lock className="w-7 h-7 text-white" />
             </div>
             <h1 className="font-display text-2xl font-bold text-white">Welcome Back</h1>
-            <p className="text-white/30 text-sm mt-1">Sign in to Aditi Fashion Hub Admin</p>
+            <p className="text-white/30 text-sm mt-1">Sign in to Solanki Vastra Admin</p>
           </div>
 
           {error && (
@@ -107,9 +107,10 @@ export default function AdminLoginPage() {
         </div>
 
         <p className="text-center text-white/15 text-[10px] mt-5">
-          © {new Date().getFullYear()} Aditi Fashion Hub • Admin Portal
+          © {new Date().getFullYear()} Solanki Vastra • Admin Portal
         </p>
       </motion.div>
     </main>
   );
 }
+

@@ -108,7 +108,7 @@ function PaymentStatusContent() {
                 {/* Printable Receipt Area */}
                 <div ref={printRef} className="space-y-6">
                   <div className="header hidden print:block">
-                    <h1 style={{ fontSize: "24px", fontWeight: 700 }}>ADITI FASHION HUB</h1>
+                    <h1 style={{ fontSize: "24px", fontWeight: 700 }}>Solanki Vastra</h1>
                     <p>Order Receipt • #{order.orderNumber}</p>
                   </div>
 
@@ -195,3 +195,4 @@ export default function PaymentStatusPage() {
     </Suspense>
   );
 }
+

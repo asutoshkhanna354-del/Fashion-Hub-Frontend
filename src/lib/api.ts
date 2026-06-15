@@ -23,7 +23,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, { cache: "no-store", ...options, headers });
   const data = await response.json();
 
   if (!response.ok) {
@@ -46,7 +46,7 @@ async function adminRequest<T>(endpoint: string, options: RequestInit = {}): Pro
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await fetch(url, { ...options, headers });
+  const response = await fetch(url, { cache: "no-store", ...options, headers });
   const data = await response.json();
 
   if (!response.ok) {
@@ -99,13 +99,17 @@ export const productApi = {
     return request<any>(`/api/products${query}`);
   },
   get: (id: string) => request<any>(`/api/products/${id}`),
+  getReviews: (id: string) => request<any>(`/api/reviews/product/${id}`),
 };
 
 // ============================================
 // SECTION API
 // ============================================
 export const sectionApi = {
-  list: () => request<any>("/api/sections"),
+  list: (params?: Record<string, string>) => {
+    const query = params ? "?" + new URLSearchParams(params).toString() : "";
+    return request<any>(`/api/sections${query}`);
+  },
   get: (id: string) => request<any>(`/api/sections/${id}`),
 };
 
@@ -165,6 +169,14 @@ export const promoApi = {
 // ============================================
 export const settingsApi = {
   getPublic: () => request<any>("/api/settings/public"),
+};
+
+// ============================================
+// MESSAGES API (public)
+// ============================================
+export const messageApi = {
+  create: (data: { name: string; email: string; message: string }) =>
+    request<any>("/api/messages", { method: "POST", body: JSON.stringify(data) }),
 };
 
 // ============================================
@@ -242,7 +254,38 @@ export const adminApi = {
   subscribePush: (subscription: any) =>
     adminRequest<any>("/api/admin/push/subscribe", { method: "POST", body: JSON.stringify({ subscription }) }),
 
+  // Messages
+  listMessages: () => adminRequest<any>("/api/messages"),
+  deleteMessage: (id: string) => adminRequest<any>(`/api/messages/${id}`, { method: "DELETE" }),
+
+  // Blog
+  createBlogPost: (data: any) => adminRequest<any>("/api/blog", { method: "POST", body: JSON.stringify(data) }),
+  updateBlogPost: (id: string, data: any) => adminRequest<any>(`/api/blog/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  deleteBlogPost: (id: string) => adminRequest<any>(`/api/blog/${id}`, { method: "DELETE" }),
+
   // Upload
   uploadFiles,
   deleteFile: (url: string) => adminRequest<any>("/api/upload", { method: "DELETE", body: JSON.stringify({ url }) }),
 };
+
+// ============================================
+// UPLOAD API
+// ============================================
+export const uploadApi = {
+  uploadFile: async (file: File): Promise<string> => {
+    const data = await uploadFiles([file]);
+    if (data && data.files && data.files.length > 0) {
+      return data.files[0].url;
+    }
+    throw new Error("Upload failed to return URL");
+  },
+  uploadFiles,
+};
+
+// ============================================
+// BLOG API
+// ============================================
+export const blogApi = {
+  list: () => request<any>("/api/blog"),
+};
+

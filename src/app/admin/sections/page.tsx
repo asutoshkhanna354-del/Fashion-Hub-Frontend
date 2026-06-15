@@ -11,7 +11,7 @@ export default function AdminSectionsPage() {
   const [sections, setSections] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<any>(null);
-  const [form, setForm] = useState({ name: "", description: "", sortOrder: "0", image: "" });
+  const [form, setForm] = useState({ name: "", description: "", sortOrder: "0", image: "", videoUrl: "", type: "collection" });
   const [imageMedia, setImageMedia] = useState<any[]>([]);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function AdminSectionsPage() {
       else await adminApi.createSection(data);
       const d = await sectionApi.list(); setSections(d.sections);
       setShowForm(false); setEditing(null);
-      setForm({ name: "", description: "", sortOrder: "0", image: "" });
+      setForm({ name: "", description: "", sortOrder: "0", image: "", videoUrl: "", type: "collection" });
       setImageMedia([]);
     } catch (e: any) { alert(e.message || "Error"); }
   };
@@ -44,7 +44,7 @@ export default function AdminSectionsPage() {
       title="Sections"
       subtitle={`${sections.length} collection categories`}
       actions={
-        <button onClick={() => { setForm({ name: "", description: "", sortOrder: "0", image: "" }); setImageMedia([]); setEditing(null); setShowForm(true); }} className="px-4 py-2.5 bg-gradient-to-r from-[#C58F7A] to-[#B89CCF] text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-[#C58F7A]/20">
+        <button onClick={() => { setForm({ name: "", description: "", sortOrder: "0", image: "", videoUrl: "", type: "collection" }); setImageMedia([]); setEditing(null); setShowForm(true); }} className="px-4 py-2.5 bg-gradient-to-r from-[#C58F7A] to-[#B89CCF] text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-[#C58F7A]/20">
           <Plus className="w-3.5 h-3.5" /> Add Section
         </button>
       }
@@ -61,15 +61,26 @@ export default function AdminSectionsPage() {
               <div className="p-6 space-y-4">
                 <div>
                   <label className={labelClass}>Section Name</label>
-                  <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Silk Sarees" className={fieldClass} />
+                  <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Silk Sarees or Diwali Special" className={fieldClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Type</label>
+                  <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} className={fieldClass}>
+                    <option value="collection">Shop By Collection</option>
+                    <option value="occasion">Shop By Occasion (Festive)</option>
+                  </select>
                 </div>
                 <div>
                   <label className={labelClass}>Description</label>
-                  <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Short description for this collection..." rows={2} className={`${fieldClass} resize-none`} />
+                  <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Short description..." rows={2} className={`${fieldClass} resize-none`} />
                 </div>
                 <div>
                   <label className={labelClass}>Sort Order</label>
                   <input value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: e.target.value })} type="number" className={fieldClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>External Video URL (Optional)</label>
+                  <input value={form.videoUrl} onChange={(e) => setForm({ ...form, videoUrl: e.target.value })} placeholder="e.g. YouTube or direct MP4 link" className={fieldClass} />
                 </div>
 
                 {/* Cover Image */}
@@ -117,7 +128,7 @@ export default function AdminSectionsPage() {
               </div>
               <div className="flex gap-1">
                 <button onClick={() => {
-                  setForm({ name: s.name, description: s.description || "", sortOrder: String(s.sortOrder), image: s.image || "" });
+                  setForm({ name: s.name, description: s.description || "", sortOrder: String(s.sortOrder), image: s.image || "", videoUrl: s.videoUrl || "", type: s.type || "collection" });
                   setImageMedia(s.image ? [{ url: s.image, type: "image" as const }] : []);
                   setEditing(s); setShowForm(true);
                 }} className="p-2 hover:bg-blue-50 rounded-lg transition-colors">

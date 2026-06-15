@@ -15,7 +15,7 @@ const faqs = [
   { q: "How do I track my order?", a: "Once shipped, you'll receive tracking details via email. You can also check your order status in the 'My Orders' section." },
   { q: "Do you ship internationally?", a: "Currently, we ship only within India. International shipping will be available soon!" },
   { q: "How do I use a promo code?", a: "Enter your promo code in the cart page before checkout. Valid codes will automatically apply the discount." },
-  { q: "How can I contact customer support?", a: "You can reach us via email at hello@aditifashionhub.com, phone at +91 98765 43210, or WhatsApp. We're available Mon-Sat, 10am-7pm." },
+  { q: "How can I contact customer support?", a: "You can reach us via email at hello@solankivastra.com, phone at +91 98765 43210, or WhatsApp. We're available Mon-Sat, 10am-7pm." },
 ];
 
 export default function FAQPage() {
@@ -46,3 +46,4 @@ export default function FAQPage() {
     </div></main><Footer /></>
   );
 }
+

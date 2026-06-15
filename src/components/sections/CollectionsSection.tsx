@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { sectionApi } from "@/lib/api";
 
-const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -33,7 +33,7 @@ export default function CollectionsSection() {
 
   useEffect(() => {
     sectionApi.list()
-      .then((d) => setSections((d.sections || []).slice(0, 8))) // Limit to 8 for the homepage grid
+      .then((d) => setSections((d.sections || []).filter((s: any) => s.type !== "occasion").slice(0, 8))) // Limit to 8 for the homepage grid
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -124,10 +124,10 @@ export default function CollectionsSection() {
               </div>
 
               {/* Collection Name */}
-              <h3 className="font-display text-xs sm:text-sm font-bold text-[#1E1533] group-hover:text-[#C58F7A] transition-colors duration-300 leading-tight">
+              <h3 className="font-display text-xs sm:text-sm font-bold text-gray-900 group-hover:text-rose-gold transition-colors duration-300 leading-tight">
                 {section.name}
               </h3>
-              <p className="text-[10px] sm:text-xs text-[#1E1533]/40 mt-0.5 font-medium">
+              <p className="text-[10px] sm:text-xs text-gray-600 mt-0.5 font-medium">
                 {section._count?.products || 0} items
               </p>
             </motion.a>
@@ -137,3 +137,4 @@ export default function CollectionsSection() {
     </section>
   );
 }
+

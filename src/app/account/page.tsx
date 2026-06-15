@@ -189,7 +189,7 @@ export default function AccountPage() {
                     {isLogin ? "Welcome Back" : "Create Account"}
                   </h1>
                   <p className="text-plum/50 text-sm mt-1">
-                    {isLogin ? "Sign in to your Aditi Fashion Hub account" : "Join us for exclusive collections"}
+                    {isLogin ? "Sign in to your Solanki Vastra account" : "Join us for exclusive collections"}
                   </p>
                 </div>
 
@@ -397,4 +397,5 @@ export default function AccountPage() {
     </>
   );
 }
+
 

@@ -11,8 +11,13 @@ import { useWishlist } from "@/lib/contexts/wishlist-context";
 import { useAuth } from "@/lib/contexts/auth-context";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ReviewsSection from "@/components/sections/ReviewsSection";
+import UpsellsSection from "@/components/sections/UpsellsSection";
+import dynamic from "next/dynamic";
 
-const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
+const ReactPlayer = dynamic(() => import("react-player"), { ssr: false }) as any;
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -25,11 +30,20 @@ export default function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+
+  const [similarProducts, setSimilarProducts] = useState<any[]>([]);
 
   useEffect(() => {
     if (id) {
       productApi.get(id as string)
-        .then((data) => setProduct(data.product))
+        .then((data) => {
+          setProduct(data.product);
+          // Fetch similar products for Upsells
+          productApi.list({ sectionId: data.product.sectionId, limit: "4" })
+            .then(sim => setSimilarProducts(sim.products.filter((p: any) => p.id !== data.product.id)))
+            .catch(() => {});
+        })
         .catch(() => {})
         .finally(() => setLoading(false));
     }
@@ -132,16 +146,33 @@ export default function ProductDetailPage() {
                 <button onClick={handleWishlist} className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors">
                   <Heart className={`w-5 h-5 ${isWishlisted(product.id) ? "fill-rose-gold text-rose-gold" : "text-plum/50"}`} />
                 </button>
-              </div>
-              {media.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto pb-2">
-                  {media.map((m: any, i: number) => (
-                    <button key={i} onClick={() => setSelectedImage(i)} className={`relative w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all ${i === selectedImage ? "border-rose-gold" : "border-transparent opacity-60 hover:opacity-100"}`}>
-                      <Image src={typeof m === "string" ? m : (m.url?.startsWith("http") ? m.url : `${API_URL}${m.url}`)} alt="" fill className="object-cover" sizes="64px" />
+                {showVideo && product.videoUrl && (
+                  <div className="absolute inset-0 bg-black z-10 flex items-center justify-center">
+                    <ReactPlayer
+                      url={product.videoUrl}
+                      width="100%"
+                      height="100%"
+                      playing={showVideo}
+                      controls={true}
+                    />
+                    <button onClick={() => setShowVideo(false)} className="absolute top-4 left-4 w-8 h-8 rounded-full bg-white/80 flex items-center justify-center">
+                      <ChevronLeft className="w-5 h-5 text-black" />
                     </button>
-                  ))}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {product.videoUrl && (
+                  <button onClick={() => setShowVideo(true)} className={`relative w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all bg-black/5 flex items-center justify-center ${showVideo ? "border-rose-gold" : "border-transparent opacity-60 hover:opacity-100"}`}>
+                    <svg className="w-6 h-6 text-black/50" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                  </button>
+                )}
+                {media.map((m: any, i: number) => (
+                  <button key={i} onClick={() => { setSelectedImage(i); setShowVideo(false); }} className={`relative w-16 h-20 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all ${!showVideo && i === selectedImage ? "border-rose-gold" : "border-transparent opacity-60 hover:opacity-100"}`}>
+                    <Image src={typeof m === "string" ? m : (m.url?.startsWith("http") ? m.url : `${API_URL}${m.url}`)} alt="" fill className="object-cover" sizes="64px" />
+                  </button>
+                ))}
+              </div>
             </motion.div>
 
             {/* Product Info */}
@@ -239,6 +270,12 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </main>
+
+      <ReviewsSection productId={product.id} />
+      {similarProducts.length > 0 && (
+        <UpsellsSection title="You May Also Like" subtitle="Handpicked recommendations based on your selection" products={similarProducts} />
+      )}
+
       <Footer />
     </>
   );

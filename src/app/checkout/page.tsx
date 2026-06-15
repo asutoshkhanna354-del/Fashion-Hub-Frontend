@@ -85,69 +85,69 @@ function CheckoutContent() {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-[#F8F6F3] pt-28 pb-20">
+      <main className="min-h-screen bg-ivory pt-28 pb-20">
         <div className="container-premium max-w-3xl mx-auto">
-          <button onClick={() => router.push("/cart/")} className="flex items-center gap-1 text-[#1E1533]/50 hover:text-[#1E1533] text-sm mb-6 transition-colors">
+          <button onClick={() => router.push("/cart/")} className="flex items-center gap-1 text-plum/50 hover:text-plum text-sm mb-6 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Cart
           </button>
 
-          <h1 className="font-display text-3xl font-bold text-[#1E1533] mb-8">Checkout</h1>
+          <h1 className="font-display text-3xl font-bold text-plum mb-8">Checkout</h1>
 
           {error && <div className="bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl mb-6 shadow-sm">{error}</div>}
 
           <div className="grid lg:grid-cols-5 gap-6">
             <div className="lg:col-span-3 space-y-5">
               {/* Delivery Address */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-3xl p-6 border border-[#1E1533]/[0.03] shadow-sm">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-3xl p-6 border border-plum/5 shadow-sm">
                 <div className="flex items-center justify-between mb-5">
-                  <h2 className="font-display text-lg font-bold text-[#1E1533] flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-[#C58F7A]" /> Delivery Address
+                  <h2 className="font-display text-lg font-bold text-plum flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-rose-gold" /> Delivery Address
                   </h2>
-                  <button onClick={() => setEditAddress(!editAddress)} className="text-xs font-semibold text-[#C58F7A] hover:text-[#1E1533] transition-colors">
+                  <button onClick={() => setEditAddress(!editAddress)} className="text-xs font-semibold text-rose-gold hover:text-plum transition-colors">
                     {editAddress ? "Done" : "Edit"}
                   </button>
                 </div>
                 {editAddress ? (
                   <div className="space-y-3">
-                    <input type="text" value={address.name} onChange={(e) => setAddress({ ...address, name: e.target.value })} placeholder="Full Name" className="w-full px-4 py-3 bg-[#F8F6F3] border border-[#1E1533]/[0.06] rounded-xl text-sm focus:outline-none focus:border-[#C58F7A]/30 transition-colors" />
-                    <input type="text" value={address.phone} onChange={(e) => setAddress({ ...address, phone: e.target.value })} placeholder="Phone" className="w-full px-4 py-3 bg-[#F8F6F3] border border-[#1E1533]/[0.06] rounded-xl text-sm focus:outline-none focus:border-[#C58F7A]/30 transition-colors" />
-                    <input type="text" value={address.line1} onChange={(e) => setAddress({ ...address, line1: e.target.value })} placeholder="Address Line 1" className="w-full px-4 py-3 bg-[#F8F6F3] border border-[#1E1533]/[0.06] rounded-xl text-sm focus:outline-none focus:border-[#C58F7A]/30 transition-colors" />
-                    <input type="text" value={address.line2} onChange={(e) => setAddress({ ...address, line2: e.target.value })} placeholder="Address Line 2 (Optional)" className="w-full px-4 py-3 bg-[#F8F6F3] border border-[#1E1533]/[0.06] rounded-xl text-sm focus:outline-none focus:border-[#C58F7A]/30 transition-colors" />
+                    <input type="text" value={address.name} onChange={(e) => setAddress({ ...address, name: e.target.value })} placeholder="Full Name" className="w-full px-4 py-3 bg-ivory border border-plum/10 rounded-xl text-sm focus:outline-none focus:border-rose-gold/50 transition-colors" />
+                    <input type="text" value={address.phone} onChange={(e) => setAddress({ ...address, phone: e.target.value })} placeholder="Phone" className="w-full px-4 py-3 bg-ivory border border-plum/10 rounded-xl text-sm focus:outline-none focus:border-rose-gold/50 transition-colors" />
+                    <input type="text" value={address.line1} onChange={(e) => setAddress({ ...address, line1: e.target.value })} placeholder="Address Line 1" className="w-full px-4 py-3 bg-ivory border border-plum/10 rounded-xl text-sm focus:outline-none focus:border-rose-gold/50 transition-colors" />
+                    <input type="text" value={address.line2} onChange={(e) => setAddress({ ...address, line2: e.target.value })} placeholder="Address Line 2 (Optional)" className="w-full px-4 py-3 bg-ivory border border-plum/10 rounded-xl text-sm focus:outline-none focus:border-rose-gold/50 transition-colors" />
                     <div className="grid grid-cols-2 gap-3">
-                      <input type="text" value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} placeholder="City" className="w-full px-4 py-3 bg-[#F8F6F3] border border-[#1E1533]/[0.06] rounded-xl text-sm focus:outline-none focus:border-[#C58F7A]/30 transition-colors" />
-                      <input type="text" value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value })} placeholder="State" className="w-full px-4 py-3 bg-[#F8F6F3] border border-[#1E1533]/[0.06] rounded-xl text-sm focus:outline-none focus:border-[#C58F7A]/30 transition-colors" />
+                      <input type="text" value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} placeholder="City" className="w-full px-4 py-3 bg-ivory border border-plum/10 rounded-xl text-sm focus:outline-none focus:border-rose-gold/50 transition-colors" />
+                      <input type="text" value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value })} placeholder="State" className="w-full px-4 py-3 bg-ivory border border-plum/10 rounded-xl text-sm focus:outline-none focus:border-rose-gold/50 transition-colors" />
                     </div>
-                    <input type="text" value={address.pincode} onChange={(e) => setAddress({ ...address, pincode: e.target.value })} placeholder="Pincode" className="w-full px-4 py-3 bg-[#F8F6F3] border border-[#1E1533]/[0.06] rounded-xl text-sm focus:outline-none focus:border-[#C58F7A]/30 transition-colors" />
+                    <input type="text" value={address.pincode} onChange={(e) => setAddress({ ...address, pincode: e.target.value })} placeholder="Pincode" className="w-full px-4 py-3 bg-ivory border border-plum/10 rounded-xl text-sm focus:outline-none focus:border-rose-gold/50 transition-colors" />
                   </div>
                 ) : (
-                  <div className="text-sm text-[#1E1533]/70 space-y-1 bg-[#F8F6F3] p-4 rounded-2xl">
-                    <p className="font-semibold text-[#1E1533]">{address.name}</p>
+                  <div className="text-sm text-plum/70 space-y-1 bg-ivory p-4 rounded-2xl">
+                    <p className="font-semibold text-plum">{address.name}</p>
                     <p>{address.line1}{address.line2 ? `, ${address.line2}` : ""}</p>
                     <p>{address.city}, {address.state} - {address.pincode}</p>
-                    <p>{address.country} • <span className="font-medium text-[#1E1533]">{address.phone}</span></p>
+                    <p>{address.country} • <span className="font-medium text-plum">{address.phone}</span></p>
                   </div>
                 )}
               </motion.div>
 
               {/* Payment Method */}
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-3xl p-6 border border-[#1E1533]/[0.03] shadow-sm">
-                <h2 className="font-display text-lg font-bold text-[#1E1533] flex items-center gap-2 mb-4">
-                  <CreditCard className="w-5 h-5 text-[#C58F7A]" /> Payment Method
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-3xl p-6 border border-plum/5 shadow-sm">
+                <h2 className="font-display text-lg font-bold text-plum flex items-center gap-2 mb-4">
+                  <CreditCard className="w-5 h-5 text-rose-gold" /> Payment Method
                 </h2>
-                <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-[#F8F6F3] to-white rounded-2xl border-2 border-[#1E1533] shadow-sm cursor-pointer">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1E1533] to-[#1E1533]/80 flex items-center justify-center text-xl font-bold text-white shadow-inner">₹</div>
+                <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-ivory to-white rounded-2xl border-2 border-plum shadow-sm cursor-pointer">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-plum to-plum/80 flex items-center justify-center text-xl font-bold text-white shadow-inner">₹</div>
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-[#1E1533]">UPI / QR Code</p>
-                    <p className="text-xs text-[#1E1533]/50">Pay via Google Pay, PhonePe, Paytm</p>
+                    <p className="text-sm font-bold text-plum">UPI / QR Code</p>
+                    <p className="text-xs text-plum/50">Pay via Google Pay, PhonePe, Paytm</p>
                   </div>
-                  <div className="w-5 h-5 rounded-full border-4 border-[#1E1533] flex items-center justify-center bg-white" />
+                  <div className="w-5 h-5 rounded-full border-4 border-plum flex items-center justify-center bg-white" />
                 </div>
               </motion.div>
             </div>
 
             {/* Summary */}
             <div className="lg:col-span-2">
-              <div className="bg-[#1E1533] rounded-3xl p-6 sticky top-28 shadow-xl text-white">
+              <div className="bg-plum rounded-3xl p-6 sticky top-28 shadow-xl text-white">
                 <h2 className="font-display text-lg font-bold mb-5 text-white">Order Summary</h2>
                 <div className="space-y-4 text-sm mb-6">
                   {items.map((item) => (
@@ -162,7 +162,7 @@ function CheckoutContent() {
                   
                   <div className="border-t border-white/10 pt-4 space-y-3">
                     <div className="flex justify-between text-white/60">
-                      <span>Shipping</span><span className="text-[#C58F7A] font-medium">FREE</span>
+                      <span>Shipping</span><span className="text-rose-gold font-medium">FREE</span>
                     </div>
                     {promoCode && (
                       <div className="flex justify-between text-emerald-400 font-medium">
@@ -178,7 +178,7 @@ function CheckoutContent() {
                 <button 
                   onClick={handlePayment} 
                   disabled={loading || !address.name || !address.phone || !address.line1 || !address.city || !address.pincode} 
-                  className="w-full py-4 bg-gradient-to-r from-[#C58F7A] to-[#B89CCF] text-white rounded-xl font-bold text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#C58F7A]/20 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+                  className="w-full py-4 bg-gradient-to-r from-rose-gold to-[#B89CCF] text-white rounded-xl font-bold text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
                 >
                   {loading ? (
                     <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
@@ -236,14 +236,14 @@ function CheckoutContent() {
               <div className="flex-1 relative bg-white">
                 {/* Fallback text if iframe doesn't load/is blocked */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-0">
-                  <Loader2 className="w-8 h-8 text-[#C58F7A] animate-spin mb-4" />
-                  <p className="text-sm font-semibold text-[#1E1533]">Loading Payment Gateway</p>
-                  <p className="text-xs text-[#1E1533]/50 mt-2 max-w-[250px]">If the payment page doesn't appear, your browser might be blocking iframes.</p>
+                  <Loader2 className="w-8 h-8 text-rose-gold animate-spin mb-4" />
+                  <p className="text-sm font-semibold text-plum">Loading Payment Gateway</p>
+                  <p className="text-xs text-plum/50 mt-2 max-w-[250px]">If the payment page doesn't appear, your browser might be blocking iframes.</p>
                   <a 
                     href={paymentUrl} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="mt-6 px-5 py-2.5 bg-[#1E1533] text-white rounded-xl text-xs font-semibold"
+                    className="mt-6 px-5 py-2.5 bg-plum text-white rounded-xl text-xs font-semibold"
                     onClick={(e) => {
                       // Don't let the link close the modal immediately, keep polling
                     }}
@@ -269,7 +269,7 @@ function CheckoutContent() {
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#F8F6F3] flex items-center justify-center"><div className="w-8 h-8 border-2 border-[#1E1533] border-t-transparent rounded-full animate-spin" /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-ivory flex items-center justify-center"><div className="w-8 h-8 border-2 border-plum border-t-transparent rounded-full animate-spin" /></div>}>
       <CheckoutContent />
     </Suspense>
   );

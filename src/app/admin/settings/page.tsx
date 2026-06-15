@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Save } from "lucide-react";
 import { adminApi } from "@/lib/api";
 import AdminLayout from "@/components/admin/AdminLayout";
+import MediaUploader from "@/components/admin/MediaUploader";
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Record<string, string>>({});
@@ -31,6 +32,19 @@ export default function AdminSettingsPage() {
           <h3 className="font-display text-sm font-bold text-[#1E1533] mb-5">Store Information</h3>
           <div className="space-y-4">
             <div><label className={labelClass}>Store Name</label><input value={settings.store_name || ""} onChange={(e) => update("store_name", e.target.value)} className={fieldClass} /></div>
+            
+            <div>
+              <label className={labelClass}>Store Logo / Favicon</label>
+              <div className="p-4 border border-dashed border-[#1E1533]/[0.06] rounded-xl bg-[#F8F6F3]">
+                <MediaUploader
+                  media={settings.store_logo_url ? [{ url: settings.store_logo_url, type: 'image' }] : []}
+                  onChange={(media) => update("store_logo_url", media.length > 0 ? media[0].url : "")}
+                  single={true}
+                  label={settings.store_logo_url ? "Change Logo" : "Upload Logo"}
+                />
+              </div>
+            </div>
+
             <div><label className={labelClass}>Address</label><input value={settings.store_address || ""} onChange={(e) => update("store_address", e.target.value)} className={fieldClass} /></div>
             <div className="grid grid-cols-2 gap-4">
               <div><label className={labelClass}>Phone</label><input value={settings.store_phone || ""} onChange={(e) => update("store_phone", e.target.value)} className={fieldClass} /></div>
@@ -45,8 +59,8 @@ export default function AdminSettingsPage() {
           <h3 className="font-display text-sm font-bold text-[#1E1533] mb-5">Support Links</h3>
           <div className="space-y-4">
             <div><label className={labelClass}>WhatsApp Link</label><input value={settings.whatsapp_link || ""} onChange={(e) => update("whatsapp_link", e.target.value)} className={fieldClass} placeholder="https://wa.me/919876543210" /></div>
-            <div><label className={labelClass}>Telegram Link</label><input value={settings.telegram_link || ""} onChange={(e) => update("telegram_link", e.target.value)} className={fieldClass} placeholder="https://t.me/aditifashionhub" /></div>
-            <div><label className={labelClass}>Instagram Link</label><input value={settings.instagram_link || ""} onChange={(e) => update("instagram_link", e.target.value)} className={fieldClass} placeholder="https://instagram.com/aditifashionhub" /></div>
+            <div><label className={labelClass}>Telegram Link</label><input value={settings.telegram_link || ""} onChange={(e) => update("telegram_link", e.target.value)} className={fieldClass} placeholder="https://t.me/noorsilksareeshub" /></div>
+            <div><label className={labelClass}>Instagram Link</label><input value={settings.instagram_link || ""} onChange={(e) => update("instagram_link", e.target.value)} className={fieldClass} placeholder="https://instagram.com/noorsilksareeshub" /></div>
           </div>
         </div>
 

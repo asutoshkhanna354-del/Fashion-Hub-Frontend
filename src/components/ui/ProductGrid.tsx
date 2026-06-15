@@ -9,7 +9,7 @@ import { useCart } from "@/lib/contexts/cart-context";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useRouter } from "next/navigation";
 
-const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 interface Product {
   id: string;
@@ -130,3 +130,4 @@ export default function ProductGrid({ products, loading }: { products: Product[]
     </div>
   );
 }
+

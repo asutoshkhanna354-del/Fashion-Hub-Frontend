@@ -4,15 +4,27 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { heroSlides } from "@/data";
+import { heroSlides as defaultHeroSlides, HeroSlide } from "@/data";
+import { useSettings } from "@/lib/contexts/settings-context";
 
 export default function HeroSection() {
+  const { settings, loading } = useSettings();
   const [current, setCurrent] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
+  let slides: HeroSlide[] = defaultHeroSlides;
+  if (settings?.hero_slides) {
+    try {
+      const parsed = JSON.parse(settings.hero_slides);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        slides = parsed;
+      }
+    } catch (e) {}
+  }
+
   const nextSlide = useCallback(() => {
-    setCurrent((prev) => (prev + 1) % heroSlides.length);
-  }, []);
+    setCurrent((prev) => (prev + 1) % slides.length);
+  }, [slides.length]);
 
   useEffect(() => {
     if (!isAutoPlaying) return;
@@ -20,7 +32,15 @@ export default function HeroSection() {
     return () => clearInterval(interval);
   }, [isAutoPlaying, nextSlide]);
 
-  const slide = heroSlides[current];
+  // Prevent flash of default slides if custom ones are loading
+  if (loading && !settings?.hero_slides) {
+    return (
+      <section className="relative overflow-hidden bg-[#F5EFE6] min-h-[500px] md:min-h-[600px] animate-pulse">
+      </section>
+    );
+  }
+
+  const slide = slides[current];
 
   return (
     <section
@@ -138,7 +158,7 @@ export default function HeroSection() {
 
                 <div className="relative rounded-[30px] overflow-hidden shadow-premium-lg aspect-[3/4]">
                   <Image
-                    src={slide.image}
+                    src={slide.image.startsWith("http") || slide.image.startsWith("/images") ? slide.image : `https://Solanki-Vastra-backend.onrender.com${slide.image}`}
                     alt="Fashion model wearing designer saree"
                     fill
                     className="object-cover"
@@ -155,7 +175,7 @@ export default function HeroSection() {
 
         {/* Slider Dots */}
         <div className="flex items-center justify-center lg:justify-start gap-3 pb-8 lg:pb-10">
-          {heroSlides.map((_, index) => (
+          {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrent(index)}
@@ -212,3 +232,4 @@ export default function HeroSection() {
     </section>
   );
 }
+

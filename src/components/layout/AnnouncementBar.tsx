@@ -1,13 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Truck, CreditCard, RotateCcw, X } from "lucide-react";
+import { Truck, CreditCard, RotateCcw, X, Info, Tag } from "lucide-react";
 import { useState } from "react";
+import { useSettings } from "@/lib/contexts/settings-context";
 
 export default function AnnouncementBar() {
   const [isVisible, setIsVisible] = useState(true);
+  const { settings } = useSettings();
 
   if (!isVisible) return null;
+
+  const bannerTitle = settings?.banner_title || "SALE 🚨";
+  const bannerText = settings?.banner_text || "Free Shipping on Prepaid Orders above ₹1999";
+  const bannerType = settings?.banner_type || "Sale";
 
   return (
     <motion.div
@@ -19,18 +25,14 @@ export default function AnnouncementBar() {
     >
       <div className="container-premium flex items-center justify-center gap-4 sm:gap-8 py-2.5">
         <div className="flex items-center gap-1.5 sm:gap-2">
-          <Truck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-gold-light" />
-          <span className="font-medium">Free Shipping on Prepaid Orders above ₹1999</span>
-        </div>
-        <span className="hidden sm:inline text-white/30">|</span>
-        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
-          <CreditCard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-gold-light" />
-          <span className="font-medium">COD Available</span>
-        </div>
-        <span className="hidden sm:inline text-white/30">|</span>
-        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
-          <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-gold-light" />
-          <span className="font-medium">Easy Returns</span>
+          {bannerType === "Sale" ? (
+            <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-gold-light" />
+          ) : (
+            <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-gold-light" />
+          )}
+          <span className="font-bold text-rose-gold-light tracking-wide">{bannerTitle}</span>
+          <span className="hidden sm:inline text-white/30 ml-2 mr-2">|</span>
+          <span className="font-medium">{bannerText}</span>
         </div>
       </div>
       <button

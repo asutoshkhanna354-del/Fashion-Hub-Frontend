@@ -1,150 +1,140 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Heart, ShoppingBag, Star, StarHalf, Eye } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useInView } from "framer-motion";
 import type { Product } from "@/data";
-import { formatPrice, generateStars } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 
 interface ProductCardProps {
-  product: Product;
-  index?: number;
+  product: any; // Allow both frontend Product and backend Product types
 }
 
-export default function ProductCard({ product, index = 0 }: ProductCardProps) {
-  const [isWishlisted, setIsWishlisted] = useState(false);
+export default function ProductCard({ product }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const stars = generateStars(product.rating);
+  const saveAmount = (product.originalPrice || 0) - (product.price || 0);
+  
+  const linkRef = useRef<HTMLAnchorElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const isInView = useInView(linkRef, { amount: 0.2 });
+
+  let imageUrl = "/placeholder.png";
+  if (product.image) {
+    imageUrl = product.image;
+  } else if (product.media && product.media.length > 0) {
+    // If first media is an image, use it as fallback/poster
+    const firstMedia = product.media[0];
+    imageUrl = typeof firstMedia === "string" ? firstMedia : firstMedia.url;
+  }
+  
+  if (!imageUrl) {
+    imageUrl = "/placeholder.png";
+  }
+
+  // Find if there's a video URL
+  let videoUrl = product.videoUrl;
+  if (!videoUrl && product.media && Array.isArray(product.media)) {
+    const videoMedia = product.media.find((m: any) => m.type === "video");
+    if (videoMedia) {
+      videoUrl = typeof videoMedia === "string" ? videoMedia : videoMedia.url;
+    }
+  }
+
+  const isYouTube = videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'));
+  const getYouTubeId = (url: string) => {
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/);
+    return match ? match[1] : null;
+  };
+  const ytId = isYouTube ? getYouTubeId(videoUrl) : null;
+
+  useEffect(() => {
+    if (videoRef.current && !isYouTube) {
+      if (isInView) {
+        videoRef.current.play().catch(() => {});
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  }, [isInView, isYouTube]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-30px" }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
-      className="group"
+    <div
+      className="group flex flex-col relative w-full bg-white"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="card-glass overflow-hidden">
-        {/* Image Container */}
-        <div className="relative aspect-[3/4] overflow-hidden">
+      {/* Image / Video Container */}
+      <Link ref={linkRef} href={`/sarees/${product.slug || product.id}`} className="relative aspect-[3/4] overflow-hidden bg-[#f9f9f9] rounded-2xl">
+        {videoUrl ? (
+          isYouTube && ytId ? (
+            <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden bg-black flex items-center justify-center">
+              <iframe
+                src={`https://www.youtube.com/embed/${ytId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${ytId}&playsinline=1&modestbranding=1&rel=0`}
+                className="w-[300%] h-[150%] md:w-[200%] md:h-[120%] max-w-none transition-transform duration-700 group-hover:scale-105 opacity-90"
+                allow="autoplay; encrypted-media"
+                style={{ border: 'none' }}
+              />
+            </div>
+          ) : (
+            <video
+              ref={videoRef}
+              src={videoUrl}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              muted
+              loop
+              playsInline
+              poster={imageUrl !== "/placeholder.png" ? imageUrl : undefined}
+            />
+          )
+        ) : (
           <Image
-            src={product.image}
-            alt={product.name}
+            src={imageUrl}
+            alt={product.name || "Product"}
             fill
-            className="object-cover transition-transform duration-700 group-hover:scale-[1.08]"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
+        )}
 
-          {/* Overlay on hover */}
-          <motion.div
-            initial={false}
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            className="absolute inset-0 bg-gradient-to-t from-plum/30 via-transparent to-transparent"
-          />
+        {/* Sale Badge */}
+        {product.discount > 0 && (
+          <div className="absolute top-2 left-2 bg-[#E12C2C] text-white text-[10px] md:text-xs font-semibold px-2 py-1 uppercase tracking-wider">
+            Sale
+          </div>
+        )}
+      </Link>
 
-          {/* Discount Badge */}
-          {product.discount > 0 && (
-            <div className="absolute top-3 left-3 bg-rose-gold text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
-              -{product.discount}%
-            </div>
-          )}
-
-          {/* Product Badge */}
-          {product.badge && (
-            <div className="absolute top-3 left-3 mt-8 bg-plum text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm uppercase tracking-wider">
-              {product.badge}
-            </div>
-          )}
-
-          {/* Wishlist Button */}
-          <motion.button
-            whileTap={{ scale: 0.85 }}
-            onClick={(e) => {
-              e.preventDefault();
-              setIsWishlisted(!isWishlisted);
-            }}
-            className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center shadow-md transition-all duration-300 ${
-              isWishlisted
-                ? "bg-rose-gold text-white"
-                : "bg-white/90 text-plum/60 hover:text-rose-gold"
-            }`}
-            aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          >
-            <Heart
-              className={`w-4 h-4 ${isWishlisted ? "fill-current" : ""}`}
-            />
-          </motion.button>
-
-          {/* Quick Action Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
-            transition={{ duration: 0.3 }}
-            className="absolute bottom-3 left-3 right-3 flex items-center gap-2"
-          >
-            <button className="flex-1 flex items-center justify-center gap-2 bg-white/95 backdrop-blur-sm text-plum py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider hover:bg-plum hover:text-white transition-all duration-300 shadow-lg">
-              <ShoppingBag className="w-3.5 h-3.5" />
-              Add to Cart
-            </button>
-            <button
-              className="w-10 h-10 flex items-center justify-center bg-white/95 backdrop-blur-sm text-plum rounded-lg hover:bg-plum hover:text-white transition-all duration-300 shadow-lg"
-              aria-label="Quick view"
-            >
-              <Eye className="w-4 h-4" />
-            </button>
-          </motion.div>
-        </div>
-
-        {/* Product Info */}
-        <div className="p-4">
-          {/* Category */}
-          <p className="text-[10px] text-rose-gold font-medium uppercase tracking-wider mb-1">
-            {product.category}
-          </p>
-
-          {/* Name */}
-          <h3 className="font-display text-sm sm:text-base font-semibold text-plum leading-tight mb-2 line-clamp-2 group-hover:text-rose-gold transition-colors">
+      {/* Product Info */}
+      <div className="pt-4 flex flex-col items-center text-center">
+        {/* Name */}
+        <Link href={`/sarees/${product.slug || product.id}`}>
+          <h3 className="font-display text-[11px] md:text-sm font-medium text-black uppercase tracking-widest leading-snug mb-2 line-clamp-2 hover:text-black/70 transition-colors">
             {product.name}
           </h3>
+        </Link>
 
-          {/* Rating */}
-          <div className="flex items-center gap-1.5 mb-2.5">
-            <div className="flex items-center gap-0.5">
-              {stars.map((type, i) => (
-                <span key={i}>
-                  {type === "full" && (
-                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  )}
-                  {type === "half" && (
-                    <StarHalf className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                  )}
-                  {type === "empty" && (
-                    <Star className="w-3.5 h-3.5 text-gray-200" />
-                  )}
-                </span>
-              ))}
-            </div>
-            <span className="text-[11px] text-plum/40">
-              ({product.reviewCount})
-            </span>
-          </div>
-
-          {/* Price */}
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-plum">
-              {formatPrice(product.price)}
-            </span>
+        {/* Price */}
+        <div className="flex flex-col items-center mt-auto">
+          <div className="flex items-center gap-2 mb-1">
             {product.originalPrice > product.price && (
-              <span className="text-sm text-plum/35 line-through">
+              <span className="text-[11px] md:text-sm text-black/40 line-through">
                 {formatPrice(product.originalPrice)}
               </span>
             )}
+            <span className="text-[11px] md:text-sm font-medium text-[#E12C2C]">
+              {formatPrice(product.price)}
+            </span>
           </div>
+
+          {/* Save Amount */}
+          {saveAmount > 0 && (
+            <span className="text-[10px] md:text-xs text-black/40 tracking-wider">
+              Save {formatPrice(saveAmount)}
+            </span>
+          )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

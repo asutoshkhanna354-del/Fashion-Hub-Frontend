@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { ArrowLeft, Package, Printer, MapPin, CheckCircle, Clock, LifeBuoy, Truck } from "lucide-react";
-import { orderApi } from "@/lib/api";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Package, Printer, MapPin, CheckCircle, Clock, LifeBuoy, Truck, Star, X, Upload, PlayCircle } from "lucide-react";
+import { orderApi, uploadApi } from "@/lib/api";
+import Image from "next/image";
 
 const statusTimeline = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED"];
 
@@ -14,6 +15,16 @@ export default function OrderDetailPage() {
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const printRef = useRef<HTMLDivElement>(null);
+  
+  // Review Modal State
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [reviewProduct, setReviewProduct] = useState<any>(null);
+  const [rating, setRating] = useState(5);
+  const [title, setTitle] = useState("");
+  const [comment, setComment] = useState("");
+  const [media, setMedia] = useState<any[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     orderApi.list().then((res) => {
@@ -40,6 +51,56 @@ export default function OrderDetailPage() {
     printWindow.print();
   };
 
+  const handleMediaUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadApi.uploadFile(file);
+      const isVideo = file.type.startsWith("video/");
+      setMedia([...media, { type: isVideo ? "video" : "image", url, thumb: isVideo ? "" : url }]);
+    } catch (error) {
+      alert("Failed to upload media");
+    }
+    setUploading(false);
+  };
+
+  const submitReview = async () => {
+    setSubmitting(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("https://Solanki-Vastra-backend.onrender.com/api/reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          productId: reviewProduct.id,
+          rating,
+          title,
+          comment,
+          media
+        })
+      });
+      const data = await res.json();
+      if (data.status) {
+        alert("Review submitted successfully!");
+        setReviewModalOpen(false);
+        setReviewProduct(null);
+        setTitle("");
+        setComment("");
+        setRating(5);
+        setMedia([]);
+      } else {
+        alert(data.message || "Failed to submit review");
+      }
+    } catch (error) {
+      alert("Error submitting review");
+    }
+    setSubmitting(false);
+  };
+
   if (loading) {
     return <div className="flex-1 flex items-center justify-center py-20"><div className="w-8 h-8 border-2 border-[#1E1533] border-t-transparent rounded-full animate-spin" /></div>;
   }
@@ -51,7 +112,7 @@ export default function OrderDetailPage() {
   const addr = order.shippingAddress ? (typeof order.shippingAddress === "string" ? JSON.parse(order.shippingAddress) : order.shippingAddress) : null;
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 relative">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <button onClick={() => router.push("/account/orders")} className="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-[#F8F6F3] transition-colors border border-[#1E1533]/[0.04]">
@@ -66,7 +127,7 @@ export default function OrderDetailPage() {
           <button onClick={handlePrint} className="hidden sm:flex px-4 py-2 bg-white border border-[#1E1533]/[0.06] rounded-xl text-sm font-semibold items-center gap-2 hover:bg-[#F8F6F3] transition-colors">
             <Printer className="w-4 h-4" /> Print Receipt
           </button>
-          <a href="mailto:support@aditifashion.com" className="px-4 py-2 bg-[#1E1533] text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:shadow-lg transition-all">
+          <a href="mailto:support@solankivastra.com" className="px-4 py-2 bg-[#1E1533] text-white rounded-xl text-sm font-semibold flex items-center gap-2 hover:shadow-lg transition-all">
             <LifeBuoy className="w-4 h-4" /> Need Help?
           </a>
         </div>
@@ -74,7 +135,7 @@ export default function OrderDetailPage() {
 
       <div ref={printRef} className="space-y-6">
         <div className="header hidden print:block">
-          <h1 style={{ fontSize: "24px", fontWeight: 700 }}>ADITI FASHION HUB</h1>
+          <h1 style={{ fontSize: "24px", fontWeight: 700 }}>Solanki Vastra</h1>
           <p>Order Receipt • #{order.orderNumber}</p>
         </div>
 
@@ -120,6 +181,14 @@ export default function OrderDetailPage() {
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-[#1E1533] text-sm truncate">{item.product?.name || "Product"}</h4>
                       <p className="text-[11px] text-[#1E1533]/50 mt-0.5">Qty: {item.quantity}</p>
+                      {order.orderStatus === "DELIVERED" && (
+                        <button 
+                          onClick={() => { setReviewProduct(item.product); setReviewModalOpen(true); }}
+                          className="mt-2 text-[10px] uppercase tracking-wider font-bold text-[#C58F7A] hover:underline"
+                        >
+                          Leave a Review
+                        </button>
+                      )}
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-[#1E1533]">₹{Number(item.total).toLocaleString("en-IN")}</p>
@@ -172,44 +241,81 @@ export default function OrderDetailPage() {
 
             {/* Tracking Widget */}
             {order.trackingId && (
-              <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-2xl p-6 border border-indigo-100 shadow-sm">
+              <div className="bg-white rounded-2xl p-6 border border-[#1E1533]/[0.03] shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
-                  <Truck className="w-5 h-5 text-indigo-600" />
-                  <h3 className="text-sm font-bold text-indigo-900">Track Your Package</h3>
+                  <Truck className="w-5 h-5 text-[#C58F7A]" />
+                  <h3 className="text-sm font-bold text-[#1E1533]">Live Order Tracking</h3>
                 </div>
-                <div className="space-y-3">
-                  <div className="bg-white rounded-xl p-3 border border-indigo-100/50">
-                    <p className="text-[10px] uppercase font-bold text-indigo-400 mb-1">Courier Partner</p>
-                    <p className="text-sm font-semibold text-indigo-900">{order.courierName || "Standard Shipping"}</p>
-                  </div>
-                  <div className="bg-white rounded-xl p-3 border border-indigo-100/50">
-                    <p className="text-[10px] uppercase font-bold text-indigo-400 mb-1">Tracking ID (AWB)</p>
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-bold text-indigo-900 font-mono tracking-wider">{order.trackingId}</p>
-                      <button 
-                        onClick={() => {
-                          navigator.clipboard.writeText(order.trackingId);
-                          alert("Tracking ID copied to clipboard!");
-                        }}
-                        className="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-md hover:bg-indigo-200 transition-colors"
-                      >
-                        COPY
-                      </button>
-                    </div>
-                  </div>
-                  <a 
-                    href={order.courierName?.toLowerCase().includes("delhivery") ? `https://www.delhivery.com/tracking?id=${order.trackingId}` : order.courierName?.toLowerCase().includes("bluedart") ? `https://www.bluedart.com/tracking` : `https://www.google.com/search?q=${order.courierName}+tracking`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="block w-full py-3 text-center bg-indigo-600 text-white text-xs font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200"
-                  >
-                    TRACK ON {order.courierName ? order.courierName.toUpperCase() : "COURIER WEBSITE"}
-                  </a>
+                <div className="w-full h-[500px] rounded-xl overflow-hidden border border-[#1E1533]/10 bg-[#F8F6F3]">
+                  <iframe 
+                    src={`https://track.aftership.com/${order.trackingId}`}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    title="Live Tracking"
+                  />
                 </div>
               </div>
             )}
           </div>
         </div>
       </div>
+
+      {/* Review Modal */}
+      <AnimatePresence>
+        {reviewModalOpen && reviewProduct && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl">
+              <div className="p-6 border-b border-[#1E1533]/5 flex items-center justify-between">
+                <h3 className="font-display text-xl font-bold text-[#1E1533]">Write a Review</h3>
+                <button onClick={() => setReviewModalOpen(false)} className="text-[#1E1533]/40 hover:text-[#1E1533]"><X className="w-5 h-5" /></button>
+              </div>
+              <div className="p-6 space-y-6">
+                <div>
+                  <p className="text-sm text-[#1E1533]/60 mb-2">How would you rate {reviewProduct.name}?</p>
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <button key={s} onClick={() => setRating(s)} className="p-1 hover:scale-110 transition-transform">
+                        <Star className={`w-8 h-8 ${s <= rating ? "fill-[#C58F7A] text-[#C58F7A]" : "text-[#1E1533]/10"}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#1E1533] mb-1">Review Title</label>
+                  <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Summary of your experience" className="w-full px-4 py-2 border border-[#1E1533]/10 rounded-xl text-sm focus:outline-none focus:border-[#C58F7A]" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#1E1533] mb-1">Your Review</label>
+                  <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={4} placeholder="What did you like about this product?" className="w-full px-4 py-2 border border-[#1E1533]/10 rounded-xl text-sm focus:outline-none focus:border-[#C58F7A] resize-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-[#1E1533] mb-2">Add Photo or Video (Optional)</label>
+                  <div className="flex gap-3 overflow-x-auto pb-2">
+                    {media.map((m, idx) => (
+                      <div key={idx} className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-[#F8F6F3]">
+                        {m.type === "video" ? (
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/10"><PlayCircle className="w-6 h-6 text-[#1E1533]/50" /></div>
+                        ) : (
+                          <Image src={m.url.startsWith("http") ? m.url : `https://Solanki-Vastra-backend.onrender.com${m.url}`} alt="" fill className="object-cover" />
+                        )}
+                        <button onClick={() => setMedia(media.filter((_, i) => i !== idx))} className="absolute top-1 right-1 w-5 h-5 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black"><X className="w-3 h-3" /></button>
+                      </div>
+                    ))}
+                    <label className="w-20 h-20 rounded-lg border-2 border-dashed border-[#1E1533]/20 flex flex-col items-center justify-center gap-1 cursor-pointer hover:bg-[#F8F6F3] transition-colors flex-shrink-0 text-[#1E1533]/40 hover:text-[#1E1533]">
+                      {uploading ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" /> : <><Upload className="w-4 h-4" /><span className="text-[10px] font-bold uppercase">Upload</span></>}
+                      <input type="file" className="hidden" accept="image/*,video/*" onChange={handleMediaUpload} disabled={uploading} />
+                    </label>
+                  </div>
+                </div>
+                <button onClick={submitReview} disabled={submitting} className="w-full py-3 bg-[#1E1533] text-white rounded-xl text-sm font-bold uppercase tracking-wider hover:bg-[#1E1533]/90 transition-colors disabled:opacity-50">
+                  {submitting ? "Submitting..." : "Submit Review"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,38 +1,141 @@
 "use client";
+
 import { motion } from "framer-motion";
-import { Calendar, ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
+import Image from "next/image";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { useState, useEffect } from "react";
+import { blogApi } from "@/lib/api";
 
-const posts = [
-  { id: 1, title: "How to Style a Silk Saree for a Modern Look", excerpt: "Discover contemporary ways to drape and accessorize your silk saree for a chic, modern appearance that turns heads at every occasion.", date: "May 28, 2026", category: "Style Tips" },
-  { id: 2, title: "The Art of Choosing the Perfect Wedding Saree", excerpt: "Your wedding day deserves the perfect saree. Learn how to choose the right fabric, color, and design that complements your personality.", date: "May 15, 2026", category: "Wedding" },
-  { id: 3, title: "Saree Care 101: Maintaining Your Premium Collection", excerpt: "Expert tips on washing, storing, and maintaining your premium sarees to keep them looking gorgeous for years to come.", date: "Apr 30, 2026", category: "Care Guide" },
-  { id: 4, title: "Trending Saree Fabrics for Summer 2026", excerpt: "From breathable cotton to lightweight chiffon, explore the most comfortable and stylish saree fabrics perfect for the summer season.", date: "Apr 12, 2026", category: "Trends" },
-  { id: 5, title: "Office Wear Sarees: Professional Yet Elegant", excerpt: "Make a statement at work with our curated guide to choosing sarees that are both professional and effortlessly elegant.", date: "Mar 28, 2026", category: "Work Wear" },
-  { id: 6, title: "Understanding Saree Fabrics: A Complete Guide", excerpt: "From silk to organza, from cotton to georgette — learn about different saree fabrics and which one suits your occasion best.", date: "Mar 10, 2026", category: "Education" },
-];
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export default function BlogPage() {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    blogApi.list()
+      .then((res) => setPosts(res.posts || []))
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const getImgUrl = (url: string) => {
+    if (!url) return "https://images.unsplash.com/photo-1596401057658-3e53288f01b0?q=80&w=1200&auto=format&fit=crop";
+    return url.startsWith("http") ? url : `${API_URL}${url}`;
+  };
+
+  const featuredPost = posts.find(p => p.featured) || posts[0];
+  const regularPosts = posts.filter(p => p.id !== featuredPost?.id);
+
   return (
-    <><Header /><main className="min-h-screen bg-ivory pt-28 pb-20"><div className="container-premium max-w-4xl mx-auto">
-      <div className="text-center mb-10">
-        <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="font-display text-3xl sm:text-4xl font-bold text-plum">Our Blog</motion.h1>
-        <p className="text-plum/40 text-sm mt-2">Stories, tips, and inspiration from the world of sarees</p>
-      </div>
-      <div className="space-y-4">
-        {posts.map((post, i) => (
-          <motion.article key={post.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="card-glass p-5 sm:p-6 group hover:border-rose-gold/15 transition-colors cursor-pointer">
-            <span className="text-[10px] font-semibold text-rose-gold uppercase tracking-wider">{post.category}</span>
-            <h2 className="font-display text-lg font-bold text-plum mt-1 group-hover:text-rose-gold transition-colors">{post.title}</h2>
-            <p className="text-sm text-plum/50 mt-2 leading-relaxed">{post.excerpt}</p>
-            <div className="flex items-center justify-between mt-4">
-              <div className="flex items-center gap-1.5 text-xs text-plum/30"><Calendar className="w-3.5 h-3.5" /> {post.date}</div>
-              <span className="text-xs font-medium text-rose-gold flex items-center gap-1">Read More <ArrowRight className="w-3 h-3" /></span>
+    <div className="bg-[#F8F6F3] min-h-screen">
+      <Header />
+      
+      <main className="pt-28 pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-[#1E1533] mb-4">
+              Journal
+            </h1>
+            <p className="text-[#1E1533]/60 max-w-2xl mx-auto text-sm sm:text-base">
+              Stories of heritage, style guides, and the artistry behind our collections.
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-32">
+              <Loader2 className="w-10 h-10 animate-spin text-[#C58F7A]" />
             </div>
-          </motion.article>
-        ))}
-      </div>
-    </div></main><Footer /></>
+          ) : posts.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-[#1E1533]/50">No blog posts found.</p>
+            </div>
+          ) : (
+            <>
+              {/* Featured Post */}
+              {featuredPost && (
+                <motion.article 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-16 lg:mb-24"
+                >
+                  <a href={`/blog/${featuredPost.id}`} className="group block relative rounded-2xl overflow-hidden aspect-[16/9] sm:aspect-[21/9] lg:aspect-[2.5/1]">
+                    <Image
+                      src={getImgUrl(featuredPost.image)}
+                      alt={featuredPost.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    
+                    <div className="absolute bottom-0 left-0 p-6 sm:p-10 lg:p-16 max-w-3xl">
+                      <div className="flex items-center gap-3 text-white/80 text-xs font-medium uppercase tracking-wider mb-4">
+                        <span>{featuredPost.category}</span>
+                        <span className="w-1 h-1 rounded-full bg-white/50" />
+                        <span>{new Date(featuredPost.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
+                        {featuredPost.title}
+                      </h2>
+                      <p className="text-white/70 text-sm sm:text-base mb-6 line-clamp-2">
+                        {featuredPost.excerpt}
+                      </p>
+                      <span className="inline-flex items-center gap-2 text-white font-medium group-hover:text-[#C58F7A] transition-colors">
+                        Read Story <ArrowRight className="w-4 h-4" />
+                      </span>
+                    </div>
+                  </a>
+                </motion.article>
+              )}
+
+              {/* Grid Posts */}
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+                {regularPosts.map((post, index) => (
+                  <motion.article
+                    key={post.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <a href={`/blog/${post.id}`} className="group block">
+                      <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6">
+                        <Image
+                          src={getImgUrl(post.image)}
+                          alt={post.title}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                      </div>
+                      <div className="flex items-center gap-3 text-[#1E1533]/40 text-[11px] font-medium uppercase tracking-wider mb-3">
+                        <span className="text-[#C58F7A]">{post.category}</span>
+                        <span className="w-1 h-1 rounded-full bg-[#1E1533]/20" />
+                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <h3 className="font-display text-xl font-bold text-[#1E1533] mb-3 group-hover:text-[#C58F7A] transition-colors line-clamp-2">
+                        {post.title}
+                      </h3>
+                      <p className="text-[#1E1533]/60 text-sm mb-4 line-clamp-3">
+                        {post.excerpt}
+                      </p>
+                      <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#1E1533] group-hover:text-[#C58F7A] transition-colors">
+                        Read More <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </a>
+                  </motion.article>
+                ))}
+              </div>
+            </>
+          )}
+
+        </div>
+      </main>
+
+      <Footer />
+    </div>
   );
 }
+
