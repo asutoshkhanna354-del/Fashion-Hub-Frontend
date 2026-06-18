@@ -45,9 +45,8 @@ function CheckoutContent() {
         razorpay_payment_id: rzpPaymentId,
         razorpay_signature: rzpSignature,
       }).then(() => {
-        clearCart();
-        // Extract original orderId from razorpayOrderId if possible, or just send them to status
-        // Since we don't have the original orderId in URL, we can fetch it or just pass rzpOrderId
+        // We let the backend clear the cart, avoid calling clearCart() here 
+        // to prevent React state race conditions that interrupt the router.push
         router.push(`/checkout/status?rzp_order_id=${rzpOrderId}`);
       }).catch((err: any) => {
         setError(err.message || "Payment verification failed");
@@ -91,7 +90,7 @@ function CheckoutContent() {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
             });
-            clearCart();
+            // We let the backend clear the cart
             router.push(`/checkout/status?order_id=${orderId}`);
           } catch (err: any) {
             setError(err.message || "Payment verification failed");
