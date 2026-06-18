@@ -11,7 +11,7 @@ import Footer from "@/components/layout/Footer";
 function PaymentStatusContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const orderId = searchParams.get("order_id");
+  const orderId = searchParams.get("order_id") || searchParams.get("rzp_order_id");
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const printRef = useRef<HTMLDivElement>(null);

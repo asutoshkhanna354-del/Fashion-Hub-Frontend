@@ -33,8 +33,34 @@ function CheckoutContent() {
     phone: user?.phone || "",
   });
 
+  useEffect(() => {
+    const rzpPaymentId = searchParams.get("razorpay_payment_id");
+    const rzpOrderId = searchParams.get("razorpay_order_id");
+    const rzpSignature = searchParams.get("razorpay_signature");
+    
+    if (rzpPaymentId && rzpOrderId && rzpSignature) {
+      setLoading(true);
+      paymentApi.verify({
+        razorpay_order_id: rzpOrderId,
+        razorpay_payment_id: rzpPaymentId,
+        razorpay_signature: rzpSignature,
+      }).then(() => {
+        clearCart();
+        // Extract original orderId from razorpayOrderId if possible, or just send them to status
+        // Since we don't have the original orderId in URL, we can fetch it or just pass rzpOrderId
+        router.push(`/checkout/status?rzp_order_id=${rzpOrderId}`);
+      }).catch((err: any) => {
+        setError(err.message || "Payment verification failed");
+        setLoading(false);
+      });
+    }
+  }, [searchParams]);
+
   if (!isLoggedIn) { router.push("/account/"); return null; }
-  if (items.length === 0) { router.push("/cart/"); return null; }
+  
+  // Prevent redirect if we are currently loading/verifying payment from query params
+  const isVerifying = searchParams.get("razorpay_payment_id") !== null;
+  if (items.length === 0 && !isVerifying) { router.push("/cart/"); return null; }
 
   const handlePayment = async () => {
     setLoading(true); setError("");
