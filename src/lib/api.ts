@@ -145,6 +145,7 @@ export const orderApi = {
     request<any>("/api/orders", { method: "POST", body: JSON.stringify({ promoCode, shippingAddress }) }),
   list: () => request<any>("/api/orders"),
   get: (id: string) => request<any>(`/api/orders/${id}`),
+  track: (id: string) => request<any>(`/api/orders/${id}/tracking`),
 };
 
 // ============================================
