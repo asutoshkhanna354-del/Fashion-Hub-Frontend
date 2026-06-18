@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AlertTriangle, Trash2, ShieldAlert } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { adminApi } from "@/lib/api";
 
 export default function DangerZonePage() {
   const [loading, setLoading] = useState(false);

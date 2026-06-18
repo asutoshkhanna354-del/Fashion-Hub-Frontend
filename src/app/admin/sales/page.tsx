@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { TrendingUp, Calendar, RefreshCw, ShoppingCart, DollarSign } from "lucide-react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { adminApi } from "@/lib/api";
 
 export default function SalesHistoryPage() {
   const [loading, setLoading] = useState(true);
