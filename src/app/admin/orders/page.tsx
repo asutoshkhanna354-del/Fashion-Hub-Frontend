@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Package, Search, X, Printer, Phone, Mail, MapPin, ChevronDown, FileText, Clock, CheckCircle, Truck, XCircle } from "lucide-react";
+import { Package, Search, X, Printer, Phone, Mail, MapPin, ChevronDown, FileText, Clock, CheckCircle, Truck, XCircle, Link } from "lucide-react";
 import { adminApi } from "@/lib/api";
+import Image from "next/image";
 import AdminLayout from "@/components/admin/AdminLayout";
 
 const statusColors: Record<string, string> = {
@@ -268,11 +269,18 @@ export default function AdminOrdersPage() {
                   <div className="space-y-2">
                     {selectedOrder.orderItems?.map((item: any, i: number) => (
                       <div key={i} className="bg-[#F8F6F3] rounded-xl p-3 flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-lg bg-white border border-[#111111]/[0.04] flex items-center justify-center flex-shrink-0">
-                          <Package className="w-5 h-5 text-[#111111]/10" />
+                        <div className="w-12 h-12 rounded-lg bg-white border border-[#111111]/[0.04] flex items-center justify-center flex-shrink-0 overflow-hidden relative">
+                          {item.product?.media?.[0] ? (
+                            <Image src={item.product.media[0].url.startsWith("http") ? item.product.media[0].url : `https://fashion-hub-backend-13eb.onrender.com${item.product.media[0].url}`} alt="" fill className="object-cover" />
+                          ) : (
+                            <Package className="w-5 h-5 text-[#111111]/10" />
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-[#111111] truncate">{item.product?.name || "Product"}</p>
+                          <a href={`/product/${item.productId}`} target="_blank" className="flex items-center gap-1 group">
+                            <p className="text-xs font-semibold text-[#111111] truncate group-hover:underline">{item.product?.name || "Product"}</p>
+                            <Link className="w-3 h-3 text-[#111111]/30 group-hover:text-[#C5A47E]" />
+                          </a>
                           <p className="text-[10px] text-[#111111]/30">{item.product?.fabric || ""} • Qty: {item.quantity}</p>
                         </div>
                         <div className="text-right">

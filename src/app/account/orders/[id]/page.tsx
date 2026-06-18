@@ -36,11 +36,7 @@ export default function OrderDetailPage() {
         setOrder(found);
         if (found.trackingId) {
           try {
-            const token = localStorage.getItem("token");
-            const trkRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/orders/${found.id}/tracking`, {
-              headers: { Authorization: `Bearer ${token}` }
-            });
-            const trkData = await trkRes.json();
+            const trkData = await orderApi.track(found.id);
             if (trkData.status && trkData.tracking) {
               setTracking(trkData.tracking);
             }

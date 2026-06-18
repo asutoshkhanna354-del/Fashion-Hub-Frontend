@@ -252,6 +252,12 @@ export const adminApi = {
   updateSettings: (data: Record<string, string>) =>
     adminRequest<any>("/api/settings", { method: "PUT", body: JSON.stringify(data) }),
 
+  // Sales History
+  salesHistory: (startDate: string, endDate: string) => adminRequest<any>(`/api/admin/sales-history?startDate=${startDate}&endDate=${endDate}`),
+
+  // Danger Zone
+  dangerAction: (action: string) => adminRequest<any>(`/api/admin/danger/${action}`, { method: "DELETE" }),
+
   // Push Notifications
   getVapidKey: () => adminRequest<any>("/api/admin/push/vapidPublic"),
   subscribePush: (subscription: any) =>

@@ -80,26 +80,32 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-end gap-1.5 h-44">
-            {(dashboard?.monthlyRevenue || []).slice(-6).map((m: any, i: number) => {
-              const displayMonths = (dashboard?.monthlyRevenue || []).slice(-6);
-              const maxRev = Math.max(...displayMonths.map((r: any) => r.revenue), 1000);
-              const height = (m.revenue / maxRev) * 100;
-              return (
-                <div key={i} className="flex-1 flex flex-col items-center gap-1.5 group relative">
-                  {/* Tooltip */}
-                  <div className="absolute -top-10 bg-[#111111] text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
-                    <p className="font-bold">₹{m.revenue.toLocaleString("en-IN")}</p>
-                    <p className="text-white/60">{m.orders} orders</p>
+            {dashboard?.monthlyRevenue && dashboard.monthlyRevenue.length > 0 ? (
+              dashboard.monthlyRevenue.slice(-6).map((m: any, i: number) => {
+                const displayMonths = dashboard.monthlyRevenue.slice(-6);
+                const maxRev = Math.max(...displayMonths.map((r: any) => r.revenue), 1000);
+                const height = maxRev > 0 ? (m.revenue / maxRev) * 100 : 0;
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center gap-1.5 group relative">
+                    {/* Tooltip */}
+                    <div className="absolute -top-10 bg-[#111111] text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                      <p className="font-bold">₹{m.revenue.toLocaleString("en-IN")}</p>
+                      <p className="text-white/60">{m.orders} orders</p>
+                    </div>
+                    
+                    <span className="text-[9px] text-[#111111]/25 font-medium">₹{(m.revenue / 1000).toFixed(0)}k</span>
+                    <div className="w-full relative rounded-t-lg overflow-hidden transition-all duration-500 bg-[#F8F6F3]" style={{ height: `${Math.max(height, 2)}%` }}>
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#C5A47E] to-[#C5A47E]/40 group-hover:from-[#111111] group-hover:to-[#111111]/80 transition-colors" />
+                    </div>
+                    <span className="text-[9px] text-[#111111]/40 font-bold truncate w-full text-center">{m.month?.split(" ")[0]}</span>
                   </div>
-                  
-                  <span className="text-[9px] text-[#111111]/25 font-medium">₹{(m.revenue / 1000).toFixed(0)}k</span>
-                  <div className="w-full relative rounded-t-lg overflow-hidden transition-all duration-500" style={{ height: `${Math.max(height, 2)}%` }}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#C5A47E] to-[#C5A47E]/40 group-hover:from-[#111111] group-hover:to-[#111111]/80 transition-colors" />
-                  </div>
-                  <span className="text-[9px] text-[#111111]/40 font-bold truncate w-full text-center">{m.month?.split(" ")[0]}</span>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-xs text-[#111111]/40">
+                No revenue data available
+              </div>
+            )}
           </div>
         </motion.div>
 

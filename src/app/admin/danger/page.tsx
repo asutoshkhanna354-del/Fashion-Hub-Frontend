@@ -13,13 +13,7 @@ export default function DangerZonePage() {
 
     setLoading(true);
     try {
-      const token = localStorage.getItem("admin_token");
-      const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/admin/danger/${action}`;
-      const res = await fetch(url, {
-        method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}` }
-      });
-      const data = await res.json();
+      const data = await adminApi.dangerAction(action);
       if (data.status) {
         alert("Success: " + data.message);
         window.location.reload();

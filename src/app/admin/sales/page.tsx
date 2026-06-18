@@ -49,10 +49,7 @@ export default function SalesHistoryPage() {
   const fetchSalesData = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("admin_token");
-      const url = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/admin/sales-history?startDate=${startDate}&endDate=${endDate}`;
-      const res = await fetch(url, { headers: { "Authorization": `Bearer ${token}` } });
-      const result = await res.json();
+      const result = await adminApi.salesHistory(startDate, endDate);
       if (result.status) {
         setData(result);
       }
