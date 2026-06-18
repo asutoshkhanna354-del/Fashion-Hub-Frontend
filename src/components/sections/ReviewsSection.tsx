@@ -31,7 +31,7 @@ const defaultReviews = [
     date: "28 Sep 2023",
     rating: 5,
     title: "Worth Every Penny",
-    content: "I was hesitant to buy silk online, but Solanki Vastra exceeded my expectations. The colors are even more vibrant in person. The packaging was so premium!",
+    content: "I was hesitant to buy silk online, but Solanki Vastra Bhandar exceeded my expectations. The colors are even more vibrant in person. The packaging was so premium!",
     verified: true,
     likes: 8,
     media: [] // removed photos from homepage
@@ -136,7 +136,7 @@ export default function ReviewsSection({ productId }: ReviewsSectionProps) {
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-plum mb-4">
             {productId ? "Customer Reviews" : "Client Diaries"}
           </h2>
-          <p className="text-plum/50 font-medium">Stories from the Solanki Vastra family</p>
+          <p className="text-plum/50 font-medium">Stories from the Solanki Vastra Bhandar family</p>
         </div>
 
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20">

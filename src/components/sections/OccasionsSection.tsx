@@ -60,15 +60,15 @@ export default function OccasionsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12 sm:mb-16"
         >
-          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1E1533] mb-3">
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[#111111] mb-3">
             Shop By Occasion
           </h2>
-          <div className="flex items-center justify-center gap-2 text-[#C58F7A] mb-3">
-            <div className="w-12 h-px bg-gradient-to-r from-transparent to-[#C58F7A]/50" />
-            <div className="w-2 h-2 rotate-45 border border-[#C58F7A]" />
-            <div className="w-12 h-px bg-gradient-to-l from-transparent to-[#C58F7A]/50" />
+          <div className="flex items-center justify-center gap-2 text-[#C5A47E] mb-3">
+            <div className="w-12 h-px bg-gradient-to-r from-transparent to-[#C5A47E]/50" />
+            <div className="w-2 h-2 rotate-45 border border-[#C5A47E]" />
+            <div className="w-12 h-px bg-gradient-to-l from-transparent to-[#C5A47E]/50" />
           </div>
-          <p className="text-[#1E1533]/50 text-sm sm:text-base max-w-lg mx-auto font-medium tracking-wide">
+          <p className="text-[#111111]/50 text-sm sm:text-base max-w-lg mx-auto font-medium tracking-wide">
             Find the perfect drape for your next celebration
           </p>
         </motion.div>
@@ -90,7 +90,7 @@ export default function OccasionsSection() {
             >
               {/* Circular Image */}
               <div className="relative mb-3">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden border border-[#C58F7A]/15 group-hover:border-[#C58F7A]/40 transition-all duration-500 shadow-sm group-hover:shadow-lg bg-white p-1">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full overflow-hidden border border-[#C5A47E]/15 group-hover:border-[#C5A47E]/40 transition-all duration-500 shadow-sm group-hover:shadow-lg bg-white p-1">
                   <div className="w-full h-full rounded-full overflow-hidden transform transition-transform duration-700 ease-out group-hover:scale-110 relative bg-[#F8F6F3]">
                     <Image
                       src={getImgUrl(section.image)}
@@ -102,7 +102,7 @@ export default function OccasionsSection() {
                   </div>
                 </div>
                 {/* Hover ring */}
-                <div className="absolute -inset-1 rounded-full border border-[#C58F7A]/0 group-hover:border-[#C58F7A]/30 transition-all duration-500 group-hover:scale-[1.08]" />
+                <div className="absolute -inset-1 rounded-full border border-[#C5A47E]/0 group-hover:border-[#C5A47E]/30 transition-all duration-500 group-hover:scale-[1.08]" />
               </div>
 
               {/* Collection Name */}

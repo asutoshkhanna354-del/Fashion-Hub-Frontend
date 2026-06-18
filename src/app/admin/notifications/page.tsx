@@ -29,7 +29,7 @@ export default function AdminNotificationsPage() {
     <AdminLayout title="Notifications" subtitle={unreadCount > 0 ? `You have ${unreadCount} unread notifications` : "All caught up!"}
       actions={
         unreadCount > 0 && (
-          <button onClick={markAllRead} className="px-4 py-2.5 bg-[#1E1533]/5 text-[#1E1533] rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-[#1E1533]/10 transition-colors">
+          <button onClick={markAllRead} className="px-4 py-2.5 bg-[#111111]/5 text-[#111111] rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-[#111111]/10 transition-colors">
             <CheckCheck className="w-3.5 h-3.5" /> Mark All Read
           </button>
         )
@@ -39,23 +39,23 @@ export default function AdminNotificationsPage() {
         {notifications.map((n, i) => {
           const Icon = typeIcons[n.type] || Bell;
           return (
-            <motion.div key={n.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} onClick={() => !n.read && markRead(n.id)} className={`bg-white rounded-2xl p-4 flex items-start gap-4 border shadow-sm transition-all cursor-pointer ${n.read ? "border-[#1E1533]/[0.03]" : "border-[#C58F7A]/30 bg-[#C58F7A]/[0.02]"}`}>
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${n.read ? "bg-[#F8F6F3]" : "bg-[#C58F7A]/10"}`}>
-                <Icon className={`w-5 h-5 ${n.read ? "text-[#1E1533]/30" : "text-[#C58F7A]"}`} />
+            <motion.div key={n.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} onClick={() => !n.read && markRead(n.id)} className={`bg-white rounded-2xl p-4 flex items-start gap-4 border shadow-sm transition-all cursor-pointer ${n.read ? "border-[#111111]/[0.03]" : "border-[#C5A47E]/30 bg-[#C5A47E]/[0.02]"}`}>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${n.read ? "bg-[#F8F6F3]" : "bg-[#C5A47E]/10"}`}>
+                <Icon className={`w-5 h-5 ${n.read ? "text-[#111111]/30" : "text-[#C5A47E]"}`} />
               </div>
               <div className="flex-1 min-w-0 pt-0.5">
-                <p className={`text-sm font-semibold ${n.read ? "text-[#1E1533]/60" : "text-[#1E1533]"}`}>{n.title}</p>
-                <p className={`text-xs mt-1 ${n.read ? "text-[#1E1533]/40" : "text-[#1E1533]/70"}`}>{n.message}</p>
-                <p className="text-[10px] text-[#1E1533]/30 mt-2">{new Date(n.createdAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p>
+                <p className={`text-sm font-semibold ${n.read ? "text-[#111111]/60" : "text-[#111111]"}`}>{n.title}</p>
+                <p className={`text-xs mt-1 ${n.read ? "text-[#111111]/40" : "text-[#111111]/70"}`}>{n.message}</p>
+                <p className="text-[10px] text-[#111111]/30 mt-2">{new Date(n.createdAt).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p>
               </div>
-              {!n.read && <div className="w-2.5 h-2.5 rounded-full bg-[#C58F7A] shadow-[0_0_8px_rgba(197,143,122,0.5)] flex-shrink-0 mt-2" />}
+              {!n.read && <div className="w-2.5 h-2.5 rounded-full bg-[#C5A47E] shadow-[0_0_8px_rgba(197,143,122,0.5)] flex-shrink-0 mt-2" />}
             </motion.div>
           );
         })}
         {notifications.length === 0 && (
-          <div className="text-center py-16 bg-white rounded-2xl border border-[#1E1533]/[0.03]">
-            <Bell className="w-10 h-10 text-[#1E1533]/5 mx-auto mb-2" />
-            <p className="text-xs text-[#1E1533]/25">No notifications yet</p>
+          <div className="text-center py-16 bg-white rounded-2xl border border-[#111111]/[0.03]">
+            <Bell className="w-10 h-10 text-[#111111]/5 mx-auto mb-2" />
+            <p className="text-xs text-[#111111]/25">No notifications yet</p>
           </div>
         )}
       </div>

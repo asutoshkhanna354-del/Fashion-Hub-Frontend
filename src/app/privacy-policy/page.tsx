@@ -29,7 +29,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="font-display text-lg font-bold text-plum mt-6">Third-Party Sharing</h2>
             <p>We do not sell or share your personal information with third parties except as necessary for order fulfillment (e.g., shipping partners).</p>
             <h2 className="font-display text-lg font-bold text-plum mt-6">Contact</h2>
-            <p>For privacy-related questions, contact us at hello@solankivastra.com.</p>
+            <p>For privacy-related questions, contact us at hello@solankivastrabhandar.com.</p>
           </>
         )}
       </div>

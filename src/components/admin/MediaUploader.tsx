@@ -71,17 +71,17 @@ export default function MediaUploader({ media, onChange, maxFiles = 10, label = 
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-[#1E1533]/50 uppercase tracking-wider mb-2">{label}</label>
+      <label className="block text-xs font-semibold text-[#111111]/50 uppercase tracking-wider mb-2">{label}</label>
       
       {/* Preview Grid */}
       {media.length > 0 && (
         <div className={`grid ${single ? "grid-cols-1" : "grid-cols-3 sm:grid-cols-4"} gap-2 mb-3`}>
           {media.map((item, i) => (
-            <div key={i} className="relative group aspect-square rounded-xl overflow-hidden bg-[#F8F6F3] border border-[#1E1533]/5">
+            <div key={i} className="relative group aspect-square rounded-xl overflow-hidden bg-[#F8F6F3] border border-[#111111]/5">
               {item.type === "video" ? (
-                <div className="w-full h-full flex items-center justify-center bg-[#1E1533]/5">
-                  <Film className="w-8 h-8 text-[#1E1533]/20" />
-                  <span className="absolute bottom-1 text-[8px] text-[#1E1533]/30 truncate px-1">{item.originalName}</span>
+                <div className="w-full h-full flex items-center justify-center bg-[#111111]/5">
+                  <Film className="w-8 h-8 text-[#111111]/20" />
+                  <span className="absolute bottom-1 text-[8px] text-[#111111]/30 truncate px-1">{item.originalName}</span>
                 </div>
               ) : (
                 <Image src={item.url} alt="" fill className="object-cover" sizes="120px" />
@@ -111,23 +111,23 @@ export default function MediaUploader({ media, onChange, maxFiles = 10, label = 
           onClick={() => fileRef.current?.click()}
           className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
             dragOver
-              ? "border-[#C58F7A] bg-[#C58F7A]/5"
-              : "border-[#1E1533]/10 hover:border-[#C58F7A]/40 hover:bg-[#C58F7A]/[0.02]"
+              ? "border-[#C5A47E] bg-[#C5A47E]/5"
+              : "border-[#111111]/10 hover:border-[#C5A47E]/40 hover:bg-[#C5A47E]/[0.02]"
           }`}
         >
           {uploading ? (
             <div className="flex flex-col items-center gap-2">
-              <Loader2 className="w-6 h-6 text-[#C58F7A] animate-spin" />
-              <p className="text-xs text-[#1E1533]/40">Uploading...</p>
+              <Loader2 className="w-6 h-6 text-[#C5A47E] animate-spin" />
+              <p className="text-xs text-[#111111]/40">Uploading...</p>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-[#C58F7A]/10 flex items-center justify-center">
-                <Upload className="w-5 h-5 text-[#C58F7A]" />
+              <div className="w-10 h-10 rounded-xl bg-[#C5A47E]/10 flex items-center justify-center">
+                <Upload className="w-5 h-5 text-[#C5A47E]" />
               </div>
               <div>
-                <p className="text-xs font-medium text-[#1E1533]/60">Drop files here or click to browse</p>
-                <p className="text-[10px] text-[#1E1533]/30 mt-0.5">JPG, PNG, WebP, GIF, MP4 • Max 50MB</p>
+                <p className="text-xs font-medium text-[#111111]/60">Drop files here or click to browse</p>
+                <p className="text-[10px] text-[#111111]/30 mt-0.5">JPG, PNG, WebP, GIF, MP4 • Max 50MB</p>
               </div>
             </div>
           )}

@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/contexts/auth-context";
 import { orderApi, paymentApi } from "@/lib/api";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Script from "next/script";
 
 function CheckoutContent() {
   const { items, total, clearCart } = useCart();
@@ -21,10 +22,6 @@ function CheckoutContent() {
   const [error, setError] = useState("");
   const [editAddress, setEditAddress] = useState(false);
   
-  // Payment Modal State
-  const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
-  const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
-  
   const [address, setAddress] = useState({
     line1: user?.addressLine1 || "",
     line2: user?.addressLine2 || "",
@@ -36,54 +33,70 @@ function CheckoutContent() {
     phone: user?.phone || "",
   });
 
-  // Poll for payment status when modal is open
-  useEffect(() => {
-    if (!activeOrderId || !paymentUrl) return;
-
-    const intervalId = setInterval(async () => {
-      try {
-        const res = await paymentApi.status(activeOrderId);
-        const status = res.order?.paymentStatus;
-        
-        if (status === "SUCCESS" || status === "FAILED") {
-          clearInterval(intervalId);
-          setPaymentUrl(null);
-          clearCart();
-          router.push(`/checkout/status?order_id=${activeOrderId}`);
-        }
-      } catch (err) {
-        console.error("Polling error:", err);
-      }
-    }, 3000);
-
-    return () => clearInterval(intervalId);
-  }, [activeOrderId, paymentUrl, router, clearCart]);
-
   if (!isLoggedIn) { router.push("/account/"); return null; }
-  if (items.length === 0 && !activeOrderId) { router.push("/cart/"); return null; }
+  if (items.length === 0) { router.push("/cart/"); return null; }
 
   const handlePayment = async () => {
     setLoading(true); setError("");
     try {
       const orderData = await orderApi.create(promoCode, address);
       const orderId = orderData.order.id;
-      setActiveOrderId(orderId);
       
       const payData = await paymentApi.create(orderId);
-      if (payData.paymentUrl) {
-        setPaymentUrl(payData.paymentUrl);
-      } else {
+      
+      if (!payData.razorpayOrderId) {
         setError("Payment creation failed. Please try again.");
+        setLoading(false);
+        return;
       }
+
+      const options = {
+        key: payData.keyId || process.env.NEXT_PUBLIC_RZP_KEY || "", 
+        amount: payData.amount,
+        currency: payData.currency || "INR",
+        name: "Solanki Vastra Bhandar",
+        description: "Order Payment",
+        order_id: payData.razorpayOrderId,
+        handler: async function (response: any) {
+          try {
+            setLoading(true);
+            await paymentApi.verify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            clearCart();
+            router.push(`/checkout/status?order_id=${orderId}`);
+          } catch (err: any) {
+            setError(err.message || "Payment verification failed");
+            setLoading(false);
+          }
+        },
+        prefill: {
+          name: address.name,
+          email: user?.email,
+          contact: address.phone,
+        },
+        theme: {
+          color: "#C5A47E", // Golden theme color
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on("payment.failed", function (response: any) {
+        setError("Payment failed: " + response.error.description);
+        setLoading(false);
+      });
+      rzp.open();
     } catch (err: any) {
       setError(err.message || "Something went wrong");
-    } finally { 
       setLoading(false); 
     }
   };
 
   return (
     <>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
       <Header />
       <main className="min-h-screen bg-ivory pt-28 pb-20">
         <div className="container-premium max-w-3xl mx-auto">
@@ -134,21 +147,21 @@ function CheckoutContent() {
                 <h2 className="font-display text-lg font-bold text-plum flex items-center gap-2 mb-4">
                   <CreditCard className="w-5 h-5 text-rose-gold" /> Payment Method
                 </h2>
-                <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-ivory to-white rounded-2xl border-2 border-plum shadow-sm cursor-pointer">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-plum to-plum/80 flex items-center justify-center text-xl font-bold text-white shadow-inner">₹</div>
+                <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-ivory to-white rounded-2xl border-2 border-[#C5A47E] shadow-sm cursor-pointer">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#111111] to-[#222222] flex items-center justify-center text-xl font-bold text-[#C5A47E] shadow-inner">₹</div>
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-plum">UPI / QR Code</p>
-                    <p className="text-xs text-plum/50">Pay via Google Pay, PhonePe, Paytm</p>
+                    <p className="text-sm font-bold text-[#111111]">Razorpay</p>
+                    <p className="text-xs text-[#111111]/60">Pay via UPI, Cards, NetBanking, Wallets</p>
                   </div>
-                  <div className="w-5 h-5 rounded-full border-4 border-plum flex items-center justify-center bg-white" />
+                  <div className="w-5 h-5 rounded-full border-4 border-[#C5A47E] flex items-center justify-center bg-white" />
                 </div>
               </motion.div>
             </div>
 
             {/* Summary */}
             <div className="lg:col-span-2">
-              <div className="bg-plum rounded-3xl p-6 sticky top-28 shadow-xl text-white">
-                <h2 className="font-display text-lg font-bold mb-5 text-white">Order Summary</h2>
+              <div className="bg-[#111111] rounded-3xl p-6 sticky top-28 shadow-xl text-white">
+                <h2 className="font-display text-lg font-bold mb-5 text-[#C5A47E]">Order Summary</h2>
                 <div className="space-y-4 text-sm mb-6">
                   {items.map((item) => (
                     <div key={item.id} className="flex justify-between items-center group">
@@ -170,7 +183,7 @@ function CheckoutContent() {
                       </div>
                     )}
                     <div className="border-t border-white/10 pt-3 flex justify-between font-display text-xl font-bold">
-                      <span>Total</span><span>₹{total.toLocaleString("en-IN")}</span>
+                      <span className="text-[#C5A47E]">Total</span><span>₹{total.toLocaleString("en-IN")}</span>
                     </div>
                   </div>
                 </div>
@@ -178,10 +191,10 @@ function CheckoutContent() {
                 <button 
                   onClick={handlePayment} 
                   disabled={loading || !address.name || !address.phone || !address.line1 || !address.city || !address.pincode} 
-                  className="w-full py-4 bg-gradient-to-r from-rose-gold to-[#B89CCF] text-white rounded-xl font-bold text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+                  className="w-full py-4 bg-gradient-to-r from-[#C5A47E] to-[#B38D64] text-[#111111] rounded-xl font-bold text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
                 >
                   {loading ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
+                    <><Loader2 className="w-4 h-4 animate-spin text-[#111111]" /> Processing...</>
                   ) : (
                     "Place Order & Pay"
                   )}
@@ -196,73 +209,6 @@ function CheckoutContent() {
         </div>
       </main>
       <Footer />
-
-      {/* Payment Iframe Modal */}
-      <AnimatePresence>
-        {paymentUrl && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-md" />
-            
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0, y: 20 }} 
-              animate={{ scale: 1, opacity: 1, y: 0 }} 
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col z-10"
-              style={{ height: '85vh', maxHeight: '700px' }}
-            >
-              {/* Header */}
-              <div className="px-5 py-4 border-b border-[#1E1533]/[0.04] flex items-center justify-between bg-[#F8F6F3]">
-                <div className="flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-emerald-500" />
-                  <div>
-                    <h3 className="font-display font-bold text-[#1E1533] text-sm">Secure Checkout</h3>
-                    <p className="text-[10px] text-[#1E1533]/40">Waiting for payment confirmation...</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => {
-                    if (confirm("Are you sure you want to cancel the payment?")) {
-                      setPaymentUrl(null);
-                      router.push(`/checkout/status?order_id=${activeOrderId}`);
-                    }
-                  }} 
-                  className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm hover:bg-red-50 text-[#1E1533]/40 hover:text-red-500 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Iframe Container */}
-              <div className="flex-1 relative bg-white">
-                {/* Fallback text if iframe doesn't load/is blocked */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center z-0">
-                  <Loader2 className="w-8 h-8 text-rose-gold animate-spin mb-4" />
-                  <p className="text-sm font-semibold text-plum">Loading Payment Gateway</p>
-                  <p className="text-xs text-plum/50 mt-2 max-w-[250px]">If the payment page doesn't appear, your browser might be blocking iframes.</p>
-                  <a 
-                    href={paymentUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="mt-6 px-5 py-2.5 bg-plum text-white rounded-xl text-xs font-semibold"
-                    onClick={(e) => {
-                      // Don't let the link close the modal immediately, keep polling
-                    }}
-                  >
-                    Open Payment in New Tab
-                  </a>
-                </div>
-
-                <iframe 
-                  src={paymentUrl} 
-                  className="absolute inset-0 w-full h-full z-10 border-none bg-white"
-                  title="Secure Payment"
-                  allow="payment"
-                />
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </>
   );
 }

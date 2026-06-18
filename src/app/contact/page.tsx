@@ -38,7 +38,7 @@ export default function ContactPage() {
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-4">
           {[
-            { icon: Mail, label: "Email", value: settings?.store_email || "hello@solankivastra.com", link: settings?.store_email ? `mailto:${settings.store_email}` : "#" },
+            { icon: Mail, label: "Email", value: settings?.store_email || "hello@solankivastrabhandar.com", link: settings?.store_email ? `mailto:${settings.store_email}` : "#" },
             { icon: Phone, label: "Phone", value: settings?.store_phone || "+91 98765 43210", link: settings?.store_phone ? `tel:${settings.store_phone}` : "#" },
             { icon: MapPin, label: "Address", value: settings?.store_address || "Fashion District, Mumbai, Maharashtra 400001", link: "#" },
             { icon: MessageCircle, label: "WhatsApp", value: "Chat with us", link: settings?.whatsapp_link || "#" },

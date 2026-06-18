@@ -211,7 +211,7 @@ export default function HeroSection() {
                     height="18"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#C58F7A"
+                    stroke="#C5A47E"
                     strokeWidth="1.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"

@@ -77,7 +77,7 @@ export default function BestSellersAdminPage() {
     return (
       <AdminLayout title="Best Sellers">
         <div className="flex justify-center items-center h-64">
-          <Loader2 className="w-8 h-8 animate-spin text-[#1E1533]/40" />
+          <Loader2 className="w-8 h-8 animate-spin text-[#111111]/40" />
         </div>
       </AdminLayout>
     );

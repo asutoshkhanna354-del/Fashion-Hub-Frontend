@@ -23,7 +23,7 @@ export default function Footer() {
                 <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center border border-rose-gold/20">
                    <img 
                      src={settings.store_logo_url.startsWith("http") ? settings.store_logo_url : `https://Solanki-Vastra-backend.onrender.com${settings.store_logo_url}`} 
-                     alt={"Solanki Vastra"} 
+                     alt={"Solanki Vastra Bhandar"} 
                      className="w-full h-full object-contain" 
                    />
                 </div>
@@ -34,22 +34,22 @@ export default function Footer() {
                   viewBox="0 0 44 44"
                   fill="none"
                 >
-                  <circle cx="22" cy="22" r="20" stroke="#C58F7A" strokeWidth="1.5" fill="none" />
+                  <circle cx="22" cy="22" r="20" stroke="#C5A47E" strokeWidth="1.5" fill="none" />
                   <path
                     d="M22 8c-2 4-6 8-6 14s4 10 6 14c2-4 6-8 6-14s-4-10-6-14z"
-                    fill="#C58F7A"
+                    fill="#C5A47E"
                     opacity="0.15"
-                    stroke="#C58F7A"
+                    stroke="#C5A47E"
                     strokeWidth="1"
                   />
                   <path
                     d="M10 22c4-2 8-6 14-6s10 4 14 6c-4 2-8 6-14 6s-10-4-14-6z"
-                    fill="#B89CCF"
+                    fill="#C5A47E"
                     opacity="0.15"
-                    stroke="#B89CCF"
+                    stroke="#C5A47E"
                     strokeWidth="1"
                   />
-                  <circle cx="22" cy="22" r="3" fill="#C58F7A" />
+                  <circle cx="22" cy="22" r="3" fill="#C5A47E" />
                 </svg>
               )}
               <div className="flex flex-col">
@@ -57,7 +57,7 @@ export default function Footer() {
                   {"SOLANKI"}
                 </span>
                 <span className="text-[9px] tracking-[0.3em] text-rose-gold font-medium uppercase">
-                  {"VASTRA"}
+                  {"VASTRA BHANDAR"}
                 </span>
               </div>
             </a>
@@ -171,7 +171,7 @@ export default function Footer() {
       <div className="border-t border-rose-gold/10">
         <div className="container-premium py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-plum/40 text-center sm:text-left">
-            © {new Date().getFullYear()} {"Solanki Vastra"}. All rights reserved.
+            © {new Date().getFullYear()} {"Solanki Vastra Bhandar"}. All rights reserved.
             Made with ♥ in India.
           </p>
 

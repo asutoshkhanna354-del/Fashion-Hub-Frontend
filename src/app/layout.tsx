@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
     if (res.ok) {
       const data = await res.json();
       const settings = data.settings || {};
-      const storeName = "Solanki Vastra";
+      const storeName = "Solanki Vastra Bhandar";
       const logoUrl = settings.store_logo_url || "/favicon.ico";
 
       return {
@@ -42,8 +42,8 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
-    title: "Solanki Vastra | Premium Designer Sarees Online",
-    description: "Discover exquisite designer sarees at Solanki Vastra. Shop premium silk, organza, chiffon & cotton sarees with free shipping.",
+    title: "Solanki Vastra Bhandar | Premium Designer Sarees Online",
+    description: "Discover exquisite designer sarees at Solanki Vastra Bhandar. Shop premium silk, organza, chiffon & cotton sarees with free shipping.",
   };
 }
 

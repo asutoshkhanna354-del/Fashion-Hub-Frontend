@@ -29,20 +29,20 @@ export default function CollectionsPage() {
       <main className="min-h-screen bg-[#F8F6F3] pt-28 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="font-display text-3xl sm:text-4xl font-bold text-[#1E1533]">Our Collections</motion.h1>
-            <p className="text-[#1E1533]/50 text-sm mt-2 font-medium tracking-wide">Explore our curated collections of premium sarees</p>
+            <motion.h1 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="font-display text-3xl sm:text-4xl font-bold text-[#111111]">Our Collections</motion.h1>
+            <p className="text-[#111111]/50 text-sm mt-2 font-medium tracking-wide">Explore our curated collections of premium sarees</p>
           </div>
           
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {[...Array(8)].map((_, i) => <div key={i} className="aspect-[3/4] bg-[#1E1533]/5 animate-pulse rounded-2xl" />)}
+              {[...Array(8)].map((_, i) => <div key={i} className="aspect-[3/4] bg-[#111111]/5 animate-pulse rounded-2xl" />)}
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {sections.map((section, i) => (
                 <motion.div key={section.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
                   <Link href={`/collections/${section.id}/`} className="group block">
-                    <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gradient-to-br from-[#1E1533]/5 to-[#C58F7A]/5 shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gradient-to-br from-[#111111]/5 to-[#C5A47E]/5 shadow-sm hover:shadow-xl transition-all duration-300">
                       {section.image && (
                         <Image 
                           src={getImgUrl(section.image) as string} 

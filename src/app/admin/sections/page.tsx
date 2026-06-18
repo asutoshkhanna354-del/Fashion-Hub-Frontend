@@ -36,15 +36,15 @@ export default function AdminSectionsPage() {
     catch (e: any) { alert(e.message); }
   };
 
-  const fieldClass = "w-full px-3.5 py-3 bg-[#F8F6F3] border border-[#1E1533]/[0.06] rounded-xl text-sm text-[#1E1533] placeholder:text-[#1E1533]/25 focus:outline-none focus:border-[#C58F7A]/30 focus:ring-1 focus:ring-[#C58F7A]/10 transition-all";
-  const labelClass = "block text-[11px] font-semibold text-[#1E1533]/40 uppercase tracking-wider mb-1.5";
+  const fieldClass = "w-full px-3.5 py-3 bg-[#F8F6F3] border border-[#111111]/[0.06] rounded-xl text-sm text-[#111111] placeholder:text-[#111111]/25 focus:outline-none focus:border-[#C5A47E]/30 focus:ring-1 focus:ring-[#C5A47E]/10 transition-all";
+  const labelClass = "block text-[11px] font-semibold text-[#111111]/40 uppercase tracking-wider mb-1.5";
 
   return (
     <AdminLayout
       title="Sections"
       subtitle={`${sections.length} collection categories`}
       actions={
-        <button onClick={() => { setForm({ name: "", description: "", sortOrder: "0", image: "", videoUrl: "", type: "collection" }); setImageMedia([]); setEditing(null); setShowForm(true); }} className="px-4 py-2.5 bg-gradient-to-r from-[#C58F7A] to-[#B89CCF] text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-[#C58F7A]/20">
+        <button onClick={() => { setForm({ name: "", description: "", sortOrder: "0", image: "", videoUrl: "", type: "collection" }); setImageMedia([]); setEditing(null); setShowForm(true); }} className="px-4 py-2.5 bg-gradient-to-r from-[#C5A47E] to-[#C5A47E] text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-[#C5A47E]/20">
           <Plus className="w-3.5 h-3.5" /> Add Section
         </button>
       }
@@ -54,9 +54,9 @@ export default function AdminSectionsPage() {
         {showForm && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[#1E1533]/[0.04]">
-                <h2 className="font-display text-base font-bold text-[#1E1533]">{editing ? "Edit" : "New"} Section</h2>
-                <button onClick={() => { setShowForm(false); setEditing(null); }} className="w-8 h-8 rounded-lg hover:bg-[#F8F6F3] flex items-center justify-center"><X className="w-4 h-4 text-[#1E1533]/30" /></button>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[#111111]/[0.04]">
+                <h2 className="font-display text-base font-bold text-[#111111]">{editing ? "Edit" : "New"} Section</h2>
+                <button onClick={() => { setShowForm(false); setEditing(null); }} className="w-8 h-8 rounded-lg hover:bg-[#F8F6F3] flex items-center justify-center"><X className="w-4 h-4 text-[#111111]/30" /></button>
               </div>
               <div className="p-6 space-y-4">
                 <div>
@@ -91,9 +91,9 @@ export default function AdminSectionsPage() {
                   label="Cover Image"
                 />
               </div>
-              <div className="px-6 py-4 border-t border-[#1E1533]/[0.04] flex gap-3">
-                <button onClick={() => { setShowForm(false); setEditing(null); }} className="flex-1 py-3 border border-[#1E1533]/[0.06] text-[#1E1533]/50 rounded-xl text-sm font-medium hover:bg-[#F8F6F3]">Cancel</button>
-                <button onClick={handleSave} className="flex-1 py-3 bg-gradient-to-r from-[#1E1533] to-[#1E1533]/90 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
+              <div className="px-6 py-4 border-t border-[#111111]/[0.04] flex gap-3">
+                <button onClick={() => { setShowForm(false); setEditing(null); }} className="flex-1 py-3 border border-[#111111]/[0.06] text-[#111111]/50 rounded-xl text-sm font-medium hover:bg-[#F8F6F3]">Cancel</button>
+                <button onClick={handleSave} className="flex-1 py-3 bg-gradient-to-r from-[#111111] to-[#111111]/90 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
                   <Save className="w-4 h-4" /> Save
                 </button>
               </div>
@@ -105,14 +105,14 @@ export default function AdminSectionsPage() {
       {/* Sections Grid */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {sections.map((s) => (
-          <motion.div key={s.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl border border-[#1E1533]/[0.03] shadow-sm overflow-hidden group">
+          <motion.div key={s.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl border border-[#111111]/[0.03] shadow-sm overflow-hidden group">
             {/* Cover Image */}
             <div className="relative h-36 bg-gradient-to-br from-[#F8F6F3] to-[#EDE8E0]">
               {s.image ? (
                 <Image src={s.image} alt={s.name} fill className="object-cover" sizes="400px" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <ImageIcon className="w-10 h-10 text-[#1E1533]/5" />
+                  <ImageIcon className="w-10 h-10 text-[#111111]/5" />
                 </div>
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -123,8 +123,8 @@ export default function AdminSectionsPage() {
             </div>
             <div className="p-4 flex items-center justify-between">
               <div>
-                {s.description && <p className="text-[11px] text-[#1E1533]/35 truncate max-w-[200px]">{s.description}</p>}
-                <p className="text-[10px] text-[#1E1533]/20 mt-0.5">Sort: {s.sortOrder}</p>
+                {s.description && <p className="text-[11px] text-[#111111]/35 truncate max-w-[200px]">{s.description}</p>}
+                <p className="text-[10px] text-[#111111]/20 mt-0.5">Sort: {s.sortOrder}</p>
               </div>
               <div className="flex gap-1">
                 <button onClick={() => {
@@ -144,9 +144,9 @@ export default function AdminSectionsPage() {
       </div>
 
       {sections.length === 0 && (
-        <div className="text-center py-16 bg-white rounded-2xl border border-[#1E1533]/[0.03]">
-          <Layers className="w-10 h-10 text-[#1E1533]/5 mx-auto mb-2" />
-          <p className="text-xs text-[#1E1533]/25">No sections yet. Add your first collection!</p>
+        <div className="text-center py-16 bg-white rounded-2xl border border-[#111111]/[0.03]">
+          <Layers className="w-10 h-10 text-[#111111]/5 mx-auto mb-2" />
+          <p className="text-xs text-[#111111]/25">No sections yet. Add your first collection!</p>
         </div>
       )}
     </AdminLayout>

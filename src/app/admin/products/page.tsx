@@ -75,26 +75,26 @@ export default function AdminProductsPage() {
     (p.fabric || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const fieldClass = "w-full px-3.5 py-3 bg-[#F8F6F3] border border-[#1E1533]/[0.06] rounded-xl text-sm text-[#1E1533] placeholder:text-[#1E1533]/25 focus:outline-none focus:border-[#C58F7A]/30 focus:ring-1 focus:ring-[#C58F7A]/10 transition-all";
-  const labelClass = "block text-[11px] font-semibold text-[#1E1533]/40 uppercase tracking-wider mb-1.5";
+  const fieldClass = "w-full px-3.5 py-3 bg-[#F8F6F3] border border-[#111111]/[0.06] rounded-xl text-sm text-[#111111] placeholder:text-[#111111]/25 focus:outline-none focus:border-[#C5A47E]/30 focus:ring-1 focus:ring-[#C5A47E]/10 transition-all";
+  const labelClass = "block text-[11px] font-semibold text-[#111111]/40 uppercase tracking-wider mb-1.5";
 
   return (
     <AdminLayout
       title="Products"
       subtitle={`${products.length} products in store`}
       actions={
-        <button onClick={() => { resetForm(); setEditing(null); setShowForm(true); }} className="px-4 py-2.5 bg-gradient-to-r from-[#C58F7A] to-[#B89CCF] text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-[#C58F7A]/20 hover:shadow-xl transition-shadow">
+        <button onClick={() => { resetForm(); setEditing(null); setShowForm(true); }} className="px-4 py-2.5 bg-gradient-to-r from-[#C5A47E] to-[#C5A47E] text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-[#C5A47E]/20 hover:shadow-xl transition-shadow">
           <Plus className="w-3.5 h-3.5" /> Add Product
         </button>
       }
     >
       {/* Search */}
       <div className="relative mb-6">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1E1533]/20" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111]/20" />
         <input
           type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search products by name or fabric..."
-          className="w-full pl-11 pr-4 py-3 bg-white border border-[#1E1533]/[0.04] rounded-xl text-sm text-[#1E1533] placeholder:text-[#1E1533]/20 focus:outline-none focus:border-[#C58F7A]/30 shadow-sm"
+          className="w-full pl-11 pr-4 py-3 bg-white border border-[#111111]/[0.04] rounded-xl text-sm text-[#111111] placeholder:text-[#111111]/20 focus:outline-none focus:border-[#C5A47E]/30 shadow-sm"
         />
       </div>
 
@@ -103,9 +103,9 @@ export default function AdminProductsPage() {
         {showForm && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-auto">
             <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl w-full max-w-2xl my-8 shadow-2xl">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[#1E1533]/[0.04]">
-                <h2 className="font-display text-base font-bold text-[#1E1533]">{editing ? "Edit" : "New"} Product</h2>
-                <button onClick={() => { setShowForm(false); setEditing(null); }} className="w-8 h-8 rounded-lg hover:bg-[#F8F6F3] flex items-center justify-center"><X className="w-4 h-4 text-[#1E1533]/30" /></button>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[#111111]/[0.04]">
+                <h2 className="font-display text-base font-bold text-[#111111]">{editing ? "Edit" : "New"} Product</h2>
+                <button onClick={() => { setShowForm(false); setEditing(null); }} className="w-8 h-8 rounded-lg hover:bg-[#F8F6F3] flex items-center justify-center"><X className="w-4 h-4 text-[#111111]/30" /></button>
               </div>
               <div className="p-6 space-y-4 max-h-[75vh] overflow-auto">
                 <div>
@@ -139,11 +139,11 @@ export default function AdminProductsPage() {
                   <input value={form.videoUrl} onChange={(e) => setForm({ ...form, videoUrl: e.target.value })} placeholder="e.g. YouTube or direct MP4 link" className={fieldClass} />
                 </div>
                 <div className="flex gap-6">
-                  <label className="flex items-center gap-2.5 text-sm text-[#1E1533]/60 cursor-pointer select-none">
-                    <input type="checkbox" checked={form.isBestSeller} onChange={(e) => setForm({ ...form, isBestSeller: e.target.checked })} className="w-4 h-4 rounded border-[#1E1533]/15 text-[#C58F7A] focus:ring-[#C58F7A]/20" /> Best Seller
+                  <label className="flex items-center gap-2.5 text-sm text-[#111111]/60 cursor-pointer select-none">
+                    <input type="checkbox" checked={form.isBestSeller} onChange={(e) => setForm({ ...form, isBestSeller: e.target.checked })} className="w-4 h-4 rounded border-[#111111]/15 text-[#C5A47E] focus:ring-[#C5A47E]/20" /> Best Seller
                   </label>
-                  <label className="flex items-center gap-2.5 text-sm text-[#1E1533]/60 cursor-pointer select-none">
-                    <input type="checkbox" checked={form.isNewArrival} onChange={(e) => setForm({ ...form, isNewArrival: e.target.checked })} className="w-4 h-4 rounded border-[#1E1533]/15 text-[#C58F7A] focus:ring-[#C58F7A]/20" /> New Arrival
+                  <label className="flex items-center gap-2.5 text-sm text-[#111111]/60 cursor-pointer select-none">
+                    <input type="checkbox" checked={form.isNewArrival} onChange={(e) => setForm({ ...form, isNewArrival: e.target.checked })} className="w-4 h-4 rounded border-[#111111]/15 text-[#C5A47E] focus:ring-[#C5A47E]/20" /> New Arrival
                   </label>
                 </div>
 
@@ -154,9 +154,9 @@ export default function AdminProductsPage() {
                   label="Product Images & Videos"
                 />
               </div>
-              <div className="px-6 py-4 border-t border-[#1E1533]/[0.04] flex gap-3">
-                <button onClick={() => { setShowForm(false); setEditing(null); }} className="flex-1 py-3 border border-[#1E1533]/[0.06] text-[#1E1533]/50 rounded-xl text-sm font-medium hover:bg-[#F8F6F3] transition-colors">Cancel</button>
-                <button onClick={handleSave} className="flex-1 py-3 bg-gradient-to-r from-[#1E1533] to-[#1E1533]/90 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition-shadow">
+              <div className="px-6 py-4 border-t border-[#111111]/[0.04] flex gap-3">
+                <button onClick={() => { setShowForm(false); setEditing(null); }} className="flex-1 py-3 border border-[#111111]/[0.06] text-[#111111]/50 rounded-xl text-sm font-medium hover:bg-[#F8F6F3] transition-colors">Cancel</button>
+                <button onClick={handleSave} className="flex-1 py-3 bg-gradient-to-r from-[#111111] to-[#111111]/90 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition-shadow">
                   <Save className="w-4 h-4" /> {editing ? "Update" : "Create"} Product
                 </button>
               </div>
@@ -166,11 +166,11 @@ export default function AdminProductsPage() {
       </AnimatePresence>
 
       {/* Products Table */}
-      <div className="bg-white rounded-2xl border border-[#1E1533]/[0.03] shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-[#111111]/[0.03] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-[10px] text-[#1E1533]/30 uppercase tracking-wider border-b border-[#1E1533]/[0.03]">
+              <tr className="text-[10px] text-[#111111]/30 uppercase tracking-wider border-b border-[#111111]/[0.03]">
                 <th className="text-left px-6 py-3 font-semibold">Product</th>
                 <th className="text-left px-6 py-3 font-semibold">Section</th>
                 <th className="text-left px-6 py-3 font-semibold">Price</th>
@@ -183,26 +183,26 @@ export default function AdminProductsPage() {
               {filtered.map((p) => {
                 const imgUrl = getImg(p.media);
                 return (
-                  <tr key={p.id} className="border-b border-[#1E1533]/[0.02] hover:bg-[#F8F6F3]/50 transition-colors">
+                  <tr key={p.id} className="border-b border-[#111111]/[0.02] hover:bg-[#F8F6F3]/50 transition-colors">
                     <td className="px-6 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#F8F6F3] overflow-hidden flex-shrink-0 border border-[#1E1533]/[0.04]">
+                        <div className="w-10 h-10 rounded-xl bg-[#F8F6F3] overflow-hidden flex-shrink-0 border border-[#111111]/[0.04]">
                           {imgUrl ? (
                             <Image src={imgUrl} alt="" width={40} height={40} className="w-full h-full object-cover" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-4 h-4 text-[#1E1533]/10" /></div>
+                            <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-4 h-4 text-[#111111]/10" /></div>
                           )}
                         </div>
                         <div>
-                          <p className="font-semibold text-[#1E1533] text-xs">{p.name}</p>
-                          <p className="text-[10px] text-[#1E1533]/30">{p.fabric || "—"}</p>
+                          <p className="font-semibold text-[#111111] text-xs">{p.name}</p>
+                          <p className="text-[10px] text-[#111111]/30">{p.fabric || "—"}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-3.5 text-xs text-[#1E1533]/40">{p.section?.name || "—"}</td>
+                    <td className="px-6 py-3.5 text-xs text-[#111111]/40">{p.section?.name || "—"}</td>
                     <td className="px-6 py-3.5">
-                      <p className="font-semibold text-[#1E1533] text-xs">₹{Number(p.price).toLocaleString("en-IN")}</p>
-                      {Number(p.originalPrice) > Number(p.price) && <p className="text-[10px] text-[#1E1533]/25 line-through">₹{Number(p.originalPrice).toLocaleString("en-IN")}</p>}
+                      <p className="font-semibold text-[#111111] text-xs">₹{Number(p.price).toLocaleString("en-IN")}</p>
+                      {Number(p.originalPrice) > Number(p.price) && <p className="text-[10px] text-[#111111]/25 line-through">₹{Number(p.originalPrice).toLocaleString("en-IN")}</p>}
                     </td>
                     <td className="px-6 py-3.5">
                       <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${p.stock > 0 ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-500"}`}>
@@ -229,8 +229,8 @@ export default function AdminProductsPage() {
         </div>
         {filtered.length === 0 && (
           <div className="text-center py-16">
-            <ShoppingBag className="w-10 h-10 text-[#1E1533]/5 mx-auto mb-2" />
-            <p className="text-xs text-[#1E1533]/25">{searchQuery ? "No products match your search" : "No products yet"}</p>
+            <ShoppingBag className="w-10 h-10 text-[#111111]/5 mx-auto mb-2" />
+            <p className="text-xs text-[#111111]/25">{searchQuery ? "No products match your search" : "No products yet"}</p>
           </div>
         )}
       </div>

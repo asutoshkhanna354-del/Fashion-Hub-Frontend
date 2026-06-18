@@ -21,15 +21,15 @@ export default function NewsletterSection() {
 
   return (
     <section
-      className="relative py-16 sm:py-20 bg-[#F8F6F3] border-y border-[#C58F7A]/10 overflow-hidden"
+      className="relative py-16 sm:py-20 bg-[#F8F6F3] border-y border-[#C5A47E]/10 overflow-hidden"
       aria-label="Newsletter"
     >
       {/* Decorative background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-64 h-64 bg-rose-gold/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-sage/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-[#1E1533]/5 rounded-full" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-[#1E1533]/5 rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-[#111111]/5 rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-[#111111]/5 rounded-full" />
       </div>
 
       <div className="container-premium relative">
@@ -45,13 +45,13 @@ export default function NewsletterSection() {
               <Sparkles className="w-6 h-6 text-rose-gold" />
             </div>
 
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#1E1533] mb-3">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#111111] mb-3">
               Stay Updated with{" "}
               <span className="italic text-rose-gold">
-                Solanki Vastra
+                Solanki Vastra Bhandar
               </span>
             </h2>
-            <p className="text-[#1E1533]/60 text-sm sm:text-base mb-8">
+            <p className="text-[#111111]/60 text-sm sm:text-base mb-8">
               Subscribe to get special offers, latest collections & more.
             </p>
           </motion.div>
@@ -72,7 +72,7 @@ export default function NewsletterSection() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 required
-                className="w-full py-3.5 px-5 bg-white border border-[#1E1533]/10 rounded-full text-[#1E1533] placeholder:text-[#1E1533]/40 focus:outline-none focus:border-rose-gold/50 focus:ring-2 focus:ring-rose-gold/10 transition-all duration-300 text-sm"
+                className="w-full py-3.5 px-5 bg-white border border-[#111111]/10 rounded-full text-[#111111] placeholder:text-[#111111]/40 focus:outline-none focus:border-rose-gold/50 focus:ring-2 focus:ring-rose-gold/10 transition-all duration-300 text-sm"
               />
             </div>
             <motion.button
@@ -104,13 +104,13 @@ export default function NewsletterSection() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="mt-8 flex items-center justify-center gap-6"
           >
-            <span className="text-[#1E1533]/50 text-xs font-semibold">Follow Us</span>
+            <span className="text-[#111111]/50 text-xs font-semibold">Follow Us</span>
             {["Instagram", "Facebook", "Pinterest", "YouTube"].map(
               (platform) => (
                 <a
                   key={platform}
                   href="#"
-                  className="text-[#1E1533]/60 hover:text-rose-gold text-xs font-medium transition-colors duration-200"
+                  className="text-[#111111]/60 hover:text-rose-gold text-xs font-medium transition-colors duration-200"
                 >
                   {platform}
                 </a>

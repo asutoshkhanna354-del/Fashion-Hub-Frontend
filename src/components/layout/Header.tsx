@@ -97,7 +97,7 @@ export default function Header() {
                 <div className="relative w-11 h-11 transition-transform duration-500 group-hover:rotate-12">
                   <img 
                     src={settings.store_logo_url.startsWith("http") ? settings.store_logo_url : `https://Solanki-Vastra-backend.onrender.com${settings.store_logo_url}`} 
-                    alt={"Solanki Vastra"} 
+                    alt={"Solanki Vastra Bhandar"} 
                     className="w-full h-full object-contain" 
                   />
                 </div>
@@ -110,22 +110,22 @@ export default function Header() {
                     fill="none"
                     className="transition-transform duration-500 group-hover:rotate-12"
                   >
-                    <circle cx="22" cy="22" r="20" stroke="#C58F7A" strokeWidth="1.5" fill="none" />
+                    <circle cx="22" cy="22" r="20" stroke="#C5A47E" strokeWidth="1.5" fill="none" />
                     <path
                       d="M22 8c-2 4-6 8-6 14s4 10 6 14c2-4 6-8 6-14s-4-10-6-14z"
-                      fill="#C58F7A"
+                      fill="#C5A47E"
                       opacity="0.15"
-                      stroke="#C58F7A"
+                      stroke="#C5A47E"
                       strokeWidth="1"
                     />
                     <path
                       d="M10 22c4-2 8-6 14-6s10 4 14 6c-4 2-8 6-14 6s-10-4-14-6z"
-                      fill="#B89CCF"
+                      fill="#C5A47E"
                       opacity="0.15"
-                      stroke="#B89CCF"
+                      stroke="#C5A47E"
                       strokeWidth="1"
                     />
-                    <circle cx="22" cy="22" r="3" fill="#C58F7A" />
+                    <circle cx="22" cy="22" r="3" fill="#C5A47E" />
                   </svg>
                 </div>
               )}
@@ -134,7 +134,7 @@ export default function Header() {
                   {"SOLANKI"}
                 </span>
                 <span className="text-[10px] sm:text-xs tracking-[0.3em] text-rose-gold font-bold uppercase -mt-1">
-                  {"VASTRA"}
+                  {"VASTRA BHANDAR"}
                 </span>
               </div>
             </Link>
@@ -330,7 +330,7 @@ export default function Header() {
                       <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center border border-rose-gold/20">
                          <img 
                            src={settings.store_logo_url.startsWith("http") ? settings.store_logo_url : `https://Solanki-Vastra-backend.onrender.com${settings.store_logo_url}`} 
-                           alt={"Solanki Vastra"} 
+                           alt={"Solanki Vastra Bhandar"} 
                            className="w-full h-full object-contain" 
                          />
                       </div>
@@ -346,7 +346,7 @@ export default function Header() {
                         {"SOLANKI"}
                       </span>
                       <span className="text-[8px] tracking-[0.2em] text-rose-gold font-bold uppercase mt-0.5">
-                        {"VASTRA"}
+                        {"VASTRA BHANDAR"}
                       </span>
                     </div>
                   </div>

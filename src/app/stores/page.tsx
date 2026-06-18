@@ -41,7 +41,7 @@ export default function StoresPage() {
               transition={{ delay: 0.1 }}
               className="text-plum/60 text-lg"
             >
-              Experience the luxury of Solanki Vastra in person. Visit our exclusive boutiques for personalized styling and bespoke collections.
+              Experience the luxury of Solanki Vastra Bhandar in person. Visit our exclusive boutiques for personalized styling and bespoke collections.
             </motion.p>
           </div>
 
@@ -88,7 +88,7 @@ export default function StoresPage() {
                   {/* Store Details */}
                   <div className="w-full lg:w-1/2 flex flex-col justify-center">
                     <span className="text-xs font-bold tracking-[0.2em] text-rose-gold uppercase mb-4 block">
-                      {settings?.store_name || "Solanki Vastra"}
+                      {settings?.store_name || "Solanki Vastra Bhandar"}
                     </span>
                     <h2 className="font-display text-3xl sm:text-4xl font-bold text-plum mb-8">
                       {store.name}

@@ -38,7 +38,7 @@ export default function StoresPreviewSection() {
               </svg>
             </div>
             <p className="text-plum/50 text-sm sm:text-base mt-2">
-              Experience the luxury of Solanki Vastra in person.
+              Experience the luxury of Solanki Vastra Bhandar in person.
             </p>
           </div>
 

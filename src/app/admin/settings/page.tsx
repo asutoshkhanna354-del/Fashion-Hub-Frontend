@@ -19,8 +19,8 @@ export default function AdminSettingsPage() {
   };
 
   const update = (key: string, value: string) => setSettings({ ...settings, [key]: value });
-  const fieldClass = "w-full px-3.5 py-3 bg-[#F8F6F3] border border-[#1E1533]/[0.06] rounded-xl text-sm text-[#1E1533] placeholder:text-[#1E1533]/25 focus:outline-none focus:border-[#C58F7A]/30 focus:ring-1 focus:ring-[#C58F7A]/10 transition-all";
-  const labelClass = "block text-[11px] font-semibold text-[#1E1533]/40 uppercase tracking-wider mb-1.5";
+  const fieldClass = "w-full px-3.5 py-3 bg-[#F8F6F3] border border-[#111111]/[0.06] rounded-xl text-sm text-[#111111] placeholder:text-[#111111]/25 focus:outline-none focus:border-[#C5A47E]/30 focus:ring-1 focus:ring-[#C5A47E]/10 transition-all";
+  const labelClass = "block text-[11px] font-semibold text-[#111111]/40 uppercase tracking-wider mb-1.5";
 
   return (
     <AdminLayout title="Store Settings" subtitle="Manage your store's global configuration">
@@ -28,14 +28,14 @@ export default function AdminSettingsPage() {
       
       <div className="space-y-6 max-w-4xl">
         {/* Store Info */}
-        <div className="bg-white rounded-2xl p-6 border border-[#1E1533]/[0.03] shadow-sm">
-          <h3 className="font-display text-sm font-bold text-[#1E1533] mb-5">Store Information</h3>
+        <div className="bg-white rounded-2xl p-6 border border-[#111111]/[0.03] shadow-sm">
+          <h3 className="font-display text-sm font-bold text-[#111111] mb-5">Store Information</h3>
           <div className="space-y-4">
             <div><label className={labelClass}>Store Name</label><input value={settings.store_name || ""} onChange={(e) => update("store_name", e.target.value)} className={fieldClass} /></div>
             
             <div>
               <label className={labelClass}>Store Logo / Favicon</label>
-              <div className="p-4 border border-dashed border-[#1E1533]/[0.06] rounded-xl bg-[#F8F6F3]">
+              <div className="p-4 border border-dashed border-[#111111]/[0.06] rounded-xl bg-[#F8F6F3]">
                 <MediaUploader
                   media={settings.store_logo_url ? [{ url: settings.store_logo_url, type: 'image' }] : []}
                   onChange={(media) => update("store_logo_url", media.length > 0 ? media[0].url : "")}
@@ -55,8 +55,8 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Support Links */}
-        <div className="bg-white rounded-2xl p-6 border border-[#1E1533]/[0.03] shadow-sm">
-          <h3 className="font-display text-sm font-bold text-[#1E1533] mb-5">Support Links</h3>
+        <div className="bg-white rounded-2xl p-6 border border-[#111111]/[0.03] shadow-sm">
+          <h3 className="font-display text-sm font-bold text-[#111111] mb-5">Support Links</h3>
           <div className="space-y-4">
             <div><label className={labelClass}>WhatsApp Link</label><input value={settings.whatsapp_link || ""} onChange={(e) => update("whatsapp_link", e.target.value)} className={fieldClass} placeholder="https://wa.me/919876543210" /></div>
             <div><label className={labelClass}>Telegram Link</label><input value={settings.telegram_link || ""} onChange={(e) => update("telegram_link", e.target.value)} className={fieldClass} placeholder="https://t.me/noorsilksareeshub" /></div>
@@ -65,11 +65,11 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Promo Banner */}
-        <div className="bg-white rounded-2xl p-6 border border-[#1E1533]/[0.03] shadow-sm">
-          <h3 className="font-display text-sm font-bold text-[#1E1533] mb-5">Promotional Banner (Top of site)</h3>
+        <div className="bg-white rounded-2xl p-6 border border-[#111111]/[0.03] shadow-sm">
+          <h3 className="font-display text-sm font-bold text-[#111111] mb-5">Promotional Banner (Top of site)</h3>
           <div className="space-y-4">
-            <label className="flex items-center gap-2.5 text-sm text-[#1E1533]/60 cursor-pointer select-none">
-              <input type="checkbox" checked={settings.banner_enabled === "true"} onChange={(e) => update("banner_enabled", e.target.checked ? "true" : "false")} className="w-4 h-4 rounded border-[#1E1533]/15 text-[#C58F7A] focus:ring-[#C58F7A]/20" /> Enable Promotional Banner
+            <label className="flex items-center gap-2.5 text-sm text-[#111111]/60 cursor-pointer select-none">
+              <input type="checkbox" checked={settings.banner_enabled === "true"} onChange={(e) => update("banner_enabled", e.target.checked ? "true" : "false")} className="w-4 h-4 rounded border-[#111111]/15 text-[#C5A47E] focus:ring-[#C5A47E]/20" /> Enable Promotional Banner
             </label>
             <div><label className={labelClass}>Banner Type</label>
               <select value={settings.banner_type || "news"} onChange={(e) => update("banner_type", e.target.value)} className={fieldClass}><option value="news">News</option><option value="sale">Sale</option><option value="info">Info</option></select>
@@ -79,7 +79,7 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
-        <button onClick={handleSave} disabled={saving} className="px-6 py-3 bg-gradient-to-r from-[#1E1533] to-[#1E1533]/90 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50 hover:shadow-lg transition-all w-full sm:w-auto">
+        <button onClick={handleSave} disabled={saving} className="px-6 py-3 bg-gradient-to-r from-[#111111] to-[#111111]/90 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 disabled:opacity-50 hover:shadow-lg transition-all w-full sm:w-auto">
           <Save className="w-4 h-4" /> {saving ? "Saving..." : "Save All Settings"}
         </button>
       </div>

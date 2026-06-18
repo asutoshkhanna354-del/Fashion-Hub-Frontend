@@ -45,7 +45,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (settings) {
       if (settings.store_name) {
-        document.title = "Solanki Vastra";
+        document.title = "Solanki Vastra Bhandar";
       }
       if (settings.store_logo_url) {
         let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;

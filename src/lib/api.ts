@@ -153,6 +153,8 @@ export const orderApi = {
 export const paymentApi = {
   create: (orderId: string) =>
     request<any>("/api/payment/create", { method: "POST", body: JSON.stringify({ orderId }) }),
+  verify: (data: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) =>
+    request<any>("/api/payment/verify", { method: "POST", body: JSON.stringify(data) }),
   status: (orderId: string) => request<any>(`/api/payment/status/${orderId}`),
 };
 

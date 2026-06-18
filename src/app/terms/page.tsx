@@ -21,15 +21,15 @@ export default function TermsPage() {
           <>
             <p>Last updated: June 2026</p>
             <h2 className="font-display text-lg font-bold text-plum">Acceptance of Terms</h2>
-            <p>By accessing and using Solanki Vastra, you accept and agree to be bound by these Terms and Conditions.</p>
+            <p>By accessing and using Solanki Vastra Bhandar, you accept and agree to be bound by these Terms and Conditions.</p>
             <h2 className="font-display text-lg font-bold text-plum mt-6">Products & Pricing</h2>
             <p>All prices are listed in Indian Rupees (INR). We reserve the right to modify prices without prior notice. Product images are for reference; actual colors may vary slightly due to screen settings.</p>
             <h2 className="font-display text-lg font-bold text-plum mt-6">Orders & Payment</h2>
             <p>All orders are subject to availability. Payment is required at the time of placing an order via UPI. We reserve the right to cancel orders in case of pricing errors or stock unavailability.</p>
             <h2 className="font-display text-lg font-bold text-plum mt-6">Intellectual Property</h2>
-            <p>All content on this website, including images, text, and designs, is the property of Solanki Vastra and may not be reproduced without permission.</p>
+            <p>All content on this website, including images, text, and designs, is the property of Solanki Vastra Bhandar and may not be reproduced without permission.</p>
             <h2 className="font-display text-lg font-bold text-plum mt-6">Limitation of Liability</h2>
-            <p>Solanki Vastra shall not be liable for any indirect, incidental, or consequential damages arising from the use of our services or products.</p>
+            <p>Solanki Vastra Bhandar shall not be liable for any indirect, incidental, or consequential damages arising from the use of our services or products.</p>
             <h2 className="font-display text-lg font-bold text-plum mt-6">Governing Law</h2>
             <p>These terms shall be governed by and construed in accordance with the laws of India.</p>
           </>

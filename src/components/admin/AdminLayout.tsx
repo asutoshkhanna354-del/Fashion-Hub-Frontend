@@ -96,13 +96,13 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
   return (
     <div className="min-h-screen bg-[#F8F6F3] flex">
       {/* Sidebar */}
-      <aside className={`flex-shrink-0 fixed lg:sticky top-0 left-0 h-screen w-[260px] bg-[#1E1533] z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside className={`flex-shrink-0 fixed lg:sticky top-0 left-0 h-screen w-[260px] bg-[#111111] z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         {/* Brand */}
         <div className="px-6 py-5 border-b border-white/[0.06]">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="font-display text-[17px] font-bold text-white tracking-wide">SOLANKI</h1>
-              <p className="text-[9px] text-[#C58F7A] tracking-[3px] font-medium -mt-0.5">VASTRA</p>
+              <p className="text-[9px] text-[#C5A47E] tracking-[3px] font-medium -mt-0.5">VASTRA BHANDAR</p>
             </div>
             <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-white/40 hover:text-white">
               <X className="w-5 h-5" />
@@ -122,14 +122,14 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 mb-0.5 ${
                   active
-                    ? "bg-[#C58F7A]/15 text-[#C58F7A]"
+                    ? "bg-[#C5A47E]/15 text-[#C5A47E]"
                     : "text-white/45 hover:text-white/80 hover:bg-white/[0.04]"
                 }`}
               >
-                <item.icon className={`w-[18px] h-[18px] ${active ? "text-[#C58F7A]" : ""}`} />
+                <item.icon className={`w-[18px] h-[18px] ${active ? "text-[#C5A47E]" : ""}`} />
                 {item.label}
                 {active && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C58F7A]" />
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C5A47E]" />
                 )}
               </Link>
             );
@@ -145,14 +145,14 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 mb-0.5 ${
                   active
-                    ? "bg-[#C58F7A]/15 text-[#C58F7A]"
+                    ? "bg-[#C5A47E]/15 text-[#C5A47E]"
                     : "text-white/45 hover:text-white/80 hover:bg-white/[0.04]"
                 }`}
               >
-                <item.icon className={`w-[18px] h-[18px] ${active ? "text-[#C58F7A]" : ""}`} />
+                <item.icon className={`w-[18px] h-[18px] ${active ? "text-[#C5A47E]" : ""}`} />
                 {item.label}
                 {active && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C58F7A]" />
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#C5A47E]" />
                 )}
               </Link>
             );
@@ -162,7 +162,7 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
         {/* Admin Profile & Logout */}
         <div className="border-t border-white/[0.06] p-3">
           <div className="flex items-center gap-3 px-3 py-2 mb-1">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C58F7A] to-[#B89CCF] flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C5A47E] to-[#C5A47E] flex items-center justify-center text-white text-xs font-bold">
               {adminInfo?.username?.charAt(0)?.toUpperCase() || "A"}
             </div>
             <div className="flex-1 min-w-0">
@@ -193,14 +193,14 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
       {/* Main Content */}
       <main className="flex-1 min-w-0 flex flex-col">
         {/* Top Bar */}
-        <header className="sticky top-0 bg-[#F8F6F3]/80 backdrop-blur-xl border-b border-[#1E1533]/[0.04] px-4 sm:px-6 lg:px-8 z-30">
+        <header className="sticky top-0 bg-[#F8F6F3]/80 backdrop-blur-xl border-b border-[#111111]/[0.04] px-4 sm:px-6 lg:px-8 z-30">
           <div className="flex items-center gap-4 h-16">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-[#1E1533]/5">
-              <Menu className="w-5 h-5 text-[#1E1533]" />
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-[#111111]/5">
+              <Menu className="w-5 h-5 text-[#111111]" />
             </button>
             <div className="flex-1 min-w-0">
-              <h2 className="font-display text-lg font-bold text-[#1E1533] truncate">{title}</h2>
-              {subtitle && <p className="text-xs text-[#1E1533]/40 -mt-0.5 truncate">{subtitle}</p>}
+              <h2 className="font-display text-lg font-bold text-[#111111] truncate">{title}</h2>
+              {subtitle && <p className="text-xs text-[#111111]/40 -mt-0.5 truncate">{subtitle}</p>}
             </div>
             <div className="flex items-center gap-2">
               {actions}

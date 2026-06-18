@@ -56,7 +56,7 @@ export default function WhyChooseUsSection() {
         >
           <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-plum mb-3">
             Why Choose{" "}
-            <span className="gradient-text">Solanki Vastra</span>
+            <span className="gradient-text">Solanki Vastra Bhandar</span>
           </h2>
           <div className="section-divider">
             <svg

@@ -37,21 +37,21 @@ export default function BlogPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-16">
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-[#1E1533] mb-4">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-[#111111] mb-4">
               Journal
             </h1>
-            <p className="text-[#1E1533]/60 max-w-2xl mx-auto text-sm sm:text-base">
+            <p className="text-[#111111]/60 max-w-2xl mx-auto text-sm sm:text-base">
               Stories of heritage, style guides, and the artistry behind our collections.
             </p>
           </div>
 
           {loading ? (
             <div className="flex justify-center py-32">
-              <Loader2 className="w-10 h-10 animate-spin text-[#C58F7A]" />
+              <Loader2 className="w-10 h-10 animate-spin text-[#C5A47E]" />
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-[#1E1533]/50">No blog posts found.</p>
+              <p className="text-[#111111]/50">No blog posts found.</p>
             </div>
           ) : (
             <>
@@ -84,7 +84,7 @@ export default function BlogPage() {
                       <p className="text-white/70 text-sm sm:text-base mb-6 line-clamp-2">
                         {featuredPost.excerpt}
                       </p>
-                      <span className="inline-flex items-center gap-2 text-white font-medium group-hover:text-[#C58F7A] transition-colors">
+                      <span className="inline-flex items-center gap-2 text-white font-medium group-hover:text-[#C5A47E] transition-colors">
                         Read Story <ArrowRight className="w-4 h-4" />
                       </span>
                     </div>
@@ -110,18 +110,18 @@ export default function BlogPage() {
                           className="object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                       </div>
-                      <div className="flex items-center gap-3 text-[#1E1533]/40 text-[11px] font-medium uppercase tracking-wider mb-3">
-                        <span className="text-[#C58F7A]">{post.category}</span>
-                        <span className="w-1 h-1 rounded-full bg-[#1E1533]/20" />
+                      <div className="flex items-center gap-3 text-[#111111]/40 text-[11px] font-medium uppercase tracking-wider mb-3">
+                        <span className="text-[#C5A47E]">{post.category}</span>
+                        <span className="w-1 h-1 rounded-full bg-[#111111]/20" />
                         <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                       </div>
-                      <h3 className="font-display text-xl font-bold text-[#1E1533] mb-3 group-hover:text-[#C58F7A] transition-colors line-clamp-2">
+                      <h3 className="font-display text-xl font-bold text-[#111111] mb-3 group-hover:text-[#C5A47E] transition-colors line-clamp-2">
                         {post.title}
                       </h3>
-                      <p className="text-[#1E1533]/60 text-sm mb-4 line-clamp-3">
+                      <p className="text-[#111111]/60 text-sm mb-4 line-clamp-3">
                         {post.excerpt}
                       </p>
-                      <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#1E1533] group-hover:text-[#C58F7A] transition-colors">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#111111] group-hover:text-[#C5A47E] transition-colors">
                         Read More <ArrowRight className="w-3.5 h-3.5" />
                       </span>
                     </a>

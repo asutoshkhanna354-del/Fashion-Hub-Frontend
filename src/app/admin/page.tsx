@@ -23,9 +23,9 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="bg-white rounded-2xl p-5 animate-pulse">
-              <div className="w-10 h-10 bg-[#1E1533]/5 rounded-xl mb-3" />
-              <div className="h-7 bg-[#1E1533]/5 rounded w-1/2 mb-1" />
-              <div className="h-3 bg-[#1E1533]/5 rounded w-3/4" />
+              <div className="w-10 h-10 bg-[#111111]/5 rounded-xl mb-3" />
+              <div className="h-7 bg-[#111111]/5 rounded w-1/2 mb-1" />
+              <div className="h-3 bg-[#111111]/5 rounded w-3/4" />
             </div>
           ))}
         </div>
@@ -37,7 +37,7 @@ export default function AdminDashboard() {
     { label: "Total Revenue", value: `₹${(dashboard?.totalRevenue || 0).toLocaleString("en-IN")}`, icon: DollarSign, gradient: "from-emerald-500 to-green-600", bgLight: "bg-emerald-50", trend: "+12%" },
     { label: "Total Orders", value: dashboard?.totalOrders || 0, icon: Package, gradient: "from-blue-500 to-indigo-600", bgLight: "bg-blue-50", trend: "+8%" },
     { label: "Customers", value: dashboard?.totalUsers || 0, icon: Users, gradient: "from-violet-500 to-purple-600", bgLight: "bg-violet-50", trend: "+5%" },
-    { label: "Products", value: dashboard?.totalProducts || 0, icon: ShoppingBag, gradient: "from-[#C58F7A] to-rose-500", bgLight: "bg-rose-50", trend: "—" },
+    { label: "Products", value: dashboard?.totalProducts || 0, icon: ShoppingBag, gradient: "from-[#C5A47E] to-rose-500", bgLight: "bg-rose-50", trend: "—" },
   ];
 
   return (
@@ -50,7 +50,7 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="bg-white rounded-2xl p-5 border border-[#1E1533]/[0.03] shadow-sm hover:shadow-md transition-shadow"
+            className="bg-white rounded-2xl p-5 border border-[#111111]/[0.03] shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex items-start justify-between mb-3">
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg`}>
@@ -58,8 +58,8 @@ export default function AdminDashboard() {
               </div>
               <span className="text-[10px] font-semibold text-emerald-500 bg-emerald-50 px-1.5 py-0.5 rounded-md">{stat.trend}</span>
             </div>
-            <p className="text-2xl font-bold text-[#1E1533] tracking-tight">{stat.value}</p>
-            <p className="text-[11px] text-[#1E1533]/35 mt-0.5 font-medium">{stat.label}</p>
+            <p className="text-2xl font-bold text-[#111111] tracking-tight">{stat.value}</p>
+            <p className="text-[11px] text-[#111111]/35 mt-0.5 font-medium">{stat.label}</p>
           </motion.div>
         ))}
       </div>
@@ -68,14 +68,14 @@ export default function AdminDashboard() {
         {/* Revenue Chart */}
         <motion.div
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          className="lg:col-span-3 bg-white rounded-2xl p-6 border border-[#1E1533]/[0.03] shadow-sm"
+          className="lg:col-span-3 bg-white rounded-2xl p-6 border border-[#111111]/[0.03] shadow-sm"
         >
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="font-display text-sm font-bold text-[#1E1533]">Revenue Overview</h3>
-              <p className="text-[11px] text-[#1E1533]/30 mt-0.5">Monthly revenue breakdown</p>
+              <h3 className="font-display text-sm font-bold text-[#111111]">Revenue Overview</h3>
+              <p className="text-[11px] text-[#111111]/30 mt-0.5">Monthly revenue breakdown</p>
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] text-[#C58F7A] font-medium bg-[#C58F7A]/5 px-2 py-1 rounded-lg">
+            <div className="flex items-center gap-1.5 text-[10px] text-[#C5A47E] font-medium bg-[#C5A47E]/5 px-2 py-1 rounded-lg">
               <TrendingUp className="w-3 h-3" /> Last 6 months
             </div>
           </div>
@@ -85,11 +85,11 @@ export default function AdminDashboard() {
               const height = (m.revenue / maxRev) * 100;
               return (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-                  <span className="text-[9px] text-[#1E1533]/25 font-medium">₹{(m.revenue / 1000).toFixed(0)}k</span>
+                  <span className="text-[9px] text-[#111111]/25 font-medium">₹{(m.revenue / 1000).toFixed(0)}k</span>
                   <div className="w-full relative rounded-t-lg overflow-hidden" style={{ height: `${Math.max(height, 4)}%` }}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#C58F7A] to-[#C58F7A]/40" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#C5A47E] to-[#C5A47E]/40" />
                   </div>
-                  <span className="text-[9px] text-[#1E1533]/25 font-medium truncate w-full text-center">{m.month?.split(" ")[0]}</span>
+                  <span className="text-[9px] text-[#111111]/25 font-medium truncate w-full text-center">{m.month?.split(" ")[0]}</span>
                 </div>
               );
             })}
@@ -99,12 +99,12 @@ export default function AdminDashboard() {
         {/* Quick Actions */}
         <motion.div
           initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-          className="lg:col-span-2 bg-white rounded-2xl p-6 border border-[#1E1533]/[0.03] shadow-sm"
+          className="lg:col-span-2 bg-white rounded-2xl p-6 border border-[#111111]/[0.03] shadow-sm"
         >
-          <h3 className="font-display text-sm font-bold text-[#1E1533] mb-4">Quick Actions</h3>
+          <h3 className="font-display text-sm font-bold text-[#111111] mb-4">Quick Actions</h3>
           <div className="space-y-2">
             {[
-              { label: "Add New Product", href: "/admin/products/", color: "from-[#C58F7A] to-rose-500" },
+              { label: "Add New Product", href: "/admin/products/", color: "from-[#C5A47E] to-rose-500" },
               { label: "View All Orders", href: "/admin/orders/", color: "from-blue-500 to-indigo-500" },
               { label: "Manage Sections", href: "/admin/sections/", color: "from-violet-500 to-purple-500" },
               { label: "Create Promo Code", href: "/admin/promos/", color: "from-amber-500 to-orange-500" },
@@ -113,8 +113,8 @@ export default function AdminDashboard() {
                 <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center flex-shrink-0`}>
                   <ArrowUpRight className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-sm font-medium text-[#1E1533]/70 group-hover:text-[#1E1533] transition-colors">{action.label}</span>
-                <ChevronRight className="w-4 h-4 text-[#1E1533]/15 ml-auto group-hover:text-[#1E1533]/30" />
+                <span className="text-sm font-medium text-[#111111]/70 group-hover:text-[#111111] transition-colors">{action.label}</span>
+                <ChevronRight className="w-4 h-4 text-[#111111]/15 ml-auto group-hover:text-[#111111]/30" />
               </Link>
             ))}
           </div>
@@ -124,18 +124,18 @@ export default function AdminDashboard() {
       {/* Recent Orders */}
       <motion.div
         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-        className="bg-white rounded-2xl border border-[#1E1533]/[0.03] shadow-sm mt-6"
+        className="bg-white rounded-2xl border border-[#111111]/[0.03] shadow-sm mt-6"
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#1E1533]/[0.03]">
-          <h3 className="font-display text-sm font-bold text-[#1E1533]">Recent Orders</h3>
-          <Link href="/admin/orders/" className="text-xs text-[#C58F7A] font-medium flex items-center gap-1 hover:underline">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#111111]/[0.03]">
+          <h3 className="font-display text-sm font-bold text-[#111111]">Recent Orders</h3>
+          <Link href="/admin/orders/" className="text-xs text-[#C5A47E] font-medium flex items-center gap-1 hover:underline">
             View all <ChevronRight className="w-3 h-3" />
           </Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-[10px] text-[#1E1533]/30 uppercase tracking-wider">
+              <tr className="text-[10px] text-[#111111]/30 uppercase tracking-wider">
                 <th className="text-left px-6 py-3 font-semibold">Order</th>
                 <th className="text-left px-6 py-3 font-semibold">Customer</th>
                 <th className="text-left px-6 py-3 font-semibold">Amount</th>
@@ -145,10 +145,10 @@ export default function AdminDashboard() {
             </thead>
             <tbody>
               {(dashboard?.recentOrders || []).slice(0, 5).map((order: any) => (
-                <tr key={order.id} className="border-t border-[#1E1533]/[0.03] hover:bg-[#F8F6F3]/50 transition-colors">
-                  <td className="px-6 py-3.5 font-semibold text-[#1E1533] text-xs">{order.orderNumber}</td>
-                  <td className="px-6 py-3.5 text-[#1E1533]/50 text-xs">{order.user?.firstName} {order.user?.lastName}</td>
-                  <td className="px-6 py-3.5 font-semibold text-[#1E1533] text-xs">₹{Number(order.totalAmount).toLocaleString("en-IN")}</td>
+                <tr key={order.id} className="border-t border-[#111111]/[0.03] hover:bg-[#F8F6F3]/50 transition-colors">
+                  <td className="px-6 py-3.5 font-semibold text-[#111111] text-xs">{order.orderNumber}</td>
+                  <td className="px-6 py-3.5 text-[#111111]/50 text-xs">{order.user?.firstName} {order.user?.lastName}</td>
+                  <td className="px-6 py-3.5 font-semibold text-[#111111] text-xs">₹{Number(order.totalAmount).toLocaleString("en-IN")}</td>
                   <td className="px-6 py-3.5">
                     <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${
                       order.paymentStatus === "SUCCESS" ? "bg-emerald-50 text-emerald-600" :
