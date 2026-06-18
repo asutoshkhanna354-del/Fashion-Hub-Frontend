@@ -101,13 +101,13 @@ export default function AdminProductsPage() {
       {/* Form Modal */}
       <AnimatePresence>
         {showForm && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-auto">
-            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl w-full max-w-2xl my-8 shadow-2xl">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-[#111111]/[0.04]">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6">
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] shadow-2xl flex flex-col">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-[#111111]/[0.04] flex-shrink-0">
                 <h2 className="font-display text-base font-bold text-[#111111]">{editing ? "Edit" : "New"} Product</h2>
                 <button onClick={() => { setShowForm(false); setEditing(null); }} className="w-8 h-8 rounded-lg hover:bg-[#F8F6F3] flex items-center justify-center"><X className="w-4 h-4 text-[#111111]/30" /></button>
               </div>
-              <div className="p-6 space-y-4 max-h-[75vh] overflow-auto">
+              <div className="p-6 space-y-4 overflow-y-auto flex-1">
                 <div>
                   <label className={labelClass}>Product Name</label>
                   <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Royal Silk Saree" className={fieldClass} />
@@ -147,14 +147,13 @@ export default function AdminProductsPage() {
                   </label>
                 </div>
 
-                {/* Media Upload */}
                 <MediaUploader
                   media={form.media}
                   onChange={(media) => setForm({ ...form, media })}
                   label="Product Images & Videos"
                 />
               </div>
-              <div className="px-6 py-4 border-t border-[#111111]/[0.04] flex gap-3">
+              <div className="px-6 py-4 border-t border-[#111111]/[0.04] flex gap-3 flex-shrink-0">
                 <button onClick={() => { setShowForm(false); setEditing(null); }} className="flex-1 py-3 border border-[#111111]/[0.06] text-[#111111]/50 rounded-xl text-sm font-medium hover:bg-[#F8F6F3] transition-colors">Cancel</button>
                 <button onClick={handleSave} className="flex-1 py-3 bg-gradient-to-r from-[#111111] to-[#111111]/90 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 hover:shadow-lg transition-shadow">
                   <Save className="w-4 h-4" /> {editing ? "Update" : "Create"} Product

@@ -208,17 +208,6 @@ export default function AdminOrdersPage() {
                   <div className="mt-4 pt-4 border-t border-[#111111]/[0.04]">
                     <div className="flex flex-col sm:flex-row gap-3">
                       <div className="flex-1">
-                        <label className="text-[10px] font-bold text-[#111111] uppercase tracking-wider mb-1 block">Courier Name</label>
-                        <input
-                          type="text"
-                          value={selectedOrder.courierName || ""}
-                          onChange={(e) => setSelectedOrder({ ...selectedOrder, courierName: e.target.value })}
-                          onBlur={() => updateStatus(selectedOrder.id, "courierName", selectedOrder.courierName)}
-                          placeholder="e.g. Delhivery, BlueDart"
-                          className="w-full text-xs px-3 py-2 rounded-lg border border-[#111111]/[0.06] bg-white focus:outline-none focus:ring-1 focus:ring-[#C5A47E]/30"
-                        />
-                      </div>
-                      <div className="flex-1">
                         <label className="text-[10px] font-bold text-[#111111] uppercase tracking-wider mb-1 block">Tracking ID (AWB)</label>
                         <input
                           type="text"

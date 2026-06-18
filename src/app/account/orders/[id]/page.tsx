@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Package, Printer, MapPin, CheckCircle, Clock, LifeBuoy, Truck, Star, X, Upload, PlayCircle } from "lucide-react";
 import { orderApi, uploadApi } from "@/lib/api";
 import Image from "next/image";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 const statusTimeline = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED"];
 
@@ -25,11 +27,26 @@ export default function OrderDetailPage() {
   const [media, setMedia] = useState<any[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [tracking, setTracking] = useState<any>(null);
 
   useEffect(() => {
-    orderApi.list().then((res) => {
+    orderApi.list().then(async (res) => {
       const found = res.orders.find((o: any) => o.id === params.id);
-      if (found) setOrder(found);
+      if (found) {
+        setOrder(found);
+        if (found.trackingId) {
+          try {
+            const token = localStorage.getItem("token");
+            const trkRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/api/orders/${found.id}/tracking`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            const trkData = await trkRes.json();
+            if (trkData.status && trkData.tracking) {
+              setTracking(trkData.tracking);
+            }
+          } catch(e) {}
+        }
+      }
       setLoading(false);
     }).catch(() => setLoading(false));
   }, [params.id]);
@@ -112,7 +129,9 @@ export default function OrderDetailPage() {
   const addr = order.shippingAddress ? (typeof order.shippingAddress === "string" ? JSON.parse(order.shippingAddress) : order.shippingAddress) : null;
 
   return (
-    <div className="flex-1 relative">
+    <><Header />
+    <main className="min-h-screen bg-[#F8F6F3] pt-28 pb-20">
+      <div className="container-premium max-w-4xl mx-auto relative">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <button onClick={() => router.push("/account/orders")} className="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-[#F8F6F3] transition-colors border border-[#111111]/[0.04]">
@@ -246,14 +265,31 @@ export default function OrderDetailPage() {
                   <Truck className="w-5 h-5 text-[#C5A47E]" />
                   <h3 className="text-sm font-bold text-[#111111]">Live Order Tracking</h3>
                 </div>
-                <div className="w-full h-[500px] rounded-xl overflow-hidden border border-[#111111]/10 bg-[#F8F6F3]">
-                  <iframe 
-                    src={`https://track.aftership.com/${order.trackingId}`}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    title="Live Tracking"
-                  />
+                <div className="bg-[#F8F6F3] rounded-xl p-5 border border-[#111111]/10">
+                  <div className="mb-4 pb-4 border-b border-[#111111]/[0.04]">
+                    <p className="text-xs text-[#111111]/50 mb-1">Tracking ID: <span className="font-bold text-[#111111]">{order.trackingId}</span></p>
+                    <p className="text-sm font-bold text-[#111111]">{tracking ? tracking.statusDescription : "Fetching tracking status..."}</p>
+                  </div>
+                  {tracking?.events ? (
+                    <div className="space-y-4">
+                      {tracking.events.map((ev: any, idx: number) => (
+                        <div key={idx} className="flex gap-4 relative">
+                          {idx !== tracking.events.length - 1 && (
+                            <div className="absolute left-[9px] top-6 bottom-[-16px] w-0.5 bg-[#111111]/10" />
+                          )}
+                          <div className={`w-5 h-5 rounded-full flex-shrink-0 mt-0.5 flex items-center justify-center ${idx === 0 ? "bg-[#C5A47E] shadow-md" : "bg-[#111111]/20"}`}>
+                            <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                          </div>
+                          <div>
+                            <p className={`text-sm font-bold ${idx === 0 ? "text-[#111111]" : "text-[#111111]/60"}`}>{ev.description}</p>
+                            <p className="text-[11px] text-[#111111]/40">{new Date(ev.date).toLocaleString()} • {ev.location}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                     <div className="text-sm text-[#111111]/40 py-4 text-center animate-pulse">Loading tracking history...</div>
+                  )}
                 </div>
               </div>
             )}
@@ -316,6 +352,8 @@ export default function OrderDetailPage() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+      </div>
+    </main>
+    <Footer /></>
   );
 }
