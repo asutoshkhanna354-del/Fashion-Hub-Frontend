@@ -164,7 +164,7 @@ export default function ProductDetailPage() {
 
   return (
     <>
-      <Script src="https://cdn.razorpay.com/widgets/affordability/affordability.js" onReady={initRazorpayWidget} />
+      <Script src="https://cdn.razorpay.com/widgets/affordability/affordability.js" onReady={() => { initRazorpayWidget(); }} />
       <Header />
       <main className="min-h-screen bg-ivory pt-28 pb-20">
         <div className="container-premium">
