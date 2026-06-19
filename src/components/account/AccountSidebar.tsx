@@ -16,18 +16,18 @@ import {
   User as UserIcon
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/auth-context";
-import { useCart } from "@/lib/contexts/cart-context";
+import { useWishlist } from "@/lib/contexts/wishlist-context";
 
 export default function AccountSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
-  const { wishlist } = useCart(); // Assuming wishlist is accessible from cart context, else we fetch/count
+  const { count: wishlistCount } = useWishlist();
 
   const navItems = [
     { name: "Account Overview", href: "/account/", icon: Home },
     { name: "My Orders", href: "/account/orders/", icon: Package },
-    { name: "My Wishlist", href: "/wishlist/", icon: Heart, badge: wishlist?.length || 0 },
+    { name: "My Wishlist", href: "/wishlist/", icon: Heart, badge: wishlistCount || 0 },
     { name: "My Addresses", href: "/account/profile/", icon: MapPin },
     { name: "My Reviews", href: "/account/reviews/", icon: Star },
     { name: "Coupons & Offers", href: "/account/coupons/", icon: Gift },
