@@ -13,6 +13,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import UpsellsSection from "@/components/sections/UpsellsSection";
+import Script from "next/script";
 import dynamic from "next/dynamic";
 
 const ReactPlayer = dynamic(() => import("react-player"), { ssr: false }) as any;
@@ -48,6 +49,50 @@ export default function ProductDetailPage() {
         .finally(() => setLoading(false));
     }
   }, [id]);
+
+  const initRazorpayWidget = async () => {
+    if (typeof window !== "undefined" && (window as any).RazorpayAffordabilitySuite && product?.price) {
+      try {
+        // Find existing widget to prevent duplicates
+        const widgetContainer = document.getElementById("razorpay-affordability-widget");
+        if (widgetContainer && widgetContainer.innerHTML !== "") return;
+        
+        let key = process.env.NEXT_PUBLIC_RZP_KEY || "";
+        
+        if (!key) {
+          try {
+            const res = await fetch(`${API_URL}/api/settings/public`);
+            const data = await res.json();
+            if (data.status && data.settings?.razorpay_key) {
+              key = data.settings.razorpay_key;
+            }
+          } catch (e) {
+            console.error("Failed to fetch Razorpay key from settings", e);
+          }
+        }
+        
+        if (!key) {
+           console.error("Razorpay API key is missing. Widget cannot be loaded.");
+           return;
+        }
+        
+        const widgetConfig = {
+          "key": key, 
+          "amount": Math.round(Number(product.price) * 100),
+        };
+        const rzpAffordabilitySuite = new (window as any).RazorpayAffordabilitySuite(widgetConfig);
+        rzpAffordabilitySuite.render();
+      } catch (err) {
+        console.error("Razorpay widget init error", err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (product) {
+      initRazorpayWidget();
+    }
+  }, [product]);
 
   const handleAddToCart = async () => {
     if (!isLoggedIn) { router.push("/account/"); return; }
@@ -119,6 +164,7 @@ export default function ProductDetailPage() {
 
   return (
     <>
+      <Script src="https://cdn.razorpay.com/widgets/affordability/affordability.js" onReady={initRazorpayWidget} />
       <Header />
       <main className="min-h-screen bg-ivory pt-28 pb-20">
         <div className="container-premium">
@@ -204,6 +250,9 @@ export default function ProductDetailPage() {
                   <span className="text-sm font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">{product.discountPercent}% off</span>
                 )}
               </div>
+              
+              {/* Razorpay Affordability Widget Container */}
+              <div id="razorpay-affordability-widget" className="my-2 min-h-[40px]"></div>
 
               {/* Fabric */}
               {product.fabric && (
@@ -246,7 +295,7 @@ export default function ProductDetailPage() {
               {/* Action buttons */}
               <div className="flex gap-3 pt-2">
                 <button onClick={handleAddToCart} disabled={addingToCart} className="flex-1 py-3.5 bg-plum text-white rounded-xl font-medium text-sm hover:bg-plum/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-                  <ShoppingBag className="w-4 h-4" /> {addingToCart ? "Adding..." : "Add to Cart"}
+                  <ShoppingBag className="w-4 h-4" /> {addingToCart ? <span className="loading-dots">Adding</span> : "Add to Cart"}
                 </button>
                 <button onClick={handleBuyNow} className="flex-1 py-3.5 bg-gradient-to-r from-rose-gold to-rose-gold/80 text-white rounded-xl font-medium text-sm hover:shadow-lg transition-all flex items-center justify-center gap-2">
                   Buy Now

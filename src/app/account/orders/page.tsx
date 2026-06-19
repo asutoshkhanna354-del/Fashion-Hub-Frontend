@@ -47,17 +47,23 @@ export default function OrdersPage() {
             {orders.map((order, i) => {
               const config = statusIcons[order.orderStatus] || statusIcons.PLACED;
               const Icon = config.icon;
+              const media = order.orderItems?.[0]?.product?.media;
+              const m = Array.isArray(media) ? media[0] : null;
+              const url = (typeof m === 'string' ? m : m?.url) || "/placeholder-image.jpg";
+              const firstImage = url === "" ? "/placeholder-image.jpg" : url;
               return (
                 <motion.div key={order.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} onClick={() => router.push(`/account/orders/${order.id}`)} className="card-glass p-4 cursor-pointer hover:border-rose-gold/20 transition-colors">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl ${config.bg} flex items-center justify-center`}><Icon className={`w-5 h-5 ${config.color}`} /></div>
-                      <div>
-                        <p className="text-sm font-semibold text-plum">{order.orderNumber}</p>
-                        <p className="text-xs text-plum/40">{new Date(order.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="w-16 h-16 shrink-0 bg-plum/5 rounded-lg overflow-hidden relative border border-plum/10">
+                        <img src={firstImage} alt="Product" className="object-cover w-full h-full" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-plum truncate">Order #{order.orderNumber}</p>
+                        <p className="text-xs text-plum/40 truncate">{new Date(order.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
                       </div>
                     </div>
-                    <div className="text-right flex items-center gap-2">
+                    <div className="text-right flex items-center gap-2 shrink-0 ml-4">
                       <div>
                         <p className="text-sm font-bold text-plum">₹{Number(order.totalAmount).toLocaleString("en-IN")}</p>
                         <p className={`text-xs font-medium ${config.color}`}>{order.orderStatus}</p>

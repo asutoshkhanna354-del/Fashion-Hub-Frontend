@@ -100,6 +100,7 @@ export const productApi = {
   },
   get: (id: string) => request<any>(`/api/products/${id}`),
   getReviews: (id: string) => request<any>(`/api/reviews/product/${id}`),
+  getMyReviews: () => request<any>("/api/reviews/me"),
 };
 
 // ============================================
@@ -141,8 +142,8 @@ export const wishlistApi = {
 // ORDER API
 // ============================================
 export const orderApi = {
-  create: (promoCode?: string, shippingAddress?: any) =>
-    request<any>("/api/orders", { method: "POST", body: JSON.stringify({ promoCode, shippingAddress }) }),
+  create: (promoCode?: string, shippingAddress?: any, paymentMethod?: string) =>
+    request<any>("/api/orders", { method: "POST", body: JSON.stringify({ promoCode, shippingAddress, paymentMethod }) }),
   list: () => request<any>("/api/orders"),
   get: (id: string) => request<any>(`/api/orders/${id}`),
   track: (id: string) => request<any>(`/api/orders/${id}/tracking`),
@@ -165,6 +166,7 @@ export const paymentApi = {
 export const promoApi = {
   validate: (code: string, cartTotal: number) =>
     request<any>("/api/promos/validate", { method: "POST", body: JSON.stringify({ code, cartTotal }) }),
+  getPublic: () => request<any>("/api/promos/public"),
 };
 
 // ============================================

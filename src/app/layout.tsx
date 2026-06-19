@@ -47,6 +47,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+import NextTopLoader from 'nextjs-toploader';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -63,6 +65,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
+        <NextTopLoader color="#C5A47E" showSpinner={false} />
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -101,8 +101,8 @@ export default function AdminProductsPage() {
       {/* Form Modal */}
       <AnimatePresence>
         {showForm && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6">
-            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] shadow-2xl flex flex-col">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-0 sm:p-6">
+            <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white w-full h-full sm:h-auto sm:rounded-2xl sm:max-w-2xl max-h-[100dvh] sm:max-h-[90vh] shadow-2xl flex flex-col">
               <div className="flex items-center justify-between px-6 py-4 border-b border-[#111111]/[0.04] flex-shrink-0">
                 <h2 className="font-display text-base font-bold text-[#111111]">{editing ? "Edit" : "New"} Product</h2>
                 <button onClick={() => { setShowForm(false); setEditing(null); }} className="w-8 h-8 rounded-lg hover:bg-[#F8F6F3] flex items-center justify-center"><X className="w-4 h-4 text-[#111111]/30" /></button>
@@ -116,7 +116,7 @@ export default function AdminProductsPage() {
                   <label className={labelClass}>Description</label>
                   <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Detailed product description..." rows={3} className={`${fieldClass} resize-none`} />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div><label className={labelClass}>Fabric</label><input value={form.fabric} onChange={(e) => setForm({ ...form, fabric: e.target.value })} placeholder="e.g. Pure Silk" className={fieldClass} /></div>
                   <div><label className={labelClass}>Section</label>
                     <select value={form.sectionId} onChange={(e) => setForm({ ...form, sectionId: e.target.value })} className={fieldClass}>
@@ -125,12 +125,12 @@ export default function AdminProductsPage() {
                     </select>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div><label className={labelClass}>Selling Price (₹)</label><input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="2999" type="number" className={fieldClass} /></div>
                   <div><label className={labelClass}>Original Price (₹)</label><input value={form.originalPrice} onChange={(e) => setForm({ ...form, originalPrice: e.target.value })} placeholder="4999" type="number" className={fieldClass} /></div>
                   <div><label className={labelClass}>Discount %</label><input value={form.discountPercent} onChange={(e) => setForm({ ...form, discountPercent: e.target.value })} type="number" className={fieldClass} /></div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div><label className={labelClass}>Stock Quantity</label><input value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} type="number" className={fieldClass} /></div>
                   <div><label className={labelClass}>Features (comma-separated)</label><input value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} placeholder="Handwoven, Zari work" className={fieldClass} /></div>
                 </div>
@@ -138,7 +138,7 @@ export default function AdminProductsPage() {
                   <label className={labelClass}>External Video URL (Optional)</label>
                   <input value={form.videoUrl} onChange={(e) => setForm({ ...form, videoUrl: e.target.value })} placeholder="e.g. YouTube or direct MP4 link" className={fieldClass} />
                 </div>
-                <div className="flex gap-6">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                   <label className="flex items-center gap-2.5 text-sm text-[#111111]/60 cursor-pointer select-none">
                     <input type="checkbox" checked={form.isBestSeller} onChange={(e) => setForm({ ...form, isBestSeller: e.target.checked })} className="w-4 h-4 rounded border-[#111111]/15 text-[#C5A47E] focus:ring-[#C5A47E]/20" /> Best Seller
                   </label>

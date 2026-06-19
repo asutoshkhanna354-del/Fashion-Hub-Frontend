@@ -86,7 +86,7 @@ export default function AdminDashboard() {
                 const maxRev = Math.max(...displayMonths.map((r: any) => r.revenue), 1000);
                 const height = maxRev > 0 ? (m.revenue / maxRev) * 100 : 0;
                 return (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-1.5 group relative">
+                  <div key={i} className="flex-1 flex flex-col items-center justify-end gap-1.5 group relative h-full">
                     {/* Tooltip */}
                     <div className="absolute -top-10 bg-[#111111] text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
                       <p className="font-bold">₹{m.revenue.toLocaleString("en-IN")}</p>

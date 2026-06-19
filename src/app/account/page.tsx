@@ -8,6 +8,8 @@ import { authApi, adminApi } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import AccountSidebar from "@/components/account/AccountSidebar";
+import AccountDashboard from "@/components/account/AccountDashboard";
 
 type Step = "auth" | "register-info" | "register-address" | "otp" | "logged-in";
 
@@ -141,33 +143,12 @@ export default function AccountPage() {
     return (
       <>
         <Header />
-        <main className="min-h-screen bg-ivory pt-32 pb-20">
-          <div className="container-premium max-w-lg mx-auto">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="card-glass p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-rose-gold to-lavender mx-auto mb-4 flex items-center justify-center">
-                <span className="text-white font-display text-2xl font-bold">
-                  {user?.firstName?.[0]}{user?.lastName?.[0]}
-                </span>
-              </div>
-              <h1 className="font-display text-2xl font-bold text-plum mb-1">
-                Welcome, {user?.firstName}!
-              </h1>
-              <p className="text-plum/50 text-sm mb-6">{user?.email}</p>
-              <div className="space-y-3">
-                <button onClick={() => router.push("/account/profile/")} className="w-full py-3 bg-plum text-white rounded-xl hover:bg-plum/90 transition-colors text-sm font-medium">
-                  My Profile
-                </button>
-                <button onClick={() => router.push("/account/orders/")} className="w-full py-3 bg-ivory border border-plum/10 text-plum rounded-xl hover:bg-rose-gold/5 transition-colors text-sm font-medium">
-                  My Orders
-                </button>
-                <button onClick={() => router.push("/wishlist/")} className="w-full py-3 bg-ivory border border-plum/10 text-plum rounded-xl hover:bg-rose-gold/5 transition-colors text-sm font-medium">
-                  My Wishlist
-                </button>
-                <button onClick={() => { logout(); setStep("auth"); }} className="w-full py-3 text-rose-gold border border-rose-gold/20 rounded-xl hover:bg-rose-gold/5 transition-colors text-sm font-medium">
-                  Logout
-                </button>
-              </div>
-            </motion.div>
+        <main className="min-h-screen bg-[#FDFBF7] pt-28 pb-20">
+          <div className="container-premium max-w-[1400px] mx-auto px-4 sm:px-6">
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+              <AccountSidebar />
+              <AccountDashboard />
+            </div>
           </div>
         </main>
         <Footer />

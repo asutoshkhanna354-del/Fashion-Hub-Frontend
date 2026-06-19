@@ -188,12 +188,23 @@ export default function OrderDetailPage() {
             <div className="bg-white rounded-2xl p-6 border border-[#111111]/[0.03] shadow-sm">
               <h3 className="text-sm font-bold text-[#111111] mb-4">Items Ordered</h3>
               <div className="space-y-3">
-                {order.orderItems?.map((item: any, i: number) => (
-                  <div key={i} className="flex items-center gap-4 py-3 border-b border-[#111111]/[0.04] last:border-0 last:pb-0">
-                    <div className="w-16 h-16 rounded-xl bg-[#F8F6F3] flex items-center justify-center flex-shrink-0">
-                      <Package className="w-6 h-6 text-[#111111]/20" />
-                    </div>
-                    <div className="flex-1 min-w-0">
+                {order.orderItems?.map((item: any, i: number) => {
+                  const media = item.product?.media;
+                  const m = Array.isArray(media) ? media[0] : null;
+                  const url = (typeof m === 'string' ? m : m?.url) || "";
+                  const hasImage = url !== "";
+                  const firstImage = hasImage ? url : "/placeholder-image.jpg";
+
+                  return (
+                    <div key={i} className="flex items-center gap-4 py-3 border-b border-[#111111]/[0.04] last:border-0 last:pb-0">
+                      <div className="w-16 h-16 rounded-xl bg-[#F8F6F3] flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                        {hasImage ? (
+                          <Image src={firstImage} alt={item.product?.name || "Product"} fill className="object-cover" />
+                        ) : (
+                          <Package className="w-6 h-6 text-[#111111]/20" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-[#111111] text-sm truncate">{item.product?.name || "Product"}</h4>
                       <p className="text-[11px] text-[#111111]/50 mt-0.5">Qty: {item.quantity}</p>
                       {order.orderStatus === "DELIVERED" && (
@@ -210,7 +221,8 @@ export default function OrderDetailPage() {
                       <p className="text-[10px] text-[#111111]/30">₹{Number(item.price).toLocaleString("en-IN")} each</p>
                     </div>
                   </div>
-                ))}
+                );
+              })}
               </div>
             </div>
           </div>

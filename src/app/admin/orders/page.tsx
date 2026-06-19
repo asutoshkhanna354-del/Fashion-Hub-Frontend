@@ -119,12 +119,28 @@ export default function AdminOrdersPage() {
                 <tr key={o.id} onClick={() => setSelectedOrder(o)} className="border-b border-[#111111]/[0.02] hover:bg-[#F8F6F3]/50 transition-colors cursor-pointer">
                   <td className="px-6 py-3.5 font-semibold text-[#111111] text-xs">{o.orderNumber}</td>
                   <td className="px-6 py-3.5">
-                    <p className="text-xs text-[#111111]/70">{o.user?.firstName} {o.user?.lastName}</p>
-                    <p className="text-[10px] text-[#111111]/25">{o.user?.phone}</p>
+                    {(() => {
+                      const addr = getShippingAddress(o);
+                      const name = o.user?.firstName ? `${o.user.firstName} ${o.user.lastName || ""}` : (addr?.name || "Guest");
+                      const phone = o.user?.phone || addr?.phone || "No Phone";
+                      return (
+                        <>
+                          <p className="text-xs text-[#111111]/70">{name}</p>
+                          <p className="text-[10px] text-[#111111]/25">{phone}</p>
+                        </>
+                      );
+                    })()}
                   </td>
                   <td className="px-6 py-3.5 text-xs text-[#111111]/40">{o.orderItems?.length} item{o.orderItems?.length !== 1 ? "s" : ""}</td>
                   <td className="px-6 py-3.5 font-semibold text-[#111111] text-xs">₹{Number(o.totalAmount).toLocaleString("en-IN")}</td>
-                  <td className="px-6 py-3.5"><span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${payColors[o.paymentStatus] || ""}`}>{o.paymentStatus}</span></td>
+                  <td className="px-6 py-3.5">
+                    <div className="flex flex-col items-start gap-1">
+                      <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${o.paymentMethod === "COD" ? "bg-orange-50 text-orange-600" : "bg-purple-50 text-purple-600"}`}>
+                        {o.paymentMethod === "ONLINE" ? "PREPAID" : o.paymentMethod || "UNKNOWN"}
+                      </span>
+                      <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${payColors[o.paymentStatus] || ""}`}>{o.paymentStatus}</span>
+                    </div>
+                  </td>
                   <td className="px-6 py-3.5">
                     <select
                       value={o.orderStatus}
@@ -188,7 +204,12 @@ export default function AdminOrdersPage() {
                 <div className="bg-[#F8F6F3] rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xs font-bold text-[#111111]">Order Status</h3>
-                    <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${payColors[selectedOrder.paymentStatus] || ""}`}>{selectedOrder.paymentStatus}</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${selectedOrder.paymentMethod === "COD" ? "bg-orange-50 text-orange-600" : "bg-purple-50 text-purple-600"}`}>
+                        {selectedOrder.paymentMethod === "ONLINE" ? "PREPAID" : selectedOrder.paymentMethod || "UNKNOWN"}
+                      </span>
+                      <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${payColors[selectedOrder.paymentStatus] || ""}`}>{selectedOrder.paymentStatus}</span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-1">
                     {statusTimeline.map((step, i) => {
@@ -224,24 +245,34 @@ export default function AdminOrdersPage() {
                 </div>
 
                 {/* Customer Info */}
-                <div>
-                  <h3 className="text-xs font-bold text-[#111111] mb-3">Customer Details</h3>
-                  <div className="bg-[#F8F6F3] rounded-2xl p-4 space-y-2.5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#C5A47E] to-[#C5A47E] flex items-center justify-center text-white text-xs font-bold">
-                        {selectedOrder.user?.firstName?.charAt(0)}{selectedOrder.user?.lastName?.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-[#111111]">{selectedOrder.user?.firstName} {selectedOrder.user?.lastName}</p>
+                {(() => {
+                  const addr = getShippingAddress(selectedOrder);
+                  const firstName = selectedOrder.user?.firstName || addr?.name?.split(" ")[0] || "Guest";
+                  const lastName = selectedOrder.user?.lastName || addr?.name?.split(" ").slice(1).join(" ") || "";
+                  const email = selectedOrder.user?.email || addr?.email || "No Email";
+                  const phone = selectedOrder.user?.phone || addr?.phone || "No Phone";
+                  
+                  return (
+                    <div>
+                      <h3 className="text-xs font-bold text-[#111111] mb-3">Customer Details</h3>
+                      <div className="bg-[#F8F6F3] rounded-2xl p-4 space-y-2.5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#C5A47E] to-[#C5A47E] flex items-center justify-center text-white text-xs font-bold uppercase">
+                            {firstName.charAt(0)}{lastName.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-[#111111]">{firstName} {lastName}</p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-[11px]">
+                          <div className="flex items-center gap-2 text-[#111111]/50"><Mail className="w-3 h-3" /> {email}</div>
+                          <div className="flex items-center gap-2 text-[#111111]/50"><Phone className="w-3 h-3" /> {phone}</div>
+                          {selectedOrder.user?.altPhone && <div className="flex items-center gap-2 text-[#111111]/50"><Phone className="w-3 h-3" /> {selectedOrder.user.altPhone} (alt)</div>}
+                        </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 text-[11px]">
-                      <div className="flex items-center gap-2 text-[#111111]/50"><Mail className="w-3 h-3" /> {selectedOrder.user?.email}</div>
-                      <div className="flex items-center gap-2 text-[#111111]/50"><Phone className="w-3 h-3" /> {selectedOrder.user?.phone}</div>
-                      {selectedOrder.user?.altPhone && <div className="flex items-center gap-2 text-[#111111]/50"><Phone className="w-3 h-3" /> {selectedOrder.user.altPhone} (alt)</div>}
-                    </div>
-                  </div>
-                </div>
+                  );
+                })()}
 
                 {/* Shipping Address */}
                 {(() => {
