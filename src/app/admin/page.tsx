@@ -163,11 +163,17 @@ export default function AdminDashboard() {
                   <td className="px-6 py-3.5 text-[#111111]/50 text-xs">{order.user?.firstName} {order.user?.lastName}</td>
                   <td className="px-6 py-3.5 font-semibold text-[#111111] text-xs">₹{Number(order.totalAmount).toLocaleString("en-IN")}</td>
                   <td className="px-6 py-3.5">
-                    <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${
-                      order.paymentStatus === "SUCCESS" ? "bg-emerald-50 text-emerald-600" :
-                      order.paymentStatus === "FAILED" ? "bg-red-50 text-red-500" :
-                      "bg-amber-50 text-amber-600"
-                    }`}>{order.paymentStatus}</span>
+                    {(() => {
+                      const payStat = (order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl) ? "COD" : order.paymentStatus;
+                      return (
+                        <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider ${
+                          payStat === "SUCCESS" ? "bg-emerald-50 text-emerald-600" :
+                          payStat === "COD" ? "bg-blue-50 text-blue-500" :
+                          payStat === "FAILED" ? "bg-red-50 text-red-500" :
+                          "bg-amber-50 text-amber-500"
+                        }`}>{payStat}</span>
+                      );
+                    })()}
                   </td>
                   <td className="px-6 py-3.5">
                     <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${

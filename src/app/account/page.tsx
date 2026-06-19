@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, User, Phone, MapPin, Eye, EyeOff, ArrowRight, ArrowLeft, CheckCircle } from "lucide-react";
 import { useAuth } from "@/lib/contexts/auth-context";
@@ -40,10 +40,14 @@ export default function AccountPage() {
   const [pincode, setPincode] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
 
-  // If user is logged in, show profile redirect
-  if (isLoggedIn && step !== "logged-in") {
-    setStep("logged-in");
-  }
+  // Sync step with login state
+  useEffect(() => {
+    if (isLoggedIn) {
+      if (step !== "logged-in") setStep("logged-in");
+    } else {
+      if (step === "logged-in") setStep("auth");
+    }
+  }, [isLoggedIn, step]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

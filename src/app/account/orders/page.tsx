@@ -71,7 +71,7 @@ export default function OrdersPage() {
                       <ChevronRight className="w-4 h-4 text-plum/20" />
                     </div>
                   </div>
-                  <div className="mt-2 text-xs text-plum/40">{order.orderItems?.length} item{order.orderItems?.length !== 1 ? "s" : ""} • Payment: {order.paymentStatus}</div>
+                  <div className="mt-2 text-xs text-plum/40">{order.orderItems?.length} item{order.orderItems?.length !== 1 ? "s" : ""} • Payment: {(order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl) ? "COD" : order.paymentStatus}</div>
                 </motion.div>
               );
             })}

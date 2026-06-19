@@ -46,8 +46,7 @@ function CheckoutContent() {
         razorpay_payment_id: rzpPaymentId,
         razorpay_signature: rzpSignature,
       }).then(() => {
-        // We let the backend clear the cart, avoid calling clearCart() here 
-        // to prevent React state race conditions that interrupt the router.push
+        clearCart();
         router.push(`/checkout/status?rzp_order_id=${rzpOrderId}`);
       }).catch((err: any) => {
         setError(err.message || "Payment verification failed");
@@ -56,7 +55,13 @@ function CheckoutContent() {
     }
   }, [searchParams]);
 
-  if (!isLoggedIn) { router.push("/account/"); return null; }
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/account/");
+    }
+  }, [isLoggedIn, router]);
+
+  if (!isLoggedIn) return null;
   
   // Prevent redirect if we are currently loading/verifying payment from query params
   const isVerifying = searchParams.get("razorpay_payment_id") !== null;
@@ -69,7 +74,8 @@ function CheckoutContent() {
       const orderId = orderData.order.id;
       
       if (paymentMethod === "COD") {
-        router.push(`/checkout/status?order_id=${orderId}`);
+        clearCart();
+        router.push(`/checkout/status?order_id=${orderId}&method=COD`);
         return;
       }
       
@@ -96,7 +102,7 @@ function CheckoutContent() {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
             });
-            // We let the backend clear the cart
+            clearCart();
             router.push(`/checkout/status?order_id=${orderId}`);
           } catch (err: any) {
             setError(err.message || "Payment verification failed");

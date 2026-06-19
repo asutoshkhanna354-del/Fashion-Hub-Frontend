@@ -1,4 +1,4 @@
-const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
+export const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
 
 function getToken(): string | null {
   if (typeof window === "undefined") return null;
@@ -158,6 +158,7 @@ export const paymentApi = {
   verify: (data: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) =>
     request<any>("/api/payment/verify", { method: "POST", body: JSON.stringify(data) }),
   status: (orderId: string) => request<any>(`/api/payment/status/${orderId}`),
+  createMembership: () => request<any>("/api/payment/razorpay-membership", { method: "POST" }),
 };
 
 // ============================================

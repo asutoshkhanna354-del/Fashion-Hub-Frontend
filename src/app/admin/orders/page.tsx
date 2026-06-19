@@ -11,9 +11,12 @@ const statusColors: Record<string, string> = {
   SHIPPED: "bg-indigo-50 text-indigo-600", DELIVERED: "bg-emerald-50 text-emerald-600",
   CANCELLED: "bg-red-50 text-red-500",
 };
-const payColors: Record<string, string> = {
-  SUCCESS: "bg-emerald-50 text-emerald-600", PENDING: "bg-amber-50 text-amber-600", FAILED: "bg-red-50 text-red-500",
-};
+const payColors: any = {
+    SUCCESS: "bg-emerald-50 text-emerald-600",
+    PENDING: "bg-amber-50 text-amber-500",
+    FAILED: "bg-red-50 text-red-500",
+    COD: "bg-blue-50 text-blue-500"
+  };
 
 const statusTimeline = ["PLACED", "CONFIRMED", "SHIPPED", "DELIVERED"];
 
@@ -138,7 +141,10 @@ export default function AdminOrdersPage() {
                       <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${o.paymentMethod === "COD" ? "bg-orange-50 text-orange-600" : "bg-purple-50 text-purple-600"}`}>
                         {o.paymentMethod === "ONLINE" ? "PREPAID" : o.paymentMethod || "UNKNOWN"}
                       </span>
-                      <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${payColors[o.paymentStatus] || ""}`}>{o.paymentStatus}</span>
+                      {(() => {
+                        const pStat = (o.paymentStatus === "PENDING" && !o.pay0OrderId && !o.paymentUrl) ? "COD" : o.paymentStatus;
+                        return <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${payColors[pStat] || ""}`}>{pStat}</span>;
+                      })()}
                     </div>
                   </td>
                   <td className="px-6 py-3.5">
@@ -208,7 +214,10 @@ export default function AdminOrdersPage() {
                       <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${selectedOrder.paymentMethod === "COD" ? "bg-orange-50 text-orange-600" : "bg-purple-50 text-purple-600"}`}>
                         {selectedOrder.paymentMethod === "ONLINE" ? "PREPAID" : selectedOrder.paymentMethod || "UNKNOWN"}
                       </span>
-                      <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${payColors[selectedOrder.paymentStatus] || ""}`}>{selectedOrder.paymentStatus}</span>
+                      {(() => {
+                        const pStat = (selectedOrder.paymentStatus === "PENDING" && !selectedOrder.pay0OrderId && !selectedOrder.paymentUrl) ? "COD" : selectedOrder.paymentStatus;
+                        return <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${payColors[pStat] || ""}`}>{pStat}</span>;
+                      })()}
                     </div>
                   </div>
                   <div className="flex items-center gap-1">

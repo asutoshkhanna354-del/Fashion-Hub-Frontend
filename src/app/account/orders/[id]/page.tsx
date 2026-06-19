@@ -159,9 +159,11 @@ export default function OrderDetailPage() {
           <h3 className="text-sm font-bold text-[#111111] mb-6">Order Status</h3>
           <div className="flex items-center gap-2 relative">
             {statusTimeline.map((step, i) => {
-              const currentIdx = statusTimeline.indexOf(order.orderStatus);
+              const isCOD = order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl;
+              const dispStatus = (isCOD && order.orderStatus === "PLACED") ? "CONFIRMED" : order.orderStatus;
+              const currentIdx = statusTimeline.indexOf(dispStatus);
               const isDone = i <= currentIdx;
-              const isCancelled = order.orderStatus === "CANCELLED";
+              const isCancelled = dispStatus === "CANCELLED";
               return (
                 <div key={step} className="flex-1 flex flex-col items-center relative z-10">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mb-2 shadow-sm ${
@@ -176,7 +178,7 @@ export default function OrderDetailPage() {
             <div className="absolute top-4 left-[10%] right-[10%] h-0.5 bg-[#F8F6F3] -z-0">
               <div 
                 className="h-full bg-[#111111] transition-all duration-500" 
-                style={{ width: `${(Math.max(0, statusTimeline.indexOf(order.orderStatus)) / (statusTimeline.length - 1)) * 100}%` }} 
+                style={{ width: `${(Math.max(0, statusTimeline.indexOf((order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl && order.orderStatus === "PLACED") ? "CONFIRMED" : order.orderStatus)) / (statusTimeline.length - 1)) * 100}%` }} 
               />
             </div>
           </div>
@@ -232,19 +234,32 @@ export default function OrderDetailPage() {
             <div className="bg-[#111111] rounded-2xl p-6 shadow-sm text-white">
               <h3 className="text-sm font-bold mb-4">Order Summary</h3>
               <div className="space-y-3 text-sm">
-                <div className="flex justify-between text-white/60"><span>Subtotal</span><span>₹{(Number(order.totalAmount) + Number(order.discountAmount)).toLocaleString("en-IN")}</span></div>
-                {Number(order.discountAmount) > 0 && (
-                  <div className="flex justify-between text-[#C5A47E]"><span>Discount</span><span>-₹{Number(order.discountAmount).toLocaleString("en-IN")}</span></div>
-                )}
-                <div className="flex justify-between text-white/60"><span>Shipping</span><span className="text-[#C5A47E]">FREE</span></div>
-                <div className="border-t border-white/10 pt-3 mt-1 flex justify-between font-display text-lg font-bold">
-                  <span>Total</span><span>₹{Number(order.totalAmount).toLocaleString("en-IN")}</span>
-                </div>
+                {(() => {
+                  const isCOD = order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl;
+                  const subtotal = order.orderItems?.reduce((acc: number, item: any) => acc + Number(item.total), 0) || (Number(order.totalAmount) + Number(order.discountAmount || 0));
+                  const shipping = isCOD ? 100 : 0;
+                  const totalDisp = subtotal + shipping - Number(order.discountAmount || 0);
+                  return (
+                    <>
+                      <div className="flex justify-between text-white/60"><span>Subtotal</span><span>₹{subtotal.toLocaleString("en-IN")}</span></div>
+                      {Number(order.discountAmount) > 0 && (
+                        <div className="flex justify-between text-[#C5A47E]"><span>Discount</span><span>-₹{Number(order.discountAmount).toLocaleString("en-IN")}</span></div>
+                      )}
+                      <div className="flex justify-between text-white/60"><span>Shipping</span><span className={shipping > 0 ? "text-white font-medium" : "text-[#C5A47E]"}>{shipping > 0 ? `₹${shipping}` : "FREE"}</span></div>
+                      <div className="border-t border-white/10 pt-3 mt-1 flex justify-between font-display text-lg font-bold">
+                        <span>{isCOD ? "Total Amount" : "Total"}</span><span>₹{totalDisp.toLocaleString("en-IN")}</span>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
               <div className="mt-4 pt-4 border-t border-white/10">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-white/40">Payment Status</span>
-                  <span className={`font-bold ${order.paymentStatus === 'SUCCESS' ? 'text-emerald-400' : 'text-amber-400'}`}>{order.paymentStatus}</span>
+                <div className="flex justify-between items-center py-4 border-b border-white/5">
+                  <span className="text-white/60">Payment Status</span>
+                  {(() => {
+                    const payStat = (order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl) ? "COD" : order.paymentStatus;
+                    return <span className={`font-bold ${payStat === 'SUCCESS' ? 'text-emerald-400' : payStat === 'COD' ? 'text-blue-400' : 'text-amber-400'}`}>{payStat}</span>;
+                  })()}
                 </div>
               </div>
             </div>

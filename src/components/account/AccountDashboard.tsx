@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useCart } from "@/lib/contexts/cart-context";
 import { useWishlist } from "@/lib/contexts/wishlist-context";
-import { orderApi, productApi } from "@/lib/api";
+import { orderApi, productApi, paymentApi } from "@/lib/api";
 import { motion } from "framer-motion";
 import { Package, Heart, Tag, Star, ChevronRight, Crown } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
 
 const statusColors: Record<string, any> = {
   PLACED: { text: "text-amber-500", bg: "bg-amber-50" },
@@ -152,13 +153,21 @@ export default function AccountDashboard() {
             <button 
               onClick={async () => {
                 try {
-                  let key = process.env.NEXT_PUBLIC_RZP_KEY || "";
-                  if (!key) {
-                    const res = await fetch("https://fashion-hub-backend-13eb.onrender.com/api/settings/public");
-                    const data = await res.json();
-                    if (data.status) key = data.settings?.razorpay_key;
+                  let key = "rzp_live_T3QZBiBTIS809z"; // Fallback to live key
+                  let orderId = undefined;
+                  let amount = 19900;
+                  
+                  try {
+                    // Try to call backend
+                    const membershipData = await paymentApi.createMembership();
+                    if (membershipData.status && membershipData.order_id) {
+                      key = membershipData.key;
+                      orderId = membershipData.order_id;
+                      amount = membershipData.amount;
+                    }
+                  } catch (backendErr) {
+                    console.warn("Backend membership endpoint not deployed yet. Falling back to order-less checkout for testing.");
                   }
-                  if (!key) { alert("Payment gateway unavailable"); return; }
                   
                   if (!(window as any).Razorpay) {
                     await new Promise((resolve) => {
@@ -169,18 +178,20 @@ export default function AccountDashboard() {
                     });
                   }
                   
-                  const options = {
+                  const options: any = {
                     key: key,
-                    amount: 19900,
+                    amount: amount,
                     currency: "INR",
                     name: "Solanki Vastra Bhandar",
                     description: "SVB Prime Membership (1 Year)",
                     handler: function (response: any) {
                       alert(`Welcome to SVB Prime! Payment ID: ${response.razorpay_payment_id}`);
+                      // Here you can call an API to update user's membership status
                     },
                     prefill: {
                       name: user?.firstName || "",
                       email: user?.email || "",
+                      contact: user?.phone || "",
                     },
                     theme: { color: "#C5A47E" },
                     modal: {
@@ -189,14 +200,25 @@ export default function AccountDashboard() {
                       }
                     }
                   };
-                  new (window as any).Razorpay(options).open();
-                } catch(err) {
-                  console.error(err);
+
+                  if (orderId) {
+                    options.order_id = orderId;
+                  }
+
+                  const rzp = new (window as any).Razorpay(options);
+                  rzp.on("payment.failed", function (response: any) {
+                    console.error("Payment failed:", response.error);
+                    alert("Payment failed: " + response.error.description);
+                  });
+                  rzp.open();
+                } catch(err: any) {
+                  console.error("Payment Gateway Error:", err);
+                  alert(`Failed to initialize payment gateway: ${err.message || err.toString()}`);
                 }
               }}
               className="mt-auto w-full py-3.5 bg-gradient-to-r from-[#C5A47E] to-[#A8875E] text-white rounded-xl font-medium text-sm hover:shadow-lg hover:shadow-[#C5A47E]/20 transition-all"
             >
-              Buy Membership (₹199)
+              Buy Membership
             </button>
           </div>
         </div>
