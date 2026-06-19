@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useCart } from "@/lib/contexts/cart-context";
+import { useWishlist } from "@/lib/contexts/wishlist-context";
 import { orderApi, productApi } from "@/lib/api";
 import { motion } from "framer-motion";
 import { Package, Heart, Tag, Star, ChevronRight, Crown } from "lucide-react";
@@ -20,7 +21,7 @@ const statusColors: Record<string, any> = {
 
 export default function AccountDashboard() {
   const { user } = useAuth();
-  const { wishlist } = useCart();
+  const { count: wishlistCount } = useWishlist();
   const router = useRouter();
   
   const [orders, setOrders] = useState<any[]>([]);
@@ -56,7 +57,7 @@ export default function AccountDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Orders", value: loadingOrders ? "-" : orders.length, icon: Package, link: "/account/orders/", color: "bg-[#F5ECE2]", text: "text-[#A8875E]" },
-          { label: "Wishlist", value: wishlist?.length || 0, icon: Heart, link: "/wishlist/", color: "bg-rose-50", text: "text-rose-500" },
+          { label: "Wishlist", value: wishlistCount || 0, icon: Heart, link: "/wishlist/", color: "bg-rose-50", text: "text-rose-500" },
           { label: "Coupons", value: loadingCoupons ? "-" : couponsCount, icon: Tag, link: "/account/coupons", color: "bg-emerald-50", text: "text-emerald-500" },
           { label: "Reward Points", value: "0", icon: Star, link: "#", color: "bg-amber-50", text: "text-amber-500" },
         ].map((stat, i) => (
