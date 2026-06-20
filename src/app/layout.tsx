@@ -12,6 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
       const settings = data.settings || {};
       const storeName = "Solanki Vastra Bhandar";
       const logoUrl = settings.store_logo_url || "/favicon.ico";
+      // We can also attach the maintenance status to a global variable or fetch it in the component itself.
+      // But since layout.tsx is a Server Component, we can fetch it once.
+      // Wait, we need it in RootLayout, but `generateMetadata` fetches it. We should fetch it in `RootLayout` as well.
 
       return {
         title: `${storeName} | Premium Designer Sarees Online`,
@@ -48,12 +51,25 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 import NextTopLoader from 'nextjs-toploader';
+import MaintenanceOverlay from '@/components/layout/MaintenanceOverlay';
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let isMaintenance = false;
+  let logoUrl = "/favicon.ico";
+
+  try {
+    const res = await fetch(`${API_URL}/api/settings/public`, { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      isMaintenance = data.settings?.maintenance_mode === "true";
+      logoUrl = data.settings?.store_logo_url || "/favicon.ico";
+    }
+  } catch (e) {}
+
   return (
     <html lang="en">
       <head>
@@ -66,7 +82,9 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <NextTopLoader color="#C5A47E" showSpinner={false} />
-        <Providers>{children}</Providers>
+        <MaintenanceOverlay isMaintenance={isMaintenance} logoUrl={logoUrl}>
+          <Providers>{children}</Providers>
+        </MaintenanceOverlay>
       </body>
     </html>
   );

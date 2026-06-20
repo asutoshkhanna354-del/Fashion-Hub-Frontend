@@ -25,7 +25,7 @@ export default function OrdersPage() {
 
   useEffect(() => {
     if (!isLoggedIn) return;
-    orderApi.list().then((d) => setOrders(d.orders || [])).catch(() => {}).finally(() => setLoading(false));
+    orderApi.list().then((d) => setOrders((d.orders || []).filter((o: any) => !(o.paymentMethod === "ONLINE" && (o.paymentStatus === "PENDING" || o.paymentStatus === "FAILED"))))).catch(() => {}).finally(() => setLoading(false));
   }, [isLoggedIn]);
 
   if (!isLoggedIn) { router.push("/account/"); return null; }
@@ -71,7 +71,7 @@ export default function OrdersPage() {
                       <ChevronRight className="w-4 h-4 text-plum/20" />
                     </div>
                   </div>
-                  <div className="mt-2 text-xs text-plum/40">{order.orderItems?.length} item{order.orderItems?.length !== 1 ? "s" : ""} • Payment: {(order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl) ? "COD" : order.paymentStatus}</div>
+                  <div className="mt-2 text-xs text-plum/40">{order.orderItems?.length} item{order.orderItems?.length !== 1 ? "s" : ""} • Payment: {order.paymentMethod === "COD" ? "COD" : "PREPAID"}</div>
                 </motion.div>
               );
             })}

@@ -146,6 +146,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           {item.product.fabric && (
                             <p className="text-xs text-plum/50 mt-1">{item.product.fabric}</p>
                           )}
+                          {item.color && (
+                            <p className="text-xs text-plum/50 mt-0.5">Color: <span className="font-semibold text-plum">{item.color}</span></p>
+                          )}
                         </div>
                         
                         <div className="flex items-end justify-between mt-4">

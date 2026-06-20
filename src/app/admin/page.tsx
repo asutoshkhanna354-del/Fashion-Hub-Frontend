@@ -157,14 +157,14 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {(dashboard?.recentOrders || []).slice(0, 5).map((order: any) => (
+              {(dashboard?.recentOrders || []).filter((o: any) => !(o.paymentMethod === "ONLINE" && (o.paymentStatus === "PENDING" || o.paymentStatus === "FAILED"))).slice(0, 5).map((order: any) => (
                 <tr key={order.id} className="border-t border-[#111111]/[0.03] hover:bg-[#F8F6F3]/50 transition-colors">
                   <td className="px-6 py-3.5 font-semibold text-[#111111] text-xs">{order.orderNumber}</td>
                   <td className="px-6 py-3.5 text-[#111111]/50 text-xs">{order.user?.firstName} {order.user?.lastName}</td>
                   <td className="px-6 py-3.5 font-semibold text-[#111111] text-xs">₹{Number(order.totalAmount).toLocaleString("en-IN")}</td>
                   <td className="px-6 py-3.5">
                     {(() => {
-                      const payStat = (order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl) ? "COD" : order.paymentStatus;
+                      const payStat = order.paymentMethod === "COD" ? "COD" : order.paymentStatus;
                       return (
                         <span className={`text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider ${
                           payStat === "SUCCESS" ? "bg-emerald-50 text-emerald-600" :

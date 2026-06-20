@@ -119,8 +119,8 @@ export const sectionApi = {
 // ============================================
 export const cartApi = {
   get: () => request<any>("/api/cart"),
-  add: (productId: string, quantity: number = 1) =>
-    request<any>("/api/cart", { method: "POST", body: JSON.stringify({ productId, quantity }) }),
+  add: (productId: string, quantity: number = 1, color: string = "") =>
+    request<any>("/api/cart", { method: "POST", body: JSON.stringify({ productId, quantity, color }) }),
   update: (id: string, quantity: number) =>
     request<any>(`/api/cart/${id}`, { method: "PUT", body: JSON.stringify({ quantity }) }),
   remove: (id: string) => request<any>(`/api/cart/${id}`, { method: "DELETE" }),
@@ -142,17 +142,20 @@ export const wishlistApi = {
 // ORDER API
 // ============================================
 export const orderApi = {
-  create: (promoCode?: string, shippingAddress?: any, paymentMethod?: string) =>
-    request<any>("/api/orders", { method: "POST", body: JSON.stringify({ promoCode, shippingAddress, paymentMethod }) }),
+  create: (promoCode?: string, shippingAddress?: any, paymentMethod?: string, razorpayData?: any) =>
+    request<any>("/api/orders", { method: "POST", body: JSON.stringify({ promoCode, shippingAddress, paymentMethod, ...razorpayData }) }),
   list: () => request<any>("/api/orders"),
   get: (id: string) => request<any>(`/api/orders/${id}`),
   track: (id: string) => request<any>(`/api/orders/${id}/tracking`),
+  delete: (id: string) => request<any>(`/api/orders/${id}`, { method: "DELETE" }),
 };
 
 // ============================================
 // PAYMENT API
 // ============================================
 export const paymentApi = {
+  createIntent: (promoCode?: string) =>
+    request<any>("/api/payment/create-intent", { method: "POST", body: JSON.stringify({ promoCode }) }),
   create: (orderId: string) =>
     request<any>("/api/payment/create", { method: "POST", body: JSON.stringify({ orderId }) }),
   verify: (data: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) =>

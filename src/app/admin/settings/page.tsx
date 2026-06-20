@@ -54,6 +54,7 @@ export default function AdminSettingsPage() {
           </div>
         </div>
 
+
         {/* Support Links */}
         <div className="bg-white rounded-2xl p-6 border border-[#111111]/[0.03] shadow-sm">
           <h3 className="font-display text-sm font-bold text-[#111111] mb-5">Support Links</h3>

@@ -32,6 +32,7 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const [selectedColor, setSelectedColor] = useState("");
 
   const [similarProducts, setSimilarProducts] = useState<any[]>([]);
 
@@ -53,14 +54,18 @@ export default function ProductDetailPage() {
   const initRazorpayWidget = async () => {
     if (typeof window !== "undefined" && (window as any).RazorpayAffordabilitySuite && product?.price) {
       try {
-        // Find existing widget to prevent duplicates
+        // Find existing widget
         const widgetContainer = document.getElementById("razorpay-affordability-widget");
-        if (widgetContainer && widgetContainer.innerHTML !== "") return;
+        if (!widgetContainer) return;
+
+        // Clear existing iframe if any to force re-render correctly
+        widgetContainer.innerHTML = "";
         
         let key = process.env.NEXT_PUBLIC_RZP_KEY || "";
         
         if (!key) {
           try {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3001";
             const res = await fetch(`${API_URL}/api/settings/public`);
             const data = await res.json();
             if (data.status && data.settings?.razorpay_key) {
@@ -80,8 +85,17 @@ export default function ProductDetailPage() {
           "key": key, 
           "amount": Math.round(Number(product.price) * 100),
         };
-        const rzpAffordabilitySuite = new (window as any).RazorpayAffordabilitySuite(widgetConfig);
-        rzpAffordabilitySuite.render();
+        
+        // Slight delay to ensure framer-motion layout is settled
+        setTimeout(() => {
+          try {
+            const rzpAffordabilitySuite = new (window as any).RazorpayAffordabilitySuite(widgetConfig);
+            rzpAffordabilitySuite.render();
+          } catch (e) {
+            console.error("Delayed render error", e);
+          }
+        }, 300);
+
       } catch (err) {
         console.error("Razorpay widget init error", err);
       }
@@ -94,19 +108,23 @@ export default function ProductDetailPage() {
     }
   }, [product]);
 
+  const colors = product?.colors ? product.colors.split(",").map((c: string) => c.trim()) : [];
+
   const handleAddToCart = async () => {
     if (!isLoggedIn) { router.push("/account/"); return; }
+    if (colors.length > 0 && !selectedColor) { alert("Please select a color first"); return; }
     setAddingToCart(true);
     try {
-      await addToCart(product.id, quantity);
+      await addToCart(product.id, quantity, selectedColor);
     } catch {}
     setAddingToCart(false);
   };
 
   const handleBuyNow = async () => {
     if (!isLoggedIn) { router.push("/account/"); return; }
+    if (colors.length > 0 && !selectedColor) { alert("Please select a color first"); return; }
     try {
-      await addToCart(product.id, quantity);
+      await addToCart(product.id, quantity, selectedColor);
       router.push("/cart/");
     } catch {}
   };
@@ -259,6 +277,24 @@ export default function ProductDetailPage() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-plum/50">Fabric:</span>
                   <span className="text-sm font-semibold text-plum bg-ivory px-3 py-1 rounded-full">{product.fabric}</span>
+                </div>
+              )}
+
+              {/* Colors */}
+              {colors.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-plum mb-3">Available Colors</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {colors.map((c: string, i: number) => (
+                      <button 
+                        key={i} 
+                        onClick={() => setSelectedColor(c)}
+                        className={`px-4 py-2 rounded-xl border-2 text-sm font-semibold transition-all ${selectedColor === c ? "border-[#C5A47E] bg-gradient-to-br from-[#C5A47E]/10 to-transparent text-[#C5A47E] shadow-sm" : "border-plum/10 text-plum/60 hover:border-plum/30 bg-white"}`}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 

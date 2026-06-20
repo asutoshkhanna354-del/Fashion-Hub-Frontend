@@ -41,13 +41,13 @@ function CheckoutContent() {
     
     if (rzpPaymentId && rzpOrderId && rzpSignature) {
       setLoading(true);
-      paymentApi.verify({
+      orderApi.create(promoCode, address, "ONLINE", {
         razorpay_order_id: rzpOrderId,
         razorpay_payment_id: rzpPaymentId,
         razorpay_signature: rzpSignature,
-      }).then(() => {
+      }).then((orderData) => {
         clearCart();
-        router.push(`/checkout/status?rzp_order_id=${rzpOrderId}`);
+        router.push(`/checkout/status?order_id=${orderData.order.id}`);
       }).catch((err: any) => {
         setError(err.message || "Payment verification failed");
         setLoading(false);
@@ -70,16 +70,14 @@ function CheckoutContent() {
   const handlePayment = async () => {
     setLoading(true); setError("");
     try {
-      const orderData = await orderApi.create(promoCode, address, paymentMethod);
-      const orderId = orderData.order.id;
-      
       if (paymentMethod === "COD") {
+        const orderData = await orderApi.create(promoCode, address, "COD");
         clearCart();
-        router.push(`/checkout/status?order_id=${orderId}&method=COD`);
+        router.push(`/checkout/status?order_id=${orderData.order.id}&method=COD`);
         return;
       }
       
-      const payData = await paymentApi.create(orderId);
+      const payData = await paymentApi.createIntent(promoCode);
       
       if (!payData.razorpayOrderId) {
         setError("Payment creation failed. Please try again.");
@@ -97,13 +95,13 @@ function CheckoutContent() {
         handler: async function (response: any) {
           try {
             setLoading(true);
-            await paymentApi.verify({
+            const orderData = await orderApi.create(promoCode, address, "ONLINE", {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
             });
             clearCart();
-            router.push(`/checkout/status?order_id=${orderId}`);
+            router.push(`/checkout/status?order_id=${orderData.order.id}`);
           } catch (err: any) {
             setError(err.message || "Payment verification failed");
             setLoading(false);

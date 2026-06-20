@@ -8,6 +8,7 @@ interface CartItem {
   id: string;
   productId: string;
   quantity: number;
+  color: string;
   product: {
     id: string;
     name: string;
@@ -25,7 +26,7 @@ interface CartContextType {
   total: number;
   count: number;
   loading: boolean;
-  addToCart: (productId: string, quantity?: number) => Promise<void>;
+  addToCart: (productId: string, quantity?: number, color?: string) => Promise<void>;
   updateQuantity: (itemId: string, quantity: number) => Promise<void>;
   removeFromCart: (itemId: string) => Promise<void>;
   clearCart: () => Promise<void>;
@@ -58,8 +59,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => { refreshCart(); }, [refreshCart]);
 
-  const addToCart = async (productId: string, quantity = 1) => {
-    await cartApi.add(productId, quantity);
+  const addToCart = async (productId: string, quantity = 1, color = "") => {
+    await cartApi.add(productId, quantity, color);
     await refreshCart();
   };
 

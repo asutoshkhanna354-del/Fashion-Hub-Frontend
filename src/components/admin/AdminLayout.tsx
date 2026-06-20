@@ -8,7 +8,7 @@ import { adminApi } from "@/lib/api";
 import {
   LayoutDashboard, Package, ShoppingBag, Layers, Users, Tag, Bell,
   Settings, Shield, LogOut, Menu, X, ChevronRight, Search, MapPin,
-  Folders, ShoppingCart, MessageCircle, TrendingUp, AlertTriangle
+  Folders, ShoppingCart, MessageCircle, TrendingUp, AlertTriangle, Wrench
 } from "lucide-react";
 
 const navItems = [
@@ -24,6 +24,7 @@ const navItems = [
 
 const settingsItems = [
   { href: "/admin/settings/", icon: Settings, label: "Store Settings" },
+  { href: "/admin/maintenance/", icon: Wrench, label: "Maintenance Mode" },
   { href: "/admin/settings/hero/", icon: Layers, label: "Hero Banner" },
   { href: "/admin/settings/promo-banners/", icon: Layers, label: "Promo Banners" },
   { href: "/admin/settings/policies/", icon: Shield, label: "Store Policies" },

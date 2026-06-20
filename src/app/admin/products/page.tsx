@@ -18,7 +18,7 @@ export default function AdminProductsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [form, setForm] = useState({
     name: "", description: "", fabric: "", price: "", originalPrice: "",
-    discountPercent: "0", features: "", sectionId: "", stock: "0",
+    discountPercent: "0", features: "", colors: "", sectionId: "", stock: "0",
     isBestSeller: false, isNewArrival: false, media: [] as any[], videoUrl: "",
   });
 
@@ -31,7 +31,7 @@ export default function AdminProductsPage() {
 
   const resetForm = () => setForm({
     name: "", description: "", fabric: "", price: "", originalPrice: "",
-    discountPercent: "0", features: "", sectionId: sections[0]?.id || "", stock: "0",
+    discountPercent: "0", features: "", colors: "", sectionId: sections[0]?.id || "", stock: "0",
     isBestSeller: false, isNewArrival: false, media: [], videoUrl: "",
   });
 
@@ -50,7 +50,7 @@ export default function AdminProductsPage() {
     setForm({
       name: p.name, description: p.description || "", fabric: p.fabric || "",
       price: String(p.price), originalPrice: String(p.originalPrice),
-      discountPercent: String(p.discountPercent), features: p.features || "",
+      discountPercent: String(p.discountPercent), features: p.features || "", colors: p.colors || "",
       sectionId: p.sectionId, stock: String(p.stock),
       isBestSeller: p.isBestSeller, isNewArrival: p.isNewArrival, media, videoUrl: p.videoUrl || "",
     });
@@ -132,8 +132,9 @@ export default function AdminProductsPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div><label className={labelClass}>Stock Quantity</label><input value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} type="number" className={fieldClass} /></div>
-                  <div><label className={labelClass}>Features (comma-separated)</label><input value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} placeholder="Handwoven, Zari work" className={fieldClass} /></div>
+                  <div><label className={labelClass}>Colors (comma-separated)</label><input value={form.colors} onChange={(e) => setForm({ ...form, colors: e.target.value })} placeholder="Red, Blue, Green" className={fieldClass} /></div>
                 </div>
+                <div><label className={labelClass}>Features (comma-separated)</label><input value={form.features} onChange={(e) => setForm({ ...form, features: e.target.value })} placeholder="Handwoven, Zari work" className={fieldClass} /></div>
                 <div>
                   <label className={labelClass}>External Video URL (Optional)</label>
                   <input value={form.videoUrl} onChange={(e) => setForm({ ...form, videoUrl: e.target.value })} placeholder="e.g. YouTube or direct MP4 link" className={fieldClass} />

@@ -159,7 +159,7 @@ export default function OrderDetailPage() {
           <h3 className="text-sm font-bold text-[#111111] mb-6">Order Status</h3>
           <div className="flex items-center gap-2 relative">
             {statusTimeline.map((step, i) => {
-              const isCOD = order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl;
+              const isCOD = order.paymentMethod === "COD";
               const dispStatus = (isCOD && order.orderStatus === "PLACED") ? "CONFIRMED" : order.orderStatus;
               const currentIdx = statusTimeline.indexOf(dispStatus);
               const isDone = i <= currentIdx;
@@ -178,7 +178,7 @@ export default function OrderDetailPage() {
             <div className="absolute top-4 left-[10%] right-[10%] h-0.5 bg-[#F8F6F3] -z-0">
               <div 
                 className="h-full bg-[#111111] transition-all duration-500" 
-                style={{ width: `${(Math.max(0, statusTimeline.indexOf((order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl && order.orderStatus === "PLACED") ? "CONFIRMED" : order.orderStatus)) / (statusTimeline.length - 1)) * 100}%` }} 
+                style={{ width: `${(Math.max(0, statusTimeline.indexOf((order.paymentMethod === "COD" && order.orderStatus === "PLACED") ? "CONFIRMED" : order.orderStatus)) / (statusTimeline.length - 1)) * 100}%` }} 
               />
             </div>
           </div>
@@ -235,7 +235,7 @@ export default function OrderDetailPage() {
               <h3 className="text-sm font-bold mb-4">Order Summary</h3>
               <div className="space-y-3 text-sm">
                 {(() => {
-                  const isCOD = order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl;
+                  const isCOD = order.paymentMethod === "COD";
                   const subtotal = order.orderItems?.reduce((acc: number, item: any) => acc + Number(item.total), 0) || (Number(order.totalAmount) + Number(order.discountAmount || 0));
                   const shipping = isCOD ? 100 : 0;
                   const totalDisp = subtotal + shipping - Number(order.discountAmount || 0);
@@ -257,7 +257,7 @@ export default function OrderDetailPage() {
                 <div className="flex justify-between items-center py-4 border-b border-white/5">
                   <span className="text-white/60">Payment Status</span>
                   {(() => {
-                    const payStat = (order.paymentStatus === "PENDING" && !order.pay0OrderId && !order.paymentUrl) ? "COD" : order.paymentStatus;
+                    const payStat = order.paymentMethod === "COD" ? "COD" : order.paymentStatus;
                     return <span className={`font-bold ${payStat === 'SUCCESS' ? 'text-emerald-400' : payStat === 'COD' ? 'text-blue-400' : 'text-amber-400'}`}>{payStat}</span>;
                   })()}
                 </div>

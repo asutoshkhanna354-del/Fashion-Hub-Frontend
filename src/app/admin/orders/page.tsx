@@ -34,7 +34,7 @@ export default function AdminOrdersPage() {
     const params: Record<string, string> = { page: String(p), limit: "20" };
     if (status !== "ALL") params.status = status;
     if (search) params.search = search;
-    adminApi.orders(params).then((d) => { setOrders(d.orders); setTotalPages(d.totalPages); setPage(p); }).catch(() => {}).finally(() => setLoading(false));
+    adminApi.orders(params).then((d) => { setOrders((d.orders || []).filter((o: any) => !(o.paymentMethod === "ONLINE" && (o.paymentStatus === "PENDING" || o.paymentStatus === "FAILED")))); setTotalPages(d.totalPages); setPage(p); }).catch(() => {}).finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchOrders(); }, []);
@@ -142,7 +142,7 @@ export default function AdminOrdersPage() {
                         {o.paymentMethod === "ONLINE" ? "PREPAID" : o.paymentMethod || "UNKNOWN"}
                       </span>
                       {(() => {
-                        const pStat = (o.paymentStatus === "PENDING" && !o.pay0OrderId && !o.paymentUrl) ? "COD" : o.paymentStatus;
+                        const pStat = o.paymentStatus;
                         return <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${payColors[pStat] || ""}`}>{pStat}</span>;
                       })()}
                     </div>
@@ -215,7 +215,7 @@ export default function AdminOrdersPage() {
                         {selectedOrder.paymentMethod === "ONLINE" ? "PREPAID" : selectedOrder.paymentMethod || "UNKNOWN"}
                       </span>
                       {(() => {
-                        const pStat = (selectedOrder.paymentStatus === "PENDING" && !selectedOrder.pay0OrderId && !selectedOrder.paymentUrl) ? "COD" : selectedOrder.paymentStatus;
+                        const pStat = selectedOrder.paymentStatus;
                         return <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold ${payColors[pStat] || ""}`}>{pStat}</span>;
                       })()}
                     </div>
