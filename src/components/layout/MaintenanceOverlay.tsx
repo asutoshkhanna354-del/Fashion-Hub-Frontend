@@ -20,7 +20,7 @@ export default function MaintenanceOverlay({
     const checkStatus = async () => {
       let isMaint = isMaintenance;
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:3001";
+        const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
         const res = await fetch(`${API_URL}/api/settings/public`);
         if (res.ok) {
           const data = await res.json();
