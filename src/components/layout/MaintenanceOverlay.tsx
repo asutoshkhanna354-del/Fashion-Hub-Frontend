@@ -95,7 +95,7 @@ export default function MaintenanceOverlay({
           Please check back soon.
         </p>
         <p className="text-[#86868b] text-xs">
-          Copyright © 2017 Solanki Vastra Bhandar. All rights reserved
+          Copyright © 2026 Solanki Vastra Bhandar. All rights reserved
         </p>
       </div>
     </div>
