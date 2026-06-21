@@ -5,7 +5,7 @@ import { Loader2, Save, ShoppingBag, Search } from "lucide-react";
 import Image from "next/image";
 import AdminLayout from "@/components/admin/AdminLayout";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
 
 export default function BestSellersAdminPage() {
   const [products, setProducts] = useState<any[]>([]);

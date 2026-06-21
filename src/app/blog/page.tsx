@@ -8,7 +8,7 @@ import Footer from "@/components/layout/Footer";
 import { useState, useEffect } from "react";
 import { blogApi } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<any[]>([]);

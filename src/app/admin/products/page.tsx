@@ -7,7 +7,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import MediaUploader from "@/components/admin/MediaUploader";
 import Image from "next/image";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<any[]>([]);

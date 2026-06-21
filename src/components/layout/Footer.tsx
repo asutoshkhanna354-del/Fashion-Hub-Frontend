@@ -170,10 +170,18 @@ export default function Footer() {
       {/* Bottom Footer */}
       <div className="border-t border-rose-gold/10">
         <div className="container-premium py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-plum/40 text-center sm:text-left">
-            © {new Date().getFullYear()} {"Solanki Vastra Bhandar"}. All rights reserved.
-            Made with ♥ in India.
-          </p>
+          <div className="flex flex-col gap-1 items-center sm:items-start">
+            <p className="text-xs text-plum/40 text-center sm:text-left">
+              © {new Date().getFullYear()} {"Solanki Vastra Bhandar"}. All rights reserved.
+            </p>
+            <div className="flex items-center gap-2 text-xs text-plum/40">
+              <span>Made with Passion by Galaxy Devs Studio</span>
+              <span className="hidden sm:inline">•</span>
+              <a href="https://divyashekhar.netlify.app" target="_blank" rel="noopener noreferrer" className="text-rose-gold hover:underline font-medium">
+                Contact Developer
+              </a>
+            </div>
+          </div>
 
           <div className="flex items-center gap-3">
             <span className="text-xs text-plum/40 mr-2 hidden sm:inline">

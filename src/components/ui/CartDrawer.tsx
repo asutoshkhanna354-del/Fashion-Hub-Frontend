@@ -8,7 +8,7 @@ import { useCart } from "@/lib/contexts/cart-context";
 import { useState } from "react";
 import { promoApi } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const API_URL = "https://fashion-hub-backend-13eb.onrender.com";
 
 interface CartDrawerProps {
   isOpen: boolean;

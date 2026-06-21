@@ -200,7 +200,7 @@ function PaymentStatusContent() {
                               {item.product?.media && item.product.media.length > 0 ? (() => {
                                 const m = Array.isArray(item.product.media) ? item.product.media[0] : null;
                                 const url = (typeof m === 'string' ? m : m?.url) || '';
-                                const fullUrl = url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}${url}`;
+                                const fullUrl = url.startsWith('http') ? url : `${"https://fashion-hub-backend-13eb.onrender.com"}${url}`;
                                 return <Image src={fullUrl} alt="" fill className="object-cover" sizes="40px" />;
                               })() : (
                                 <Package className="w-4 h-4 text-[#111111]/20" />
